@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}Application Confirmation | Civic System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/service-application.css') }}">
+{% endblock %}
+
+{% block content %}
+{% set snapshot = application.service_snapshot or {} %}
+{% set service_info = snapshot.get('service', {}) %}
+{% set option_info = snapshot.get('option', {}) %}
+{% set service_name = service_info.get('name', service.name if service else 'Public Service') %}
+{% set option_name = option_info.get('name', application.title) %}
+
+<section class="application-confirmation-section">
+    <div class="container">
+        <div class="confirmation-card">
+            <!-- SUCCESS HEADER -->
+            <div class="confirmation-success">
+                <div class="confirmation-icon">
+                    <i class="bi bi-check-lg"></i>
+                </div>
+
+                <span class="section-eyebrow">APPLICATION RECEIVED</span>
+                <h1>Application submitted successfully!</h1>
+
+                <p class="confirmation-message">
+                    Your application has been received successfully.
+                    You can use the reference number below to track its progress.
+                </p>
+            </div>
+
+            <!-- REFERENCE NUMBER -->
+            <div class="reference-box">
+                <div>
+                    <span>YOUR APPLICATION REFERENCE</span>
+                    <h2>{{ application.reference_number }}</h2>
+                </div>
+
+                <i class="bi bi-file-earmark-check"></i>
+            </div>
+
+            <!-- APPLICATION DETAILS -->
+            <div class="confirmation-section">
+                <div class="confirmation-section-heading">
+                    <i class="bi bi-card-list"></i>
+                    <h3>Application details</h3>
+                </div>
+
+                <div class="confirmation-details">
+
+                    <div class="confirmation-detail-item">
+                        <span>Service</span>
+                        <strong>{{ service_name }}</strong>
+                    </div>
+
+                    <div class="confirmation-detail-item">
+                        <span>Application type</span>
+                        <strong>{{ option_name }}</strong>
+                    </div>
+
+                    <div class="confirmation-detail-item">
+                        <span>Submission date</span>
+                        <strong>
+                            {{ application.submitted_at | kenya_time('%d %B %Y, %H:%M') }}
+                            hrs
+                        </strong>
+                    </div>
+
+                    <div class="confirmation-detail-item">
+                        <span>Application status</span>
+                        <strong class="application-status">
+                            {{ application.status|replace('_', ' ')|title }}
+                        </strong>
+                    </div>
+
+                    <div class="confirmation-detail-item">
+                        <span>Application fee</span>
+                        <strong>
+                            {% if option_info.get('fee') is not none and option_info.get('fee')|float > 0 %}
+                                KSh {{ "{:,.2f}".format(option_info.get('fee')|float) }}
+                            {% else %}
+                                To be confirmed
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <div class="confirmation-detail-item">
+                        <span>Expected processing time</span>
+                        <strong>
+                            {% if option_info.get('processing_days') %}
+                                {{ option_info.get('processing_days') }} working days
+                            {% else %}
+                                To be confirmed
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- SUBMITTED INFORMATION -->
+            {% if application.form_data %}
+            <div class="confirmation-section">
+                <div class="confirmation-section-heading">
+                    <i class="bi bi-clipboard-check"></i>
+                    <h3>Submitted information</h3>
+                </div>
+
+                <div class="submitted-information">
+                    {% for field, value in application.form_data.items() %}
+                    <div class="submitted-information-item">
+                        <span>{{ field.replace('_', ' ')|title }}</span>
+                        <strong>
+                            {% if value is not none and value != '' %}
+                                {{ value }}
+                            {% else %}
+                                Not provided
+                            {% endif %}
+                        </strong>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- NEXT STEPS -->
+            <div class="confirmation-next-steps">
+                <div class="next-steps-icon">
+                    <i class="bi bi-info-circle"></i>
+                </div>
+
+                <div>
+                    <h4>What's next?</h4>
+                    <p>
+                        Keep your reference number safe. You can use it to
+                        check the status of your application. The responsible
+                        department will review your submission and update its progress.
+                    </p>
+                </div>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="confirmation-actions">
+                <a href="{{ url_for('requests.application_tracking_details', reference_number=application.reference_number) }}" class="confirmation-primary">
+                    <i class="bi bi-geo-alt"></i>
+                    Track Application
+                </a>
+            </div>
+        </div>
+
+        <p class="confirmation-footer-note">
+            <i class="bi bi-shield-check"></i>
+            Keep your application reference number for future correspondence.
+        </p>
+
+    </div>
+</section>
+
+{% endblock %}

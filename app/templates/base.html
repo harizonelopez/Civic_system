@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+          content="{% block meta_description %}Access public services, submit applications and track service requests through Civic System.{% endblock %}">
+    <meta name="theme-color" content="#071426">
+
+    <title>{% block title %}Civic System | Public Services Portal{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+          
+    <!-- Custom CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/base-template.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Top information bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-bar-content">
+                <div class="top-bar-brand">
+                    <span class="status-indicator"></span>
+                    <span>YOUR DIGITAL PUBLIC SERVICE PLATFORM</span>
+                </div>
+
+                <div class="top-bar-info">
+                    <span>
+                        <i class="bi bi-shield-lock"></i>
+                        Secure Platform
+                    </span>
+
+                    <span>
+                        <i class="bi bi-clock-history"></i>
+                        Services Available 24/7
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main navigation -->
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <!-- Brand -->
+                <a class="navbar-brand" href="{{ url_for('citizen.index') }}">
+                    <span class="brand-icon">
+                        <i class="bi bi-buildings"></i>
+                    </span>
+
+                    <span class="brand-text">
+                        <strong>CIVIC<span>SYSTEM</span></strong>
+                        <small>PUBLIC SERVICE PORTAL</small>
+                    </span>
+                </a>
+
+                <!-- Mobile toggle -->
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Navigation links -->
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav mx-auto mb-3 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('citizen.index') }}">
+                                <i class="bi bi-house-door me-1"></i>
+                                Home
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('requests.index') }}">
+                                <i class="bi bi-grid me-1"></i>
+                                Services
+                            </a>
+                        </li>
+
+                        {% if current_user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('citizen.dashboard') }}">
+                                    <i class="bi bi-speedometer2 me-1"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+
+                    <!-- Account actions -->
+                    <div class="navbar-actions d-flex align-items-center gap-2">
+                        {% if current_user.is_authenticated %}
+                            <div class="user-greeting">
+                                <span class="user-avatar">
+                                    {{ current_user.first_name[0]|upper }}
+                                </span>
+
+                                <span class="welcome-text">
+                                    Hello, {{ current_user.first_name }}
+                                </span>
+                            </div>
+
+                            <form action="{{ url_for('auth.logout') }}" method="POST">
+                                <input type="hidden"
+                                       name="csrf_token"
+                                       value="{{ csrf_token() }}">
+
+                                <button type="submit" class="btn btn-nav-outline">
+                                    <i class="bi bi-box-arrow-right me-1"></i>
+                                    Sign Out
+                                </button>
+                            </form>
+
+                        {% else %}
+                            <a href="{{ url_for('auth.login') }}" class="btn btn-nav-outline">
+                                Sign In
+                            </a>
+                            <a href="{{ url_for('auth.register') }}" class="btn btn-nav-primary">
+                                Get Started
+                                <i class="bi bi-arrow-up-right ms-1"></i>
+                            </a>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main content -->
+    <main id="main-content">
+        <!-- Global Flash Messages -->
+        <div class="flash-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} flash-message" role="alert">
+                            <i class="bi bi-info-circle-fill"></i>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-glow"></div>
+        <div class="container">
+            <div class="row g-5 py-5">
+                <!-- Brand information -->
+                <div class="col-lg-4 col-md-6">
+                    <a href="{{ url_for('citizen.index') }}" class="footer-brand">
+                        <span class="footer-brand-icon">
+                            <i class="bi bi-buildings"></i>
+                        </span>
+                        <span>CIVIC<span>SYSTEM</span></span>
+                    </a>
+
+                    <p class="footer-description mt-3">
+                        Making public services more accessible,
+                        transparent and efficient through digital
+                        transformation.
+                    </p>
+
+                    <div class="footer-status">
+                        <span class="status-indicator"></span>
+                        A smarter way to access public services
+                    </div>
+                </div>
+
+                <!-- Quick links -->
+                <div class="col-lg-2 col-md-6">
+                    <h6>Explore</h6>                    
+                    <ul class="footer-links">
+                        <li>
+                            <a href="{{ url_for('citizen.index') }}">Home</a>
+                        </li>
+
+                        <li>
+                            <a href="{{ url_for('requests.index') }}">Services</a>
+                        </li>
+
+                        {% if current_user.is_authenticated %}                           
+                            <li>
+                                <form method="POST" action="{{ url_for('auth.logout') }}" class="footer-logout-form">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <a href="#" onclick="this.closest('form').requestSubmit(); return false;">
+                                        Sign Out
+                                    </a>
+                                </form>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="{{ url_for('auth.login') }}">Sign In</a>
+                            </li>
+
+                            <li>
+                                <a href="{{ url_for('auth.register') }}">Create Account</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div class="col-lg-3 col-md-6">
+                    <h6>Citizen Services</h6>
+                    <ul class="footer-links">
+                        <li>
+                            <a href="{{ url_for('requests.index') }}">
+                                Browse Services
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ url_for('requests.index') }}">
+                                Submit a Request
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ url_for('requests.track_application') }}">
+                                Track Applications
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+           
+                <!-- Assistance -->
+                <div class="col-lg-3 col-md-6">
+                    <h6>Help &amp; Support</h6>
+                    <p class="footer-description">
+                        Having trouble with an application or accessing a service?
+                        We're here to help.
+                    </p>
+
+                    <a href="{{ url_for('support.contact') }}" class="footer-contact-link">
+                        Contact Support
+                        <i class="bi bi-arrow-up-right"></i>
+                    </a>
+
+                    <p class="footer-description mt-3">
+                        Need to manage your requests?
+                    </p>
+
+                    <a href="{{ url_for('citizen.dashboard') }}" class="footer-contact-link">
+                        Access Your Account
+                        <i class="bi bi-person-circle"></i>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Footer bottom -->
+            <div class="footer-bottom">
+                <div class="row align-items-center gy-3">
+                    <div class="col-md-6">
+                        <p>
+                            &copy; 2026 Civic System.
+                            All rights reserved.
+                        </p>
+                    </div>
+
+                    <div class="col-md-6 text-md-end">
+                        <span>
+                            Designed for accessible public services.
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Global Flash Messages -->
+    <script src="{{ url_for('static', filename='js/flash-messages.js') }}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

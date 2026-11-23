@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block title %}{{ option_label }} | Civic System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/service-application.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- APPLICATION HERO -->
+<section class="application-hero">
+    <div class="container">
+        <a href="{{ url_for('requests.featured_detail', slug=service.slug) }}" class="application-back">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back to {{ service.name }}</span>
+        </a>
+
+        <div class="application-hero-content">
+            <div class="application-hero-icon">
+                <i class="bi bi-file-earmark-text"></i>
+            </div>
+
+            <div>
+                <span class="application-eyebrow">CIVIC SYSTEM / SERVICE APPLICATION</span>
+                <h1>{{ option_label }}</h1>
+                <p>{{ service.name }} <span class="hero-separator">/</span> Online application</p>
+            </div>
+        </div>
+
+        <div class="application-hero-meta">
+            <span><i class="bi bi-shield-check"></i> Secure application</span>
+            <span><i class="bi bi-person-check"></i> Account-linked submission</span>
+        </div>
+
+    </div>
+</section>
+
+<!-- APPLICATION WORKSPACE -->
+<section class="application-section">
+    <div class="container">
+        <div class="application-page-heading">
+            <div>
+                <span class="section-eyebrow">APPLICATION WORKSPACE</span>
+                <h2>Let's get your application started.</h2>
+                <p>Provide the information requested below to proceed.</p>
+            </div>
+
+            <div class="application-step-indicator">
+                <span class="step-number">01</span>
+                <div>
+                    <strong>Application details</strong>
+                    <small>Complete all required fields</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="application-layout">
+            <!-- MAIN FORM -->
+            <main class="application-main">
+                <div class="application-heading">
+                    <div class="application-heading-icon">
+                        <i class="bi bi-clipboard2-check"></i>
+                    </div>
+
+                    <div>
+                        <span class="application-form-label">APPLICATION FORM</span>
+                        <h2>Applicant information</h2>
+                        <p>
+                            Enter accurate information in the fields provided.
+                            Fields marked as required must be completed.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- APPLICANT IDENTITY -->
+                <div class="applicant-summary">
+                    <div class="applicant-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+
+                    <div class="applicant-details">
+                        <span>APPLICATION SUBMITTED UNDER</span>
+                        <h5>{{ current_user.full_name }}</h5>
+                        <p><i class="bi bi-envelope"></i> {{ current_user.email }}</p>
+                    </div>
+
+                    <div class="applicant-account-status">
+                        <i class="bi bi-patch-check-fill"></i>
+                        <span>Signed in</span>
+                    </div>
+                </div>
+
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    <div class="application-fields-heading">
+                        <span class="fields-heading-number">1</span>
+                        <div>
+                            <h3>Application details</h3>
+                            <p>Complete the information relevant to your request.</p>
+                        </div>
+                    </div>
+
+                    <div class="application-fields">
+                        {% for field in form if field.name not in ['csrf_token', 'submit'] %}
+                            <div class="application-field {% if field.type == 'TextAreaField' %}full-width{% endif %}">
+                                {{ field.label(class="form-label") }}
+                                
+                                {% if field.type == 'TextAreaField' %}
+                                    {{ field(class="form-control", rows="4", placeholder="Enter additional details here...") }}
+                                {% elif field.type == 'SelectField' %}
+                                    {{ field(class="form-select") }}
+                                {% else %}
+                                    {{ field(class="form-control") }}
+                                {% endif %}
+
+                                {% for error in field.errors %}
+                                    <span class="field-error">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        {{ error }}
+                                    </span>
+                                {% endfor %}
+
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="application-review-note">
+                        <i class="bi bi-info-circle"></i>
+                        <span>
+                            Please review your information before submitting.
+                            You will receive a unique application reference number.
+                        </span>
+                    </div>
+
+                    <div class="application-actions">
+                        <a href="{{ url_for('requests.featured_detail', slug=service.slug) }}" class="cancel-application">
+                            Cancel
+                        </a>
+                        {{ form.submit(class="submit-application") }}
+                    </div>
+
+                </form>
+            </main>
+
+            <!-- SIDEBAR -->
+            <aside class="application-sidebar">
+                <div class="application-info-card">
+                    <div class="sidebar-card-heading">
+                        <div class="sidebar-heading-icon">
+                            <i class="bi bi-journal-check"></i>
+                        </div>
+
+                        <div>
+                            <span class="application-form-label">APPLICATION GUIDE</span>
+                            <h4>Before you submit</h4>
+                        </div>
+                    </div>
+
+                    <p class="sidebar-intro">
+                        A few things to keep in mind while completing your application.
+                    </p>
+
+                    <div class="application-guide-list">
+                        <div class="guide-item">
+                            <span class="guide-number">01</span>
+                            <div>
+                                <strong>Provide accurate details</strong>
+                                <p>Ensure the information matches your supporting records.</p>
+                            </div>
+                        </div>
+
+                        <div class="guide-item">
+                            <span class="guide-number">02</span>
+                            <div>
+                                <strong>Review your application</strong>
+                                <p>Check the information before sending your request.</p>
+                            </div>
+                        </div>
+
+                        <div class="guide-item">
+                            <span class="guide-number">03</span>
+                            <div>
+                                <strong>Keep your reference number</strong>
+                                <p>Use it to identify and track your application.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="application-security">
+                        <i class="bi bi-shield-lock"></i>
+                        <div>
+                            <strong>Account protection</strong>
+                            <span>Your application is associated with your signed-in account.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="application-help-card">
+                    <div class="help-card-icon">
+                        <i class="bi bi-headset"></i>
+                    </div>
+
+                    <h4>Need assistance?</h4>
+                    <p>
+                        Make sure you have the relevant information available
+                        before completing your application.
+                    </p>
+                    <span><i class="bi bi-clock"></i> Complete at your own pace</span>
+                </div>
+
+            </aside>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

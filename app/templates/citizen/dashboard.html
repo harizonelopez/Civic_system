@@ -1,0 +1,398 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard | Civic System{% endblock %}
+
+{% block meta_description %}
+Manage your Civic System account, view applications and update your personal information.
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/citizen-dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="citizen-dashboard">
+    <div class="container">
+        <!-- =========================================
+             DASHBOARD HEADER
+        ========================================== -->
+        <div class="dashboard-welcome">
+            <div class="welcome-content">
+                <span class="dashboard-eyebrow">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    CITIZEN PORTAL
+                </span>
+
+                <h1>
+                    Welcome back, <span>{{ current_user.first_name }}</span>
+                </h1>
+
+                <p>
+                    Your personal space to manage public services,
+                    monitor applications and keep your account up to date.
+                </p>
+
+                <div class="welcome-actions">
+                    <a href="{{ url_for('requests.index') }}" class="dashboard-btn dashboard-btn-primary">
+                        <i class="bi bi-plus-lg"></i>
+                        Apply for a Service
+                    </a>
+
+                    <a href="{{ url_for('requests.track_application') }}" class="dashboard-btn dashboard-btn-outline">
+                        <i class="bi bi-geo-alt"></i>
+                        Track Application
+                    </a>
+                </div>
+            </div>
+
+            <div class="welcome-profile">
+                <div class="welcome-avatar">
+                    {{ current_user.first_name[0]|upper }}
+                    {{ current_user.last_name[0]|upper }}
+                </div>
+
+                <div class="welcome-profile-info">
+                    <strong>{{ current_user.full_name }}</strong>
+                    <span>Citizen Account</span>
+
+                    <span class="account-status">
+                        <i class="bi bi-circle-fill"></i>
+                        {{ "Active Account" if current_user.is_active else "Inactive Account" }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================================
+             APPLICATION STATISTICS
+        ========================================== -->
+        <div class="dashboard-section-heading">
+            <div>
+                <span class="section-eyebrow">YOUR ACTIVITY</span>
+                <h2>Application Overview</h2>
+                <p>A quick look at your service requests.</p>
+            </div>
+        </div>
+
+        <div class="dashboard-statistics">
+            <div class="stat-card stat-total">
+                <div class="stat-card-top">
+                    <span class="stat-icon">
+                        <i class="bi bi-files"></i>
+                    </span>
+                    <span class="stat-label">ALL APPLICATIONS</span>
+                </div>
+
+                <div class="stat-value">
+                    {{ total_applications }}
+                </div>
+                <span class="stat-description">Total submitted requests</span>
+            </div>
+
+            <div class="stat-card stat-pending">
+                <div class="stat-card-top">
+                    <span class="stat-icon">
+                        <i class="bi bi-hourglass-split"></i>
+                    </span>
+                    <span class="stat-label">IN PROGRESS</span>
+                </div>
+
+                <div class="stat-value">
+                    {{ pending_applications }}
+                </div>
+                <span class="stat-description">Awaiting completion</span>
+            </div>
+
+            <div class="stat-card stat-completed">
+                <div class="stat-card-top">
+                    <span class="stat-icon">
+                        <i class="bi bi-check2-circle"></i>
+                    </span>
+                    <span class="stat-label">COMPLETED</span>
+                </div>
+
+                <div class="stat-value">
+                    {{ completed_applications }}
+                </div>
+                <span class="stat-description">Successfully completed</span>
+            </div>
+        </div>
+
+        <!-- =========================================
+             MAIN DASHBOARD GRID
+        ========================================== -->
+        <div class="dashboard-main-grid">
+            <!-- MY APPLICATIONS -->
+            <div class="dashboard-panel applications-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-eyebrow">YOUR RECORDS</span>
+                        <h2>Recent Application Submissions</h2>
+                        <p>Keep track of your recent submissions.</p>
+                    </div>
+                </div>
+
+                {% if recent_applications %}
+                    <div class="application-list">
+                        {% for application in recent_applications %}
+                            {% set service_info = application.service_snapshot.get('service', {}) if application.service_snapshot else {} %}
+                            {% set service_name = service_info.get('name') or (application.service.name if application.service else application.title) %}
+                            {% set status_class = application.status|lower|replace(' ', '-') %}
+
+                            <div class="application-item">
+                                <div class="application-icon">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </div>
+
+                                <div class="application-information">
+                                    <h3>{{ service_name }}</h3>
+                                    <span class="application-reference">{{ application.reference_number }}</span>
+                                    <span class="application-date">
+                                        <i class="bi bi-calendar3"></i>
+                                        {{ application.submitted_at.strftime('%d %b %Y') }}
+                                    </span>
+                                </div>
+
+                                <div class="application-actions">
+                                    <span class="application-status status-{{ status_class }}">
+                                        {{ application.status|replace('_', ' ')|title }}
+                                    </span>
+
+                                    <a href="{{ url_for('requests.application_tracking_details', reference_number=application.reference_number) }}" class="application-view-link" aria-label="View application {{ application.reference_number }}">
+                                        <i class="bi bi-arrow-up-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                {% else %}
+
+                    <div class="empty-applications">
+                        <div class="empty-applications-icon">
+                            <i class="bi bi-folder2-open"></i>
+                        </div>
+
+                        <h3>No applications yet</h3>
+                        <p>
+                            You haven't submitted any service applications.
+                            Explore the available services and get started.
+                        </p>
+
+                        <a href="{{ url_for('requests.index') }}" class="dashboard-btn dashboard-btn-primary">
+                            Explore Services
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- QUICK ACTIONS -->
+            <aside class="dashboard-panel quick-actions-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-eyebrow">SHORTCUTS</span>
+                        <h2>Quick Actions</h2>
+                        <p>What would you like to do?</p>
+                    </div>
+                </div>
+
+                <div class="quick-action-list">
+                    <a href="{{ url_for('requests.index') }}" class="quick-action-item">
+                        <span class="quick-action-icon">
+                            <i class="bi bi-grid"></i>
+                        </span>
+
+                        <span class="quick-action-text">
+                            <strong>Browse Services</strong>
+                            <small>Explore available public services</small>
+                        </span>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                    <a href="{{ url_for('citizen.applications') }}" class="quick-action-item">
+                        <span class="quick-action-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </span>
+
+                        <span class="quick-action-text">
+                            <strong>View All Application</strong>
+                            <small>Check the progress of a request</small>
+                        </span>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                    <a href="#profile" class="quick-action-item">
+                        <span class="quick-action-icon">
+                            <i class="bi bi-person-gear"></i>
+                        </span>
+
+                        <span class="quick-action-text">
+                            <strong>Manage My Profile</strong>
+                            <small>Review your personal information</small>
+                        </span>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                    <a href="#security" class="quick-action-item">
+                        <span class="quick-action-icon">
+                            <i class="bi bi-shield-lock"></i>
+                        </span>
+
+                        <span class="quick-action-text">
+                            <strong>Account Security</strong>
+                            <small>Manage your account security</small>
+                        </span>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+            </aside>
+        </div>
+
+        <!-- =========================================
+             PERSONAL PROFILE
+        ========================================== -->
+        <div class="dashboard-section-heading profile-section-heading" id="profile">
+            <div>
+                <span class="section-eyebrow">ACCOUNT MANAGEMENT</span>
+                <h2>My Personal Information</h2>
+                <p>Review the information associated with your account.</p>
+            </div>
+
+            <a href="{{ url_for('citizen.edit_profile') }}" class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-pencil-square"></i>
+                Edit Profile
+            </a>
+        </div>
+
+        <div class="dashboard-panel profile-panel">
+            <div class="profile-panel-header">
+                <div class="profile-large-avatar">
+                    {{ current_user.first_name[0]|upper }}
+                    {{ current_user.last_name[0]|upper }}
+                </div>
+
+                <div>
+                    <h3>{{ current_user.full_name }}</h3>
+                    <p>Registered Citizen</p>
+                </div>
+
+                <span class="profile-verification">
+                    <i class="bi bi-patch-check-fill"></i>
+                    {{ "Verified Account" if current_user.is_verified else "Verification Pending" }}
+                </span>
+            </div>
+
+            <div class="profile-information-grid">
+                <div class="profile-information-item">
+                    <span><i class="bi bi-person"></i> First Name</span>
+                    <strong>{{ current_user.first_name }}</strong>
+                </div>
+
+                <div class="profile-information-item">
+                    <span><i class="bi bi-person"></i> Last Name</span>
+                    <strong>{{ current_user.last_name }}</strong>
+                </div>
+
+                <div class="profile-information-item">
+                    <span><i class="bi bi-envelope"></i> Email Address</span>
+                    <strong>{{ current_user.email }}</strong>
+                </div>
+
+                <div class="profile-information-item">
+                    <span><i class="bi bi-telephone"></i> Phone Number</span>
+                    <strong>{{ current_user.phone_number or "Not provided" }}</strong>
+                </div>
+
+                <div class="profile-information-item">
+                    <span><i class="bi bi-card-heading"></i> Nationa ID Number</span>
+                    <strong>
+                        {{ current_user.national_id or "Not provided" }}
+                    </strong>
+                </div>
+
+                <div class="profile-information-item">
+                    <span><i class="bi bi-gender-ambiguous"></i> Gender</span>
+                    <strong>
+                        {{ current_user.gender or "Not provided" }}
+                    </strong>
+                </div>
+
+                <div class="profile-information-item">
+                    <span><i class="bi bi-clock-history"></i> Last Profile Update</span>
+                    <strong>{{ current_user.updated_at.strftime('%d %b %Y') }}</strong>
+                </div>
+
+                <div class="profile-information-item">
+                    <span><i class="bi bi-person-check"></i> Account Status</span>
+                    <strong>
+                        {{ "Active" if current_user.is_active else "Inactive" }}
+                    </strong>
+                </div>
+            </div>
+
+            <div class="profile-panel-footer">
+                <i class="bi bi-info-circle"></i>
+                Keep your personal information accurate and up to date
+                so that you can receive important application updates.
+            </div>
+        </div>
+
+        <!-- =========================================
+             ACCOUNT SECURITY
+        ========================================== -->
+        <div class="dashboard-section-heading security-section-heading" id="security">
+            <div>
+                <span class="section-eyebrow">PROTECT YOUR ACCOUNT</span>
+                <h2>Account Security</h2>
+                <p>Keep your account safe and your information protected.</p>
+            </div>
+        </div>
+
+        <div class="security-card">
+            <div class="security-card-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+
+            <div class="security-card-information">
+                <h3>Password &amp; Login Security</h3>
+                <p>
+                    Your password is securely stored as a password hash.
+                    You can manage your password to help protect your account.
+                </p>
+            </div>
+
+            <div class="security-card-action">
+                <span class="security-protected">
+                    <i class="bi bi-lock-fill"></i>
+                    Password Protected
+                </span>
+
+                <span class="security-coming-soon">
+                    Password management
+                </span>
+            </div>
+        </div>
+
+        <!-- =========================================
+             BOTTOM CALL TO ACTION
+        ========================================== -->
+        <div class="dashboard-bottom-banner">
+            <div>
+                <span class="section-eyebrow">CIVIC SYSTEM</span>
+                <h2>Public services, made simpler.</h2>
+                <p>
+                    Discover more services and manage your requests
+                    from one convenient place.
+                </p>
+            </div>
+
+            <a href="{{ url_for('requests.index') }}" class="dashboard-btn dashboard-btn-primary">
+                Explore Services
+                <i class="bi bi-arrow-up-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

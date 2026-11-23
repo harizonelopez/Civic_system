@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% block title %}Application Tracking | Civic System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tracking-details.css') }}">
+{% endblock %}
+
+{% block content %}
+{% set snapshot = application.service_snapshot or {} %}
+{% set service_info = snapshot.get('service', {}) %}
+{% set option_info = snapshot.get('option', {}) %}
+{% set current_status = application.status|lower %}
+
+{% set statuses = [
+    ('submitted', 'Submitted', 'Application received'),
+    ('processing', 'Processing', 'Application under review'),
+    ('approved', 'Approved', 'Application approved'),
+    ('completed', 'Completed', 'Service fulfilled')
+] %}
+
+{% set progress = namespace(index=-1) %}
+{% for status in statuses %}
+    {% if status[0] == current_status %}
+        {% set progress.index = loop.index0 %}
+    {% endif %}
+{% endfor %}
+
+<section class="tracking-details-page">
+    <!-- HERO -->
+    <div class="tracking-details-hero">
+        <div class="tracking-details-overlay"></div>
+        <div class="container tracking-details-hero-content">
+            <span class="tracking-eyebrow">APPLICATION TRACKING</span>
+            <h1>Track Your Application</h1>
+            <p>Follow the progress of your submitted service request.</p>
+            <div class="tracking-reference">
+                <span>REFERENCE NUMBER</span>
+                <strong>{{ application.reference_number }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="container tracking-details-container">
+        <!-- CURRENT STATUS -->
+        <section class="tracking-status-card">
+            <div class="tracking-section-heading">
+                <div>
+                    <span class="tracking-eyebrow">CURRENT PROGRESS</span>
+                    <h2>Application Status</h2>
+                </div>
+
+                <span class="status-badge status-{{ current_status }}">
+                    {{ current_status.replace('_', ' ')|title }}
+                </span>
+            </div>
+
+            {% if current_status in ['rejected', 'cancelled'] %}
+                <div class="tracking-status-message status-message-{{ current_status }}">
+                    <h3>
+                        {% if current_status == 'rejected' %}
+                            Application Rejected
+                        {% else %}
+                            Application Cancelled
+                        {% endif %}
+                    </h3>
+
+                    <p>
+                        {% if current_status == 'rejected' %}
+                            This application has been rejected. Please contact
+                            the responsible department for further information.
+                        {% else %}
+                            This application has been cancelled.
+                        {% endif %}
+                    </p>
+                </div>
+
+            {% else %}
+                <div class="tracking-progress">
+                    {% for code, label, description in statuses %}
+                        <div class="tracking-progress-step
+                            {% if progress.index >= loop.index0 and progress.index != -1 %}
+                                completed
+                            {% endif %}
+                            {% if current_status == code %}
+                                active
+                            {% endif %}">
+                            <div class="progress-indicator">
+                                {% if progress.index > loop.index0 %}
+                                    <i class="bi bi-check-lg"></i>
+                                {% else %}
+                                    {{ loop.index }}
+                                {% endif %}
+                            </div>
+
+                            <div class="progress-step-text">
+                                <strong>{{ label }}</strong>
+                                <span>{{ description }}</span>
+                            </div>
+
+                        </div>
+                    {% endfor %}
+
+                </div>
+            {% endif %}
+
+            <div class="tracking-dates">
+                <div>
+                    <span>Submitted On</span>
+                    <strong>
+                        {{ application.submitted_at | kenya_time('%d %B %Y, %H:%M') }}
+                        hrs
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Last Updated</span>
+                    <strong>
+                        {{ application.updated_at | kenya_time('%d %B %Y, %H:%M') }}
+                        hrs
+                    </strong>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- SERVICE INFORMATION -->
+        <section class="tracking-information-card">
+            <div class="tracking-section-heading">
+                <div>
+                    <span class="tracking-eyebrow">SERVICE INFORMATION</span>
+                    <h2>Application Details</h2>
+                </div>
+            </div>
+
+            <div class="tracking-information-grid">
+                <div class="tracking-information-item">
+                    <span>Service</span>
+                    <strong>
+                        {{ service_info.get('name') or application.service.name if application.service else application.title }}
+                    </strong>
+                </div>
+
+                <div class="tracking-information-item">
+                    <span>Application Type</span>
+                    <strong>
+                        {{ option_info.get('name') or application.title }}
+                    </strong>
+                </div>
+
+                <div class="tracking-information-item">
+                    <span>Department</span>
+                    <strong>
+                        {{ service_info.get('department') or 'Not specified' }}
+                    </strong>
+                </div>
+
+                <div class="tracking-information-item">
+                    <span>Category</span>
+                    <strong>
+                        {{ service_info.get('category') or 'Not specified' }}
+                    </strong>
+                </div>
+
+                <div class="tracking-information-item">
+                    <span>Processing Time</span>
+                    <strong>
+                        {% if option_info.get('processing_days') %}
+                            {{ option_info.get('processing_days') }} working days
+                        {% else %}
+                            To be confirmed
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="tracking-information-item">
+                    <span>Application Fee</span>
+                    <strong>
+                        {% set fee = option_info.get('fee') %}
+                        {% if fee is not none and fee|string|trim != '' %}
+                            KSh {{ "%.2f"|format(fee|float) }}
+                        {% else %}
+                            To be confirmed
+                        {% endif %}
+                    </strong>
+                </div>
+            </div>
+
+            {% if option_info.get('description') %}
+                <div class="tracking-description">
+                    <span>Service Description</span>
+                    <p>{{ option_info.get('description') }}</p>
+                </div>
+            {% endif %}
+        </section>
+
+
+        <!-- SUBMITTED INFORMATION -->
+        <section class="tracking-information-card">
+            <div class="tracking-section-heading">
+                <div>
+                    <span class="tracking-eyebrow">SUBMISSION RECORD</span>
+                    <h2>Information Submitted</h2>
+                </div>
+            </div>
+
+            {% set form_data = application.form_data or {} %}
+            {% if form_data %}
+                <div class="tracking-information-grid">
+                    {% for key, value in form_data.items() %}
+                        {% if value is not none and value|string|trim %}
+                            <div class="tracking-information-item">
+                                <span>{{ key.replace('_', ' ')|title }}</span>
+                                <strong>{{ value }}</strong>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="tracking-empty-message">
+                    No additional submission information is available.
+                </p>
+            {% endif %}
+        </section>
+
+        <!-- REQUIREMENTS AND ELIGIBILITY -->
+        {% if option_info.get('requirements') or option_info.get('eligibility') %}
+            <section class="tracking-information-card">
+                <div class="tracking-section-heading">
+                    <div>
+                        <span class="tracking-eyebrow">SERVICE GUIDANCE</span>
+                        <h2>Requirements and Eligibility</h2>
+                    </div>
+                </div>
+
+                {% if option_info.get('requirements') %}
+                    <div class="tracking-description">
+                        <span>Requirements</span>
+                        <p>{{ option_info.get('requirements') }}</p>
+                    </div>
+                {% endif %}
+
+                {% if option_info.get('eligibility') %}
+                    <div class="tracking-description">
+                        <span>Eligibility</span>
+                        <p>{{ option_info.get('eligibility') }}</p>
+                    </div>
+                {% endif %}
+
+            </section>
+        {% endif %}
+
+        <!-- FOOTER ACTION -->
+        <div class="tracking-details-actions">
+            <a href="{{ url_for('requests.track_application') }}" class="tracking-back-link">
+                <i class="bi bi-search"></i>
+                Track Another Application
+            </a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Service Directory | Civic System{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home-services.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- DIRECTORY HERO -->
+<section class="services-hero">
+    <div class="container">
+        <span class="section-eyebrow">PUBLIC SERVICE DIRECTORY</span>
+        <h1>Explore Public Services</h1>
+        <p>
+            Discover public services, access requirements and find
+            the services you need in one place.
+        </p>
+
+        <div class="directory-search">
+            <i class="bi bi-search"></i>
+            <input
+                type="search"
+                id="directorySearch"
+                placeholder="Search for a public service..."
+                aria-label="Search public services">
+            <span class="search-shortcut">SEARCH</span>
+        </div>
+    </div>
+</section>
+
+<!-- SERVICE DIRECTORY -->
+<section class="service-directory-section section-padding">
+    <div class="container">
+        <div class="directory-heading">
+            <div>
+                <h2>Available Services</h2>
+                <p>Explore the services available through Civic System.</p>
+            </div>
+
+            <span class="service-count">
+                <strong id="serviceCount">{{ featured_services|length }}</strong>
+                Services
+            </span>
+        </div>
+
+        <!-- CATEGORY FILTERS -->
+        <div class="directory-filters">
+            <button class="filter-btn active" data-category="all">
+                All Services
+            </button>
+
+            <button class="filter-btn" data-category="business">
+                Business
+            </button>
+
+            <button class="filter-btn" data-category="planning">
+                Planning
+            </button>
+
+            <button class="filter-btn" data-category="public health">
+                Public Health
+            </button>
+
+            <button class="filter-btn" data-category="safety">
+                Safety
+            </button>
+
+            <button class="filter-btn" data-category="environment">
+                Environment
+            </button>
+
+            <button class="filter-btn" data-category="trade">
+                Trade
+            </button>
+        </div>
+
+        <!-- FEATURED SERVICES -->
+        <div class="directory-group">
+            <div class="row g-4" id="directoryServices">
+
+                {% for service in featured_services %}
+
+                <div
+                    class="col-md-6 col-lg-4 service-directory-item"
+                    data-category="{{ service.category|lower }}"
+                    data-search="{{ service.name }} {{ service.category }} {{ service.description }}">
+
+                    <article class="service-card">
+                        <div class="service-card-top">
+                            <span class="service-icon icon-blue">
+                                <i class="bi {{ service.icon }}"></i>
+                            </span>
+
+                            <span class="service-category">
+                                {{ service.category }}
+                            </span>
+                        </div>
+
+                        <div class="service-card-content">
+                            <h5>{{ service.name }}</h5>
+                            <p>{{ service.description }}</p>
+                        </div>
+
+                        <div class="service-card-bottom">
+
+                            <span>
+                                <i class="bi bi-clock me-1"></i>
+                                 {{ service.processing }}
+                            </span>
+
+                            <a href="{{ url_for('requests.featured_detail', slug=service.slug) }}" aria-label="Explore {{ service.name }}">
+                                <i class="bi bi-arrow-up-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+                {% endfor %}
+            </div>
+
+            <!-- EMPTY SEARCH STATE -->
+            <div class="directory-empty d-none" id="directoryEmpty">
+                <i class="bi bi-search"></i>
+                <h4>No services found</h4>
+                <p>Try another search term or select a different category.</p>
+
+                <button type="button" id="clearDirectorySearch">Clear filters</button>
+            </div>
+        </div>
+    </div>
+
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/services-directory.js') }}"></script>
+{% endblock %}

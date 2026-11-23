@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+{% block title %}Contact Support | Civic System{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/support.css') }}">
+
+<section class="support-page">
+    <div class="support-overlay"></div>
+    <div class="container support-container">
+        <!-- Page heading -->
+        <div class="support-heading">
+            <span class="support-eyebrow">
+                <i class="bi bi-headset"></i>
+                CITIZEN ASSISTANCE
+            </span>
+            <h1>How can we <span>help you?</span></h1>
+            <p>
+                Having trouble accessing a service or managing an application?
+                Send our support team a message and we'll assist you.
+            </p>
+        </div>
+
+        <div class="row g-4 align-items-stretch">
+            <!-- Support information -->
+            <div class="col-lg-4">
+                <div class="support-info-panel">
+                    <div class="support-info-icon">
+                        <i class="bi bi-chat-square-dots"></i>
+                    </div>
+
+                    <h3>We're here to help.</h3>
+                    <p>
+                        Tell us what's going wrong. Our support team will
+                        review your request and follow up using your
+                        provided contact details.
+                    </p>
+
+                    <div class="support-benefits">
+                        <div class="support-benefit">
+                            <i class="bi bi-shield-check"></i>
+                            <div>
+                                <h6>Secure assistance</h6>
+                                <span>Your support details are handled privately.</span>
+                            </div>
+                        </div>
+
+                        <div class="support-benefit">
+                            <i class="bi bi-card-checklist"></i>
+                            <div>
+                                <h6>Trackable requests</h6>
+                                <span>Receive a reference number for your enquiry.</span>
+                            </div>
+                        </div>
+
+                        <div class="support-benefit">
+                            <i class="bi bi-person-check"></i>
+                            <div>
+                                <h6>Dedicated support</h6>
+                                <span>Get assistance with accounts, services and applications.</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="support-info-footer">
+                        <i class="bi bi-info-circle"></i>
+                        Please provide enough detail to help us understand
+                        and resolve your issue.
+                    </div>
+
+                    <!-- Contact Channels -->
+                    <div class="support-contact-channels">                        
+                        <h5>Reach Us Directly</h5>
+
+                        <!-- Email -->
+                        <a href="mailto:harizonelopez23@gmail.com" class="support-contact-item">
+                            <span class="support-contact-icon email-icon">
+                                <i class="bi bi-envelope-fill"></i>
+                            </span>
+
+                            <span class="support-contact-details">
+                                <small>Email Support</small>
+                                <strong>civicsys@gmail.com</strong>
+                            </span>
+                        </a>
+
+                        <!-- Phone -->
+                        <a href="tel:0722266600" class="support-contact-item">
+                            <span class="support-contact-icon phone-icon">
+                                <i class="bi bi-telephone-fill"></i>
+                            </span>
+
+                            <span class="support-contact-details">
+                                <small>Call Us</small>
+                                <strong>0722 266 600</strong>
+                            </span>
+                        </a>
+
+                        <!-- Availability -->
+                        <div class="support-contact-item">
+                            <span class="support-contact-icon">
+                                <i class="bi bi-clock-history"></i>
+                            </span>
+
+                            <span class="support-contact-details">
+                                <small>Support Availability</small>
+                                <strong>Available 24/7</strong>
+                            </span>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div class="support-social-links">
+                            <a href="#" aria-label="X" class="social-x">
+                                <i class="fa-brands fa-x-twitter"></i>
+                            </a>
+
+                            <a href="#" aria-label="Instagram" class="social-instagram">
+                                <i class="fa-brands fa-instagram"></i>
+                            </a>
+
+                            <a href="#" aria-label="Facebook" class="social-facebook">
+                                <i class="fa-brands fa-facebook-f"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support form -->
+            <div class="col-lg-8">
+                <div class="support-form-panel">
+                    <div class="support-form-heading">
+                        <div>
+                            <span class="support-form-label">SEND AN ENQUIRY</span>
+                            <h3>Contact Support</h3>
+                            <p>Complete the form below to submit your request.</p>
+                        </div>
+
+                        <div class="support-form-icon">
+                            <i class="bi bi-envelope-paper"></i>
+                        </div>
+                    </div>
+
+                    <form method="POST" novalidate>
+                        {{ form.hidden_tag() }}
+
+                        <div class="row g-3">
+                            <!-- Full name -->
+                            <div class="col-md-6">
+                                {{ form.full_name.label(class="form-label") }}
+
+                                <div class="support-input-wrap">
+                                    <i class="bi bi-person"></i>
+                                    {{ form.full_name(
+                                        class="form-control" ~
+                                        (" is-invalid" if form.full_name.errors else ""),
+                                        placeholder="Enter your full name",
+                                        readonly=current_user.is_authenticated
+                                    ) }}
+                                </div>
+
+                                {% for error in form.full_name.errors %}
+                                    <div class="support-error">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                {{ form.email.label(class="form-label") }}
+
+                                <div class="support-input-wrap">
+                                    <i class="bi bi-envelope"></i>
+                                    {{ form.email(
+                                        class="form-control" ~
+                                        (" is-invalid" if form.email.errors else ""),
+                                        placeholder="you@example.com",
+                                        readonly=current_user.is_authenticated
+                                    ) }}
+                                </div>
+
+                                {% for error in form.email.errors %}
+                                    <div class="support-error">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Category -->
+                            <div class="col-md-6">
+                                {{ form.category.label(class="form-label") }}
+
+                                <div class="support-input-wrap">
+                                    <i class="bi bi-grid"></i>
+                                    {{ form.category(
+                                        class="form-select" ~
+                                        (" is-invalid" if form.category.errors else "")
+                                    ) }}
+                                </div>
+
+                                {% for error in form.category.errors %}
+                                    <div class="support-error">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Application reference -->
+                            <div class="col-md-6">
+                                {{ form.application_reference.label(class="form-label") }}
+
+                                <div class="support-input-wrap">
+                                    <i class="bi bi-upc-scan"></i>
+                                    {{ form.application_reference(
+                                        class="form-control" ~
+                                        (" is-invalid" if form.application_reference.errors else ""),
+                                        placeholder="e.g. CSR-XXXXXXXXXXXX"
+                                    ) }}
+                                </div>
+
+                                {% for error in form.application_reference.errors %}
+                                    <div class="support-error">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Subject -->
+                            <div class="col-12">
+                                {{ form.subject.label(class="form-label") }}
+
+                                <div class="support-input-wrap">
+                                    <i class="bi bi-pencil-square"></i>
+                                    {{ form.subject(
+                                        class="form-control" ~
+                                        (" is-invalid" if form.subject.errors else ""),
+                                        placeholder="Briefly describe your issue"
+                                    ) }}
+                                </div>
+
+                                {% for error in form.subject.errors %}
+                                    <div class="support-error">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Message -->
+                            <div class="col-12">
+                                {{ form.message.label(class="form-label") }}
+
+                                <div class="support-input-wrap support-textarea-wrap">
+                                    <i class="bi bi-chat-left-text"></i>
+                                    {{ form.message(
+                                        class="form-control" ~
+                                        (" is-invalid" if form.message.errors else ""),
+                                        rows="6",
+                                        placeholder="Describe the problem you're experiencing. Include any relevant details that may help us assist you..."
+                                    ) }}
+                                </div>
+
+                                {% for error in form.message.errors %}
+                                    <div class="support-error">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Submit -->
+                            <div class="col-12">
+                                <div class="support-submit-area">
+
+                                    <span>
+                                        <i class="bi bi-lock"></i>
+                                        Your information is submitted securely.
+                                    </span>
+
+                                    {{ form.submit(
+                                        class="btn support-submit-btn"
+                                    ) }}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+{% endblock %}

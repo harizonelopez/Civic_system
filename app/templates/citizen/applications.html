@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}My Applications | Civic System{% endblock %}
+
+{% block meta_description %}
+View all your submitted service applications and monitor their progress.
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/citizen-applications.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="citizen-applications-section">
+    <div class="container">
+        <!-- PAGE HEADER -->
+        <div class="applications-page-header">
+            <a href="{{ url_for('citizen.dashboard') }}" class="applications-back-link">
+                <i class="bi bi-arrow-left"></i>
+                Back to Dashboard
+            </a>
+
+            <div class="applications-heading">
+                <div>
+                    <span class="section-eyebrow">
+                        <i class="bi bi-files"></i>
+                        CITIZEN PORTAL
+                    </span>
+
+                    <h1>My Applications</h1>
+                    <p>
+                        View your submitted service applications, review their
+                        details and keep track of their progress.
+                    </p>
+                </div>
+
+                <a href="{{ url_for('requests.index') }}" class="applications-new-btn">
+                    <i class="bi bi-plus-lg"></i>
+                    New Application
+                </a>
+            </div>
+        </div>
+
+        <!-- APPLICATION SUMMARY -->
+        <div class="applications-summary">
+            <div class="applications-summary-card">
+                <span class="summary-icon">
+                    <i class="bi bi-files"></i>
+                </span>
+                <div>
+                    <strong>{{ applications|length }}</strong>
+                    <span>Total Applications</span>
+                </div>
+            </div>
+
+            <div class="applications-summary-card">
+                <span class="summary-icon summary-pending-icon">
+                    <i class="bi bi-hourglass-split"></i>
+                </span>
+                <div>
+                    <strong>
+                        {{ applications|selectattr('status', 'equalto', 'submitted')|list|length
+                        + applications|selectattr('status', 'equalto', 'under_review')|list|length
+                        + applications|selectattr('status', 'equalto', 'in_progress')|list|length }}
+                    </strong>
+                    <span>Awaiting / In Progress</span>
+                </div>
+            </div>
+
+            <div class="applications-summary-card">
+                <span class="summary-icon summary-completed-icon">
+                    <i class="bi bi-check2-circle"></i>
+                </span>
+                <div>
+                    <strong>
+                        {{ applications|selectattr('status', 'equalto', 'completed')|list|length }}
+                    </strong>
+                    <span>Completed</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- APPLICATION LIST -->
+        <div class="applications-list-panel">
+            <div class="applications-list-heading">
+                <div>
+                    <span class="section-eyebrow">YOUR RECORDS</span>
+                    <h2>Application History</h2>
+                    <p>
+                        All your service requests, starting with the most recent.
+                    </p>
+                </div>
+
+                <span class="applications-count">
+                    {{ applications|length }} application(s)
+                </span>
+            </div>
+
+            {% if applications %}
+                <div class="applications-table-wrapper">
+                    <table class="applications-table">
+                        <thead>
+                            <tr>
+                                <th>Application</th>
+                                <th>Reference Number</th>
+                                <th>Date Submitted</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for application in applications %}
+                                {% set service_info = application.service_snapshot.get('service', {}) if application.service_snapshot else {} %}
+                                {% set service_name = service_info.get('name') or (application.service.name if application.service else application.title) %}
+                                {% set status_class = application.status|lower|replace(' ', '-')|replace('_', '-') %}
+
+                                <tr>
+                                    <td>
+                                        <div class="application-service-cell">
+                                            <span class="application-service-icon">
+                                                <i class="bi bi-file-earmark-text"></i>
+                                            </span>
+                                            <div>
+                                                <strong>{{ service_name }}</strong>
+                                                <small>{{ application.title }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="application-reference">
+                                            {{ application.reference_number }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="application-submission-date">
+                                            <i class="bi bi-calendar3"></i>
+                                            {{ application.submitted_at|kenya_time('%d %b %Y, %I:%M %p') }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="application-status status-{{ status_class }}">
+                                            {{ application.status|replace('_', ' ')|title }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <a
+                                            href="{{ url_for('requests.application_tracking_details', reference_number=application.reference_number) }}"
+                                            class="application-details-link"
+                                            aria-label="View details for {{ application.reference_number }}">
+                                            View Details
+                                            <i class="bi bi-arrow-up-right"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            {% else %}
+                <div class="applications-empty-state">
+                    <div class="applications-empty-icon">
+                        <i class="bi bi-folder2-open"></i>
+                    </div>
+
+                    <h3>No applications yet</h3>
+                    <p>
+                        You haven't submitted any service applications.
+                        Browse the available services to get started.
+                    </p>
+
+                    <a href="{{ url_for('requests.index') }}" class="applications-new-btn">
+                        Explore Services
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- PAGE FOOTER NOTE -->
+        <div class="applications-page-note">
+            <i class="bi bi-info-circle"></i>
+            <span>
+                Keep your application reference numbers for future enquiries.
+                You can open any application to review its submitted information
+                and tracking details.
+            </span>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
+

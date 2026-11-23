@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile | Civic System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/citizen-dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="profile-edit-section">
+    <div class="container">
+        <!-- PAGE HEADER -->
+        <div class="profile-edit-header">
+            <a href="{{ url_for('citizen.dashboard') }}" class="profile-back-link">
+                <i class="bi bi-arrow-left"></i>
+                Back to Dashboard
+            </a>
+
+            <span class="section-eyebrow">ACCOUNT SETTINGS</span>
+            <h1>Edit Your Profile</h1>
+            <p>Keep your personal information accurate and up to date.</p>
+        </div>
+
+        <!-- PROFILE FORM -->
+        <div class="profile-edit-card">
+            <div class="profile-edit-card-heading">
+                <div class="profile-edit-icon">
+                    <i class="bi bi-person-gear"></i>
+                </div>
+
+                <div>
+                    <h2>Personal Information</h2>
+                    <p>Update the information associated with your account.</p>
+                </div>
+            </div>
+
+            <form method="POST" novalidate>
+                {{ form.hidden_tag() }}
+                <div class="profile-edit-grid">
+                    <!-- FIRST NAME -->
+                    <div class="profile-edit-field">
+                        {{ form.first_name.label(class="form-label") }}
+                        {{ form.first_name(class="form-control", placeholder="Enter first name") }}
+
+                        {% for error in form.first_name.errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- LAST NAME -->
+                    <div class="profile-edit-field">
+                        {{ form.last_name.label(class="form-label") }}
+                        {{ form.last_name(class="form-control", placeholder="Enter last name") }}
+
+                        {% for error in form.last_name.errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- EMAIL (READ ONLY) -->
+                    <div class="profile-edit-field">
+                        <label class="form-label">Email Address</label>
+                        <input
+                            type="email"
+                            class="form-control"
+                            value="{{ current_user.email }}"
+                            readonly>
+                        <small>Email address cannot be changed here.</small>
+                    </div>
+
+                    <!-- PHONE -->
+                    <div class="profile-edit-field">
+                        {{ form.phone_number.label(class="form-label") }}
+                        {{ form.phone_number(
+                            class="form-control",
+                            placeholder="e.g. 0712345678",
+                            maxlength="10",
+                            inputmode="tel"
+                        ) }}
+
+                        {% for error in form.phone_number.errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- NATIONAL ID -->
+                    <div class="profile-edit-field">
+                        {{ form.national_id.label(class="form-label") }}
+                        {{ form.national_id(
+                            class="form-control",
+                            placeholder="Enter your 8-digit National ID",
+                            maxlength="8",
+                            inputmode="numeric"
+                        ) }}
+
+                        {% for error in form.national_id.errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- GENDER -->
+                    <div class="profile-edit-field">
+                        {{ form.gender.label(class="form-label") }}
+                        {{ form.gender(class="form-select") }}
+
+                        {% for error in form.gender.errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="profile-edit-notice">
+                    <i class="bi bi-shield-check"></i>
+                    <span>
+                        Your National ID is associated with your account and will
+                        be used when submitting eligible service applications.
+                    </span>
+                </div>
+
+                <div class="profile-edit-actions">
+                    <a href="{{ url_for('citizen.dashboard') }}" class="profile-cancel-btn">
+                        Cancel
+                    </a>
+                    {{ form.submit(class="profile-save-btn") }}
+                </div>
+            </form>
+        </div>
+
+        <!-- PASSWORD & SECURITY -->
+        <div class="profile-edit-card password-edit-card">
+            <div class="profile-edit-card-heading">
+                <div class="profile-edit-icon">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+
+                <div>
+                    <h2>Password &amp; Security</h2>
+                    <p>Update your account password to keep your account secure.</p>
+                </div>
+            </div>
+
+            <form method="POST" novalidate>
+                {{ password_form.hidden_tag() }}
+
+                <div class="profile-edit-grid">
+                    <!-- CURRENT PASSWORD -->
+                    <div class="profile-edit-field">
+                        {{ password_form.current_password.label(class="form-label") }}
+                        {{ password_form.current_password(
+                            class="form-control",
+                            placeholder="Enter your current password"
+                        ) }}
+
+                        {% for error in password_form.current_password.errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- NEW PASSWORD -->
+                    <div class="profile-edit-field">
+                        {{ password_form.new_password.label(class="form-label") }}
+                        {{ password_form.new_password(
+                            class="form-control",
+                            placeholder="Enter your new password"
+                        ) }}
+
+                        {% for error in password_form.new_password.errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <!-- CONFIRM NEW PASSWORD -->
+                    <div class="profile-edit-field">
+                        {{ password_form.confirm_password.label(class="form-label") }}
+                        {{ password_form.confirm_password(
+                            class="form-control",
+                            placeholder="Confirm your new password"
+                        ) }}
+
+                        {% for error in password_form.confirm_password.errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+                <div class="profile-edit-notice">
+                    <i class="bi bi-info-circle"></i>
+                    <span>
+                        Your current password is required to authorize this change.
+                        Your new password must contain a letter, a number and a special character.
+                    </span>
+                </div>
+
+                <div class="profile-edit-actions">
+                    {{ password_form.change_password(class="profile-save-btn") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

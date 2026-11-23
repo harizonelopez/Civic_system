@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Track Application | Civic System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/track-applications.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="tracking-hero">
+    <div class="container">
+        <div class="tracking-hero-content">
+            <span class="tracking-eyebrow">
+                <i class="bi bi-shield-check"></i>APPLICATION SERVICES
+            </span>
+            <h1>Track your application</h1>
+            <p>
+                Stay informed about your submitted applications.
+                Enter your reference number to view the latest progress
+                and application information.
+            </p>
+
+            <div class="tracking-hero-meta">
+                <span><i class="bi bi-lock"></i> Secure access</span>
+                <span><i class="bi bi-clock-history"></i> Application updates</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="tracking-search-section">
+    <div class="container">
+        <div class="tracking-search-card">
+            <div class="tracking-search-heading">
+                <div class="tracking-search-icon">
+                    <i class="bi bi-search"></i>
+                </div>
+
+                <div>
+                    <span class="tracking-label">REFERENCE LOOKUP</span>
+                    <h2>Find your application</h2>
+                    <p>Enter the reference number issued after submission.</p>
+                </div>
+            </div>
+
+            <form method="GET" action="{{ url_for('requests.track_application') }}" class="tracking-search-form">
+                <div class="tracking-input-group">
+                    <label for="reference_number">Application Reference Number</label>
+                    <div class="tracking-input-wrapper"><i class="bi bi-hash"></i>
+                        <input
+                            type="text"
+                            id="reference_number"
+                            name="reference_number"
+                            placeholder="CSR-XXXXXXXXXXXX"
+                            maxlength="30"
+                            autocomplete="off"
+                            required>
+                    </div>
+                </div>
+
+                <button type="submit" class="tracking-submit">
+                    Track Application
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="tracking-search-footer">
+                <i class="bi bi-info-circle"></i>
+                Your reference number is displayed on your application confirmation page.
+            </div>
+
+        </div>
+
+        <div class="tracking-security-note">
+            <i class="bi bi-shield-lock"></i>
+            <span>
+                Your application information is protected.
+                Only the account that submitted an application can access it.
+            </span>
+        </div>
+    </div>
+</section>
+{% endblock %}

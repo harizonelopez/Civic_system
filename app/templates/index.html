@@ -1,0 +1,572 @@
+{% extends "base.html" %}
+{% block title %}Civic System | Access Public Services Online{% endblock %}
+
+{% block meta_description %}
+ Discover public services, submit applications and track your requests
+ through the Civic System digital public services portal.
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing-dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- =====================================================
+     HERO SECTION
+====================================================== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center gy-5">
+            <div class="col-lg-7">
+                <span class="hero-label">
+                    <i class="bi bi-shield-check me-2"></i>
+                    YOUR DIGITAL PUBLIC SERVICES PORTAL
+                </span>
+
+                <h1>Public services, <span>made simpler.</span></h1>
+                <p class="hero-description">
+                    Access essential public services from one convenient
+                    platform. Submit applications, manage your requests
+                    and stay informed throughout the process.
+                </p>
+
+                <div class="hero-actions">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('citizen.applications') }}" class="btn btn-primary btn-lg">
+                            View My Applications
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+
+                        <a href="{{ url_for('citizen.dashboard') }}" class="btn btn-outline-primary btn-lg">
+                            Access Dashboard
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">
+                            Create an Account
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+
+                        <a href="{{ url_for('requests.track_application') }}" class="btn btn-outline-primary btn-lg">
+                            Track an Application
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="hero-trust">
+                    <span>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Convenient access
+                    </span>
+
+                    <span>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Request tracking
+                    </span>
+
+                    <span>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Secure accounts
+                    </span>
+                </div>
+            </div>
+
+            <!-- HERO VISUAL -->
+            <div class="col-lg-5">
+                <div class="hero-visual">
+                    <div class="hero-visual-header">
+                        <div>
+                            <small>YOUR SERVICES, ONE PLACE</small>
+                            <h5>Welcome to Civic System</h5>
+                        </div>
+
+                        <span class="hero-visual-icon">
+                            <i class="bi bi-building"></i>
+                        </span>
+                    </div>
+
+                    <div class="hero-feature-card">
+                        <div class="feature-icon feature-blue">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+
+                        <div>
+                            <strong>Apply for services</strong>
+                            <small>Access available public services</small>
+                        </div>
+
+                        <i class="bi bi-arrow-up-right"></i>
+                    </div>
+
+                    <div class="hero-feature-card">
+                        <div class="feature-icon feature-teal">
+                            <i class="bi bi-clipboard-check"></i>
+                        </div>
+
+                        <div>
+                            <strong>Manage applications</strong>
+                            <small>Keep your requests organized</small>
+                        </div>
+
+                        <i class="bi bi-arrow-up-right"></i>
+                    </div>
+
+                    <div class="hero-feature-card">
+                        <div class="feature-icon feature-orange">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+
+                        <div>
+                            <strong>Track progress</strong>
+                            <small>Follow your application journey</small>
+                        </div>
+
+                        <i class="bi bi-arrow-up-right"></i>
+                    </div>
+
+                    <div class="hero-visual-footer">
+                        <i class="bi bi-info-circle me-2"></i>
+                        A more convenient way to access public services.
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- =====================================================
+            SERVICE SEARCH
+        ====================================================== -->
+        <div class="service-search-section">
+            <div class="service-search-box">
+                <div>
+                    <span class="section-eyebrow">SERVICE DIRECTORY</span>
+                    <h4>What service are you looking for?</h4>
+                    <p>Search through available public services.</p>
+                </div>
+
+                <div class="service-search-input">
+                    <i class="bi bi-search"></i>
+                    <input
+                        type="search"
+                        id="serviceSearch"
+                        placeholder="Search services ..."
+                        aria-label="Search public services">
+
+                    <button type="button" class="btn btn-primary" id="searchServices">
+                        Search
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- =====================================================
+     POPULAR SERVICES
+====================================================== -->
+<section class="services-section section-padding" id="services">
+    <div class="container">
+        <div class="section-heading">
+            <div>
+                <span class="section-eyebrow">EXPLORE CIVIC SERVICES</span>
+                <h2>Popular Services</h2>
+
+                <p>
+                    Discover commonly accessed services and
+                    get started with your application.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4" id="serviceCards">
+            <!-- BUSINESS PERMITS -->
+            <div class="col-md-6 col-lg-4 service-card-item" data-search="business permit trade licence business registration">
+                <div class="service-card">
+                    <div class="service-card-top">
+                        <span class="service-icon icon-blue">
+                            <i class="bi bi-shop"></i>
+                        </span>
+
+                        <span class="service-category">Business</span>
+                    </div>
+
+                    <h5>Business Permits</h5>
+
+                    <p>
+                        Apply for or renew a business permit
+                        to operate within the county.
+                    </p>
+
+                    <div class="service-card-bottom">
+                        <span>
+                            <i class="bi bi-clock me-1"></i>
+                            Application service
+                        </span>
+
+                        <a href="{{ url_for( 'requests.featured_detail', slug='business-permits' ) }}" aria-label="Explore business permits">
+                            <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BUILDING PLAN APPROVAL -->
+            <div class="col-md-6 col-lg-4 service-card-item" data-search="building plan construction development approval">
+                <div class="service-card">
+                    <div class="service-card-top">
+                        <span class="service-icon icon-purple">
+                            <i class="bi bi-building"></i>
+                        </span>
+
+                        <span class="service-category">Planning</span>
+                    </div>
+
+                    <h5>Building Plan Approval</h5>
+
+                    <p>
+                        Submit building plans and request
+                        the necessary development approvals.
+                    </p>
+
+                    <div class="service-card-bottom">
+                        <span>
+                            <i class="bi bi-clock me-1"></i>
+                             Application service
+                        </span>
+
+                        <a href="{{ url_for( 'requests.featured_detail', slug='building-plan-approval' ) }}" aria-label="Explore building plan approval">
+                            <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PUBLIC HEALTH -->
+            <div class="col-md-6 col-lg-4 service-card-item" data-search="public health inspection food hygiene certificate">
+                <div class="service-card">
+                    <div class="service-card-top">
+                        <span class="service-icon icon-green">
+                            <i class="bi bi-heart-pulse"></i>
+                        </span>
+
+                        <span class="service-category">Public Health</span>
+                    </div>
+
+                    <h5>Public Health Services</h5>
+
+                    <p>
+                        Request health inspections and access
+                        applicable public health services.
+                    </p>
+
+                    <div class="service-card-bottom">
+                        <span>
+                            <i class="bi bi-clock me-1"></i>
+                            Application service
+                        </span>
+
+                        <a href="{{ url_for( 'requests.featured_detail', slug='public-health-services' ) }}" aria-label="Explore public health services">
+                            <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FIRE SAFETY -->
+            <div class="col-md-6 col-lg-4 service-card-item" data-search="fire safety inspection certificate emergency">
+                <div class="service-card">
+                    <div class="service-card-top">
+                        <span class="service-icon icon-orange">
+                            <i class="bi bi-fire"></i>
+                        </span>
+
+                        <span class="service-category">Safety</span>
+                    </div>
+
+                    <h5>Fire Safety Services</h5>
+
+                    <p>
+                        Request fire safety inspections
+                        and relevant compliance services.
+                    </p>
+
+                    <div class="service-card-bottom">
+                        <span>
+                            <i class="bi bi-clock me-1"></i>
+                             Application service
+                        </span>
+
+                        <a href="{{ url_for( 'requests.featured_detail', slug='fire-safety-services' ) }}" aria-label="Explore fire safety services">
+                            <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WASTE MANAGEMENT -->
+            <div class="col-md-6 col-lg-4 service-card-item" data-search="waste management garbage collection sanitation">
+                <div class="service-card">
+                    <div class="service-card-top">
+                        <span class="service-icon icon-teal">
+                            <i class="bi bi-recycle"></i>
+                        </span>
+
+                        <span class="service-category">Environment</span>
+                    </div>
+
+                    <h5>Waste Management</h5>
+
+                    <p>
+                        Access waste collection and
+                        environmental sanitation services.
+                    </p>
+
+                    <div class="service-card-bottom">
+                        <span>
+                            <i class="bi bi-clock me-1"></i>
+                             Service request
+                        </span>
+
+                        <a href="{{ url_for( 'requests.featured_detail', slug='waste-management' ) }}" aria-label="Explore waste management">
+                            <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MARKET SERVICES -->
+            <div class="col-md-6 col-lg-4 service-card-item" data-search="market stall allocation trading spaces markets">
+                <div class="service-card">
+                    <div class="service-card-top">
+                        <span class="service-icon icon-yellow">
+                            <i class="bi bi-shop-window"></i>
+                        </span>
+
+                        <span class="service-category">Trade</span>
+                    </div>
+
+                    <h5>Market Services</h5>
+
+                    <p>
+                        Submit requests related to market facilities,
+                        trading spaces and stall allocation.
+                    </p>
+
+                    <div class="service-card-bottom">
+                        <span>
+                            <i class="bi bi-clock me-1"></i>
+                             Service request
+                        </span>
+
+                        <a href="{{ url_for( 'requests.featured_detail', slug='market-services' ) }}" aria-label="Explore market services">
+                            <i class="bi bi-arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- EMPTY SEARCH RESULTS -->
+        <div class="no-services-found d-none" id="noServicesFound">
+            <i class="bi bi-search"></i>
+            <h5>No matching services found</h5>
+            <p>Try another search term.</p>
+        </div>
+
+
+        <div class="services-bottom-link">
+            <a href="{{ url_for('requests.index') }}" class="btn btn-outline-primary">
+                Explore the Service Directory
+                <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =====================================================
+     HOW IT WORKS
+====================================================== -->
+<section class="how-it-works-section section-padding">
+    <div class="container">
+
+        <div class="section-heading centered-heading">
+            <div>
+                <span class="section-eyebrow">SIMPLE AND CONVENIENT</span>
+                <h2>How Civic System Works</h2>
+
+                <p>
+                    Accessing public services should be straightforward.
+                    Get started in three simple steps.
+                </p>
+            </div>
+        </div>
+
+
+        <div class="row g-4">
+
+            <!-- STEP 1 -->
+            <div class="col-md-4">
+                <div class="process-card">
+                    <div class="process-number">01</div>
+
+                    <div class="process-icon">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+
+                    <h5>Create Your Account</h5>
+
+                    <p>
+                        Register an account to access services
+                        and manage your applications.
+                    </p>
+                </div>
+            </div>
+
+
+            <!-- STEP 2 -->
+            <div class="col-md-4">
+                <div class="process-card">
+                    <div class="process-number">02</div>
+
+                    <div class="process-icon">
+                        <i class="bi bi-file-earmark-plus"></i>
+                    </div>
+
+                    <h5>Submit an Application</h5>
+
+                    <p>
+                        Find the service you need, provide the
+                        required information and submit your request.
+                    </p>
+                </div>
+            </div>
+
+
+            <!-- STEP 3 -->
+            <div class="col-md-4">
+                <div class="process-card">
+                    <div class="process-number">03</div>
+
+                    <div class="process-icon">
+                        <i class="bi bi-clipboard2-check"></i>
+                    </div>
+
+                    <h5>Track Your Request</h5>
+
+                    <p>
+                        Follow the progress of your submitted
+                        applications from your account.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+     PLATFORM BENEFITS
+====================================================== -->
+<section class="benefits-section section-padding">
+    <div class="container">
+
+        <div class="row align-items-center gy-5">
+
+            <div class="col-lg-5">
+                <span class="section-eyebrow">WHY CIVIC SYSTEM</span>
+
+                <h2>
+                    A more accessible way to access public services.
+                </h2>
+
+                <p class="benefits-description">
+                    Civic System brings essential public services
+                    closer to citizens through a unified digital platform.
+                </p>
+
+                <a href="{{ url_for('requests.index') }}" class="btn btn-primary">
+                    Discover Available Services
+                    <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+
+
+            <div class="col-lg-7">
+                <div class="benefits-grid">
+
+                    <div class="benefit-item">
+                        <i class="bi bi-laptop"></i>
+                        <h6>Convenient Access</h6>
+                        <p>
+                            Access services online without unnecessary visits.
+                        </p>
+                    </div>
+
+                    <div class="benefit-item">
+                        <i class="bi bi-eye"></i>
+                        <h6>Greater Transparency</h6>
+                        <p>
+                            Keep track of your applications and their progress.
+                        </p>
+                    </div>
+
+                    <div class="benefit-item">
+                        <i class="bi bi-shield-lock"></i>
+                        <h6>Secure Accounts</h6>
+                        <p>
+                            Manage your personal applications through your account.
+                        </p>
+                    </div>
+
+                    <div class="benefit-item">
+                        <i class="bi bi-diagram-3"></i>
+                        <h6>Connected Departments</h6>
+                        <p>
+                            Organize services and requests across departments.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- =====================================================
+     FINAL CALL TO ACTION
+====================================================== -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <div>
+                <span>GET STARTED TODAY</span>
+                <h2>Public services, one platform.</h2>
+
+                <p>
+                    Create your account and take a simpler approach
+                    to accessing public services.
+                </p>
+            </div>
+
+            <a href="{{ url_for('citizen.dashboard') }}" class="btn btn-light btn-lg">
+                Access Your Account
+                <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}

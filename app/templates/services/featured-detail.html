@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+{% block title %}{{ service.name }} | Civic System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/service-detail.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- SERVICE HERO -->
+<section class="service-detail-hero">
+    <div class="container">
+        <a href="{{ url_for('requests.index') }}" class="back-link">
+            <i class="bi bi-arrow-left"></i>
+             Back to Services
+        </a>
+
+        <span class="service-eyebrow">
+            {{ service.category }} SERVICES
+        </span>
+
+        <div class="featured-service-heading">
+            <div class="featured-service-icon">
+                <i class="bi {{ service.icon }}"></i>
+            </div>
+
+            <div>
+                <h1>{{ service.name }}</h1>
+                <p>{{ service.description }}</p>
+            </div>
+        </div>
+
+        <div class="service-meta">
+            <span>
+                <i class="bi bi-clock"></i>
+                 {{ service.processing }}
+            </span>
+
+            <span>
+                <i class="bi bi-globe"></i>
+                 Civic System Service
+            </span>
+        </div>
+
+    </div>
+</section>
+
+<!-- SERVICE INFORMATION -->
+<section class="service-detail-content">
+    <div class="container">
+        <div class="service-content-heading">
+            <span class="section-eyebrow">SERVICE INFORMATION</span>
+            <h2>How can we help you?</h2>
+            <p>Explore the available application options for
+                {{ service.name }}.
+            </p>
+        </div>
+
+        <!-- APPLICATION OPTIONS -->
+        <div class="service-options-grid">                        
+            {% if service.slug == "business-permits" %}
+                {% for option in service_options %}
+                    <article class="service-option-card">
+                        <div class="option-icon">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+
+                        <div class="option-content">
+                            <h3>{{ option.name }}</h3>
+                            <p>{{ option.description }}</p>
+                            <div class="option-details">
+                                <div class="option-detail-item">
+                                    <span>
+                                        <i class="bi bi-cash-stack"></i>
+                                        Application Fee
+                                    </span>
+
+                                    <strong>
+                                        {% if option.fee is not none and option.fee > 0 %}
+                                            KSh {{ "{:,.2f}".format(option.fee) }}
+                                        {% else %}
+                                            To be confirmed
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div class="option-detail-item">
+                                    <span>
+                                        <i class="bi bi-clock"></i>
+                                        Processing Time
+                                    </span>
+
+                                    <strong>
+                                        {% if option.processing_days %}
+                                            {{ option.processing_days }} days
+                                        {% else %}
+                                            To be confirmed
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div class="option-detail-item">
+                                    <span>
+                                        <i class="bi bi-person-check"></i>
+                                        Eligibility
+                                    </span>
+
+                                    <p>
+                                        {{ option.eligibility or "To be confirmed" }}
+                                    </p>
+                                </div>
+
+                                <div class="option-detail-item">
+                                    <span>
+                                        <i class="bi bi-list-check"></i>
+                                        Requirements
+                                    </span>
+                                    <p class="option-requirements">
+                                        {{ option.requirements | trim if option.requirements else "To be confirmed" }}
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <a href="{{ url_for( 'requests.apply_featured', slug=service.slug, option=option.code) }}" class="option-action">
+                            Apply now
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </article>
+                {% else %}
+                    <p>No application options are currently available.</p>
+                {% endfor %}
+            {% elif service.slug == "building-plan-approval" %}
+                <article class="service-option-card">
+                    <div class="option-icon">
+                        <i class="bi bi-building-add"></i>
+                    </div>
+                    <div class="option-content">
+                        <h3>New Building Plan</h3>
+                        <p>Submit building plans for review and development approval.</p>
+                    </div>
+                    <a href="{{ url_for( 'requests.apply_featured', slug=service.slug, option='new-plan' ) }}" class="option-action">
+                         Submit plans
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </article>
+
+                <article class="service-option-card">
+                    <div class="option-icon">
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
+
+                    <div class="option-content">
+                        <h3>Plan Amendments</h3>
+                        <p>Request amendments to previously submitted building plans.</p>
+                    </div>
+
+                    <a href="{{ url_for( 'requests.apply_featured', slug=service.slug, option='plan-amendment' ) }}" class="option-action">
+                         Request amendment
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </article>
+
+            {% elif service.slug == "public-health-services" %}
+                <article class="service-option-card">
+                    <div class="option-icon">
+                        <i class="bi bi-clipboard2-check"></i>
+                    </div>
+
+                    <div class="option-content">
+                        <h3>Health Inspection</h3>
+                        <p>Request a public health inspection for applicable premises.</p>
+                    </div>
+
+                    <a href="{{ url_for( 'requests.apply_featured', slug=service.slug, option='inspection' ) }}" class="option-action">
+                         Request inspection
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </article>
+
+                <article class="service-option-card">
+                    <div class="option-icon">
+                        <i class="bi bi-patch-check"></i>
+                    </div>
+
+                    <div class="option-content">
+                        <h3>Health Compliance</h3>
+                        <p>Make enquiries or submit requests related to health compliance.</p>
+                    </div>
+
+                    <a href="{{ url_for( 'requests.apply_featured', slug=service.slug, option='compliance' ) }}" class="option-action">
+                         Explore service
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </article>
+
+            {% elif service.slug == "fire-safety-services" %}
+                <article class="service-option-card">
+                    <div class="option-icon">
+                        <i class="bi bi-fire"></i>
+                    </div>
+
+                    <div class="option-content">
+                        <h3>Fire Safety Inspection</h3>
+                        <p>Request an inspection of premises for applicable fire safety requirements.</p>
+                    </div>
+
+                    <a href="{{ url_for( 'requests.apply_featured', slug=service.slug, option='inspection' ) }}" class="option-action">
+                         Request inspection
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </article>
+
+                <article class="service-option-card">
+                    <div class="option-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <div class="option-content">
+                        <h3>Fire Safety Compliance</h3>
+                        <p>Submit a request concerning fire safety compliance and certification.</p>
+                    </div>
+
+                    <a href="{{ url_for( 'requests.apply_featured', slug=service.slug, option='compliance' ) }}" class="option-action">
+                         Explore service
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </article>
+
+            {% elif service.slug == "waste-management" %}
+                <article class="service-option-card">
+                    <div class="option-icon">
+                        <i class="bi bi-trash"></i>
+                    </div>
+
+                    <div class="option-content">
+                        <h3>Waste Collection Request</h3>
+                        <p>Submit a request for waste collection services.</p>
+                    </div>
+
+                    <a href="{{ url_for( 'requests.apply_featured', slug=service.slug, option='collection' ) }}" class="option-action">
+                         Request collection
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </article>
+
+                <article class="service-option-card">
+                    <div class="option-icon">
+                        <i class="bi bi-recycle"></i>
+                    </div>
+
+                    <div class="option-content">
+                        <h3>Environmental Sanitation</h3>
+                        <p>Report sanitation concerns or request environmental cleaning services.</p>
+                    </div>
+
+                    <a href="{{ url_for( 'requests.apply_featured', slug=service.slug, option='sanitation' ) }}" class="option-action">
+                         Submit request
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </article>
+
+            {% elif service.slug == "market-services" %}
+                <article class="service-option-card">
+                    <div class="option-icon">
+                        <i class="bi bi-shop"></i>
+                    </div>
+
+                    <div class="option-content">
+                        <h3>Market Stall Application</h3>
+                        <p>Submit an expression of interest for an available market trading space.</p>
+                    </div>
+
+                    <a href="{{ url_for( 'requests.apply_featured', slug=service.slug, option='stall-application' ) }}" class="option-action">
+                         Apply for stall
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </article>
+
+                <article class="service-option-card">
+                    <div class="option-icon">
+                        <i class="bi bi-card-checklist"></i>
+                    </div>
+
+                    <div class="option-content">
+                        <h3>Market Facility Requests</h3>
+                        <p>Submit requests relating to market facilities and trading spaces.</p>
+                    </div>
+
+                    <a href="{{ url_for( 'requests.apply_featured', slug=service.slug, option='facility-request' ) }}" class="option-action">
+                         Submit request
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </article>
+
+            {% endif %}
+        </div>
+
+        <div class="service-information-note">
+            <i class="bi bi-info-circle"></i>
+            <p>
+                The services and application options shown are
+                illustrative project content. Applicable requirements,
+                fees and official procedures will need to be confirmed
+                before real applications are enabled.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

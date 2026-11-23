@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% block title %}Create Account | Civic System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/citizen-auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-section auth-register-section">
+    <div class="container">
+        <div class="auth-main-card auth-register-card">
+            <!-- LEFT INFORMATION PANEL -->
+            <div class="auth-info-panel auth-register-info-panel">
+                <div class="auth-brand">
+                    <div class="auth-brand-icon">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+                    <span>CIVIC SYSTEM</span>
+                </div>
+
+                <div class="auth-info-content">
+                    <span class="auth-info-eyebrow">
+                        GET STARTED TODAY
+                    </span>
+
+                    <h1>Your access to public services starts here.</h1>
+                    <p>
+                        Create your account and enjoy a simpler,
+                        more convenient way to access and manage
+                        essential public services.
+                    </p>
+                </div>
+
+                <!-- FEATURES — SEPARATE FROM INTRODUCTION -->
+                <div class="auth-features">
+                    <div class="auth-feature">
+                        <div class="auth-feature-icon">
+                            <i class="bi bi-grid"></i>
+                        </div>
+                        <div>
+                            <h6>Access Public Services</h6>
+                            <p>Explore available services from one convenient platform.</p>
+                        </div>
+                    </div>
+
+                    <div class="auth-feature">
+                        <div class="auth-feature-icon">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <div>
+                            <h6>Submit Applications</h6>
+                            <p>Apply for services and keep your requests organized.</p>
+                        </div>
+                    </div>
+
+                    <div class="auth-feature">
+                        <div class="auth-feature-icon">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <div>
+                            <h6>Track Your Applications</h6>
+                            <p>Stay informed about the progress of your submitted requests.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="auth-info-footer">
+                    <i class="bi bi-shield-check"></i>
+                    A convenient and secure way to access public services.
+                </div>
+            </div>
+
+            <!-- RIGHT REGISTRATION PANEL -->
+            <div class="auth-form-panel auth-register-form-panel">
+                <div class="auth-form-heading">
+                    <div class="auth-form-icon auth-register-icon">
+                        <i class="bi bi-person-fill-add"></i>
+                    </div>
+
+                    <span class="section-eyebrow">CREATE ACCOUNT</span>
+                    <h2>Join Civic System</h2>
+
+                    <p>Enter your details below to get started.</p>
+                </div>
+
+
+                <form method="POST" action="{{ url_for('auth.register', next=request.args.get('next')) }}">
+                    {{ form.hidden_tag() }}
+                    <div class="auth-form-grid">
+                        <!-- FIRST NAME -->
+                        <div class="auth-field">
+                            {{ form.first_name.label(class="form-label") }}
+                            <div class="auth-input-wrapper">
+                                <i class="bi bi-person"></i>
+                                {{ form.first_name(
+                                    class="form-control",
+                                    placeholder="First name",
+                                    autocomplete="given-name"
+                                ) }}
+                            </div>
+
+                            {% for error in form.first_name.errors %}
+                                <span class="auth-error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <!-- LAST NAME -->
+                        <div class="auth-field">
+                            {{ form.last_name.label(class="form-label") }}
+
+                            <div class="auth-input-wrapper">
+                                <i class="bi bi-person"></i>
+                                {{ form.last_name(
+                                    class="form-control",
+                                    placeholder="Last name",
+                                    autocomplete="family-name"
+                                ) }}
+                            </div>
+
+                            {% for error in form.last_name.errors %}
+                                <span class="auth-error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <!-- EMAIL -->
+                        <div class="auth-field full-width">
+                            {{ form.email.label(class="form-label") }}
+
+                            <div class="auth-input-wrapper">
+                                <i class="bi bi-envelope"></i>
+                                {{ form.email(
+                                    class="form-control",
+                                    placeholder="you@example.com",
+                                    autocomplete="email"
+                                ) }}
+                            </div>
+
+                            {% for error in form.email.errors %}
+                                <span class="auth-error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <!-- PHONE NUMBER -->
+                        <div class="auth-field full-width">
+                            {{ form.phone_number.label(class="form-label") }}
+
+                            <div class="auth-input-wrapper">
+                                <i class="bi bi-telephone"></i>
+                                {{ form.phone_number(
+                                    class="form-control",
+                                    placeholder="Enter your phone number",
+                                    autocomplete="tel"
+                                ) }}
+                            </div>
+
+                            {% for error in form.phone_number.errors %}
+                                <span class="auth-error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <!-- NATIONAL ID -->
+                        <div class="auth-field full-width">
+                            {{ form.national_id.label(class="form-label") }}
+
+                            <div class="auth-input-wrapper">
+                                <i class="bi bi-card-heading"></i>
+                                {{ form.national_id(
+                                    class="form-control",
+                                    placeholder="Enter your 8-digit National ID",
+                                    maxlength="8",
+                                    inputmode="numeric",
+                                    autocomplete="off"
+                                ) }}
+                            </div>
+
+                            {% for error in form.national_id.errors %}
+                                <span class="auth-error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <!-- GENDER DROPDOWN -->
+                        <div class="auth-field full-width">
+                            {{ form.gender.label(class="form-label") }}
+
+                            <div class="auth-input-wrapper">
+                                <i class="bi bi-gender-ambiguous"></i>
+                                {{ form.gender(class="form-control") }}
+                            </div>
+
+                            {% for error in form.gender.errors %}
+                                <span class="auth-error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <!-- PASSWORD -->
+                        <div class="auth-field">
+                            {{ form.password.label(class="form-label") }}
+
+                            <div class="auth-input-wrapper">
+                                <i class="bi bi-lock"></i>
+                                {{ form.password(
+                                    class="form-control",
+                                    placeholder="Create password",
+                                    autocomplete="new-password"
+                                ) }}
+                            </div>
+
+                            {% for error in form.password.errors %}
+                                <span class="auth-error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <!-- CONFIRM PASSWORD -->
+                        <div class="auth-field">
+                            {{ form.confirm_password.label(class="form-label") }}
+
+                            <div class="auth-input-wrapper">
+                                <i class="bi bi-shield-lock"></i>
+                                {{ form.confirm_password(
+                                    class="form-control",
+                                    placeholder="Confirm password",
+                                    autocomplete="new-password"
+                                ) }}
+                            </div>
+
+                            {% for error in form.confirm_password.errors %}
+                                <span class="auth-error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- SUBMIT -->
+                    <div class="auth-submit">
+                        {{ form.submit(class="auth-button auth-register-button", value="Create My Account") }}
+                        <i class="bi bi-arrow-right"></i>
+                    </div>
+                </form>
+
+                <div class="auth-footer">
+                    Already have an account?
+                    <a href="{{ url_for('auth.login') }}">Sign in</a>
+                </div>
+
+                <div class="auth-security-note">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    Your account information is handled securely.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
