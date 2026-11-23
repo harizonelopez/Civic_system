@@ -1,0 +1,1154 @@
+/* =====================================================
+   CIVIC SYSTEM — SERVICE APPLICATION
+   Premium photographic / dark glass interface
+===================================================== */
+:root {
+    --app-accent: #2dd4bf;
+    --app-accent-dark: #0f766e;
+    --app-text: #f1f5f9;
+    --app-muted: #aebdd0;
+    --app-border: rgba(255, 255, 255, .12);
+    --app-panel: rgba(7, 22, 40, .91);
+}
+
+/* =====================================================
+   APPLICATION HERO
+===================================================== */
+.application-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 55px 0 38px;
+    background:
+        linear-gradient(100deg, rgba(3, 15, 30, .96), rgba(7, 40, 65, .76)),
+        url("../images/dashboard-1.jpg") center 45% / cover no-repeat;
+    color: #fff;
+}
+
+.application-hero::after {
+    content: "";
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    top: -220px;
+    right: 8%;
+    border: 1px solid rgba(94, 234, 212, .12);
+    border-radius: 50%;
+    box-shadow: 0 0 0 45px rgba(94, 234, 212, .025),
+                0 0 0 90px rgba(94, 234, 212, .02);
+    pointer-events: none;
+}
+
+.application-back {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 38px;
+    color: #cbd5e1;
+    font-size: .88rem;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.application-back:hover {
+    color: #5eead4;
+    transform: translateX(-3px);
+}
+
+.application-hero-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.application-hero-icon {
+    width: 68px;
+    height: 68px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(94, 234, 212, .24);
+    border-radius: 17px;
+    background: rgba(45, 212, 191, .12);
+    color: #5eead4;
+    font-size: 1.8rem;
+}
+
+.application-eyebrow {
+    display: block;
+    margin-bottom: 10px;
+    color: #5eead4;
+    font-size: .7rem;
+    font-weight: 750;
+    letter-spacing: 2px;
+}
+
+.application-hero h1 {
+    margin: 0 0 9px;
+    color: #fff;
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    font-weight: 780;
+    letter-spacing: -1px;
+}
+
+.application-hero p {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: .95rem;
+}
+
+.hero-separator {
+    padding: 0 7px;
+    color: #5eead4;
+}
+
+.application-hero-meta {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-top: 35px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, .13);
+}
+
+.application-hero-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: #cbd5e1;
+    font-size: .8rem;
+}
+
+.application-hero-meta i {
+    color: #5eead4;
+}
+
+/* =====================================================
+   APPLICATION WORKSPACE BACKGROUND
+===================================================== */
+.application-section {
+    position: relative;
+    min-height: 700px;
+    padding: 65px 0 85px;
+    background:
+        linear-gradient(
+            120deg,
+            rgba(3, 12, 25, .92),
+            rgba(5, 24, 43, .86),
+            rgba(3, 12, 25, .94)
+        ),
+        url("../images/dashboard-1.jpg") center / cover fixed no-repeat;
+}
+
+/* =====================================================
+   PAGE INTRODUCTION
+===================================================== */
+.application-page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 35px;
+}
+
+.application-page-heading .section-eyebrow {
+    color: #5eead4;
+    font-size: .72rem;
+    font-weight: 750;
+    letter-spacing: 1.7px;
+}
+
+.application-page-heading h2 {
+    margin: 10px 0 7px;
+    color: #fff;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 750;
+    letter-spacing: -.5px;
+}
+
+.application-page-heading p {
+    margin: 0;
+    color: #aebdd0;
+    font-size: .9rem;
+}
+
+.application-step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 15px 19px;
+    border: 1px solid rgba(45, 212, 191, .19);
+    border-radius: 12px;
+    background: rgba(13, 148, 136, .10);
+    flex-shrink: 0;
+}
+
+.step-number {
+    width: 37px;
+    height: 37px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: rgba(45, 212, 191, .16);
+    color: #5eead4;
+    font-size: .85rem;
+    font-weight: 750;
+}
+
+.application-step-indicator strong,
+.application-step-indicator small {
+    display: block;
+}
+
+.application-step-indicator strong {
+    color: #e2e8f0;
+    font-size: .83rem;
+}
+
+.application-step-indicator small {
+    margin-top: 4px;
+    color: #9fb0c4;
+    font-size: .73rem;
+}
+
+/* =====================================================
+   MAIN LAYOUT
+===================================================== */
+.application-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 315px;
+    gap: 26px;
+    align-items: start;
+}
+
+.application-main,
+.application-info-card,
+.application-help-card {
+    border: 1px solid var(--app-border);
+    background: rgba(7, 22, 40, .91);
+    box-shadow: 0 22px 55px rgba(0, 0, 0, .25);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.application-main {
+    min-width: 0;
+    padding: 38px;
+    border-radius: 17px;
+}
+
+/* =====================================================
+   FORM HEADER
+===================================================== */
+.application-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 17px;
+    margin-bottom: 27px;
+}
+
+.application-heading-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(45, 212, 191, .19);
+    border-radius: 12px;
+    background: rgba(45, 212, 191, .10);
+    color: #5eead4;
+    font-size: 1.3rem;
+}
+
+.application-form-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #5eead4;
+    font-size: .68rem;
+    font-weight: 750;
+    letter-spacing: 1.4px;
+}
+
+.application-heading h2 {
+    margin: 0 0 8px;
+    color: #fff;
+    font-size: 1.35rem;
+    font-weight: 750;
+}
+
+.application-heading p {
+    margin: 0;
+    color: #aebdd0;
+    font-size: .88rem;
+    line-height: 1.7;
+}
+
+/* =====================================================
+   APPLICANT IDENTITY PANEL
+===================================================== */
+.applicant-summary {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    margin-bottom: 35px;
+    overflow: hidden;
+    border: 1px solid rgba(45, 212, 191, .17);
+    border-radius: 13px;
+    background:
+        linear-gradient(110deg, rgba(13, 148, 136, .15), rgba(37, 99, 235, .07));
+}
+
+.applicant-avatar {
+    width: 51px;
+    height: 51px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(94, 234, 212, .2);
+    border-radius: 14px;
+    background: rgba(45, 212, 191, .13);
+    color: #5eead4;
+    font-size: 1.45rem;
+}
+
+.applicant-details {
+    min-width: 0;
+}
+
+.applicant-details > span {
+    color: #8fa8bc;
+    font-size: .67rem;
+    font-weight: 750;
+    letter-spacing: 1px;
+}
+
+.applicant-details h5 {
+    margin: 5px 0;
+    color: #fff;
+    font-size: .98rem;
+    font-weight: 700;
+}
+
+.applicant-details p {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+    color: #b7c7d8;
+    font-size: .8rem;
+    overflow-wrap: anywhere;
+}
+
+.applicant-account-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-left: auto;
+    padding: 7px 10px;
+    border: 1px solid rgba(74, 222, 128, .17);
+    border-radius: 20px;
+    background: rgba(22, 163, 74, .11);
+    color: #86efac;
+    font-size: .72rem;
+    font-weight: 650;
+    flex-shrink: 0;
+}
+
+/* =====================================================
+   FIELD SECTION HEADING
+===================================================== */
+.application-fields-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 23px;
+}
+
+.fields-heading-number {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: rgba(37, 99, 235, .15);
+    color: #93c5fd;
+    font-size: .85rem;
+    font-weight: 750;
+}
+
+.application-fields-heading h3 {
+    margin: 0 0 4px;
+    color: #f1f5f9;
+    font-size: .98rem;
+    font-weight: 700;
+}
+
+.application-fields-heading p {
+    margin: 0;
+    color: #91a4b9;
+    font-size: .8rem;
+}
+
+/* =====================================================
+   DYNAMIC FORM FIELDS
+===================================================== */
+.application-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 23px 20px;
+}
+
+.application-field {
+    min-width: 0;
+}
+
+.application-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.application-field .form-label {
+    display: block;
+    margin-bottom: 9px;
+    color: #e2e8f0;
+    font-size: .85rem;
+    font-weight: 650;
+}
+
+.application-field .form-control,
+.application-field .form-select {
+    width: 100%;
+    min-height: 49px;
+    padding: 11px 14px;
+    border: 1px solid rgba(255, 255, 255, .15);
+    border-radius: 9px;
+    background-color: rgba(255, 255, 255, .055);
+    color: #f8fafc;
+    font-size: .88rem;
+    box-shadow: none;
+    transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+}
+
+.application-field .form-control::placeholder {
+    color: #8394a8;
+}
+
+.application-field .form-select {
+    color-scheme: dark;
+}
+
+.application-field .form-select option {
+    background: #10243b;
+    color: #f8fafc;
+}
+
+.application-field textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.application-field .form-control:focus,
+.application-field .form-select:focus {
+    outline: none;
+    border-color: #2dd4bf;
+    background-color: rgba(255, 255, 255, .085);
+    box-shadow: 0 0 0 3px rgba(45, 212, 191, .12);
+    color: #fff;
+}
+
+.application-field .form-control:hover,
+.application-field .form-select:hover {
+    border-color: rgba(94, 234, 212, .38);
+}
+
+/* Browser autofill */
+.application-field input:-webkit-autofill,
+.application-field input:-webkit-autofill:hover,
+.application-field input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #fff;
+    -webkit-box-shadow: 0 0 0 1000px #10243b inset;
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Validation */
+.application-field .form-control.is-invalid,
+.application-field .form-select.is-invalid {
+    border-color: #f87171;
+}
+
+.field-error {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    color: #fca5a5;
+    font-size: .78rem;
+}
+
+/* =====================================================
+   REVIEW NOTE
+===================================================== */
+.application-review-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 14px 16px;
+    margin-top: 29px;
+    border: 1px solid rgba(96, 165, 250, .15);
+    border-radius: 10px;
+    background: rgba(37, 99, 235, .08);
+    color: #b8cbe0;
+    font-size: .8rem;
+    line-height: 1.65;
+}
+
+.application-review-note i {
+    margin-top: 2px;
+    color: #60a5fa;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* =====================================================
+   FORM ACTIONS
+===================================================== */
+.application-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 13px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, .11);
+}
+
+.cancel-application {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 47px;
+    padding: 11px 20px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 9px;
+    color: #cbd5e1;
+    font-size: .86rem;
+    font-weight: 650;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.cancel-application:hover {
+    border-color: rgba(255, 255, 255, .3);
+    background: rgba(255, 255, 255, .06);
+    color: #fff;
+}
+
+.submit-application {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    min-height: 48px;
+    padding: 12px 24px;
+    border: 1px solid rgba(94, 234, 212, .28);
+    border-radius: 9px;
+    background: linear-gradient(120deg, #0f766e, #0d9488);
+    color: #fff;
+    font-size: .88rem;
+    font-weight: 700;
+    transition: .2s ease;
+}
+
+.submit-application:hover {
+    background: linear-gradient(120deg, #115e59, #0f766e);
+    box-shadow: 0 9px 25px rgba(13, 148, 136, .22);
+    transform: translateY(-2px);
+}
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+.application-sidebar {
+    display: grid;
+    gap: 19px;
+}
+
+.application-info-card,
+.application-help-card {
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.sidebar-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar-heading-icon {
+    width: 43px;
+    height: 43px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 11px;
+    background: rgba(45, 212, 191, .11);
+    color: #5eead4;
+    font-size: 1.2rem;
+}
+
+.sidebar-card-heading h4 {
+    margin: 0;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 750;
+}
+
+.sidebar-intro {
+    margin: 19px 0 22px;
+    color: #aebdd0;
+    font-size: .83rem;
+    line-height: 1.7;
+}
+
+/* GUIDE ITEMS */
+.application-guide-list {
+    display: grid;
+    gap: 22px;
+}
+
+.guide-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.guide-number {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(45, 212, 191, .17);
+    border-radius: 9px;
+    background: rgba(45, 212, 191, .08);
+    color: #5eead4;
+    font-size: .7rem;
+    font-weight: 750;
+}
+
+.guide-item strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #e2e8f0;
+    font-size: .82rem;
+    font-weight: 700;
+}
+
+.guide-item p {
+    margin: 0;
+    color: #9eafc3;
+    font-size: .78rem;
+    line-height: 1.65;
+}
+
+/* SECURITY */
+.application-security {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px;
+    margin-top: 25px;
+    border: 1px solid rgba(45, 212, 191, .15);
+    border-radius: 11px;
+    background: rgba(13, 148, 136, .09);
+}
+
+.application-security > i {
+    margin-top: 2px;
+    color: #5eead4;
+    font-size: 1.2rem;
+}
+
+.application-security strong,
+.application-security span {
+    display: block;
+}
+
+.application-security strong {
+    margin-bottom: 5px;
+    color: #d1fae5;
+    font-size: .8rem;
+}
+
+.application-security span {
+    color: #9ebdb8;
+    font-size: .75rem;
+    line-height: 1.6;
+}
+
+/* HELP CARD */
+.application-help-card {
+    background:
+        linear-gradient(130deg, rgba(30, 64, 100, .75), rgba(8, 34, 56, .95)),
+        url("../images/dashboard-3.jpg") center / cover no-repeat;
+}
+
+.help-card-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 17px;
+    border-radius: 11px;
+    background: rgba(96, 165, 250, .15);
+    color: #93c5fd;
+    font-size: 1.2rem;
+}
+
+.application-help-card h4 {
+    margin: 0 0 9px;
+    color: #fff;
+    font-size: .98rem;
+    font-weight: 750;
+}
+
+.application-help-card p {
+    margin: 0 0 17px;
+    color: #c1d0df;
+    font-size: .8rem;
+    line-height: 1.7;
+}
+
+.application-help-card > span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #93c5fd;
+    font-size: .76rem;
+}
+
+/* =====================================================
+   CONFIRMATION PAGE
+===================================================== */
+.application-confirmation-section {
+    position: relative;
+    min-height: 80vh;
+    padding: 75px 0 90px;
+    background:
+        linear-gradient(
+            115deg,
+            rgba(4, 15, 29, .90),
+            rgba(5, 28, 48, .82),
+            rgba(4, 15, 29, .92)
+        ),
+        url("../images/dashboard-3.jpg") center / cover fixed no-repeat;
+}
+
+.confirmation-card {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 45px;
+    background: rgba(8, 24, 43, .90);
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 19px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, .35);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+.confirmation-success {
+    margin-bottom: 35px;
+    text-align: center;
+}
+
+.confirmation-icon {
+    width: 78px;
+    height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 22px;
+    border: 1px solid rgba(74, 222, 128, .28);
+    border-radius: 50%;
+    background: rgba(22, 163, 74, .16);
+    color: #4ade80;
+    font-size: 2.3rem;
+}
+
+.confirmation-success .section-eyebrow {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: #5eead4;
+    font-size: .76rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.confirmation-success h1 {
+    margin: 0 0 13px;
+    color: #fff;
+    font-size: clamp(1.7rem, 4vw, 2.25rem);
+    font-weight: 750;
+}
+
+.confirmation-message {
+    max-width: 550px;
+    margin: 0 auto;
+    color: #bdcada;
+    font-size: .96rem;
+    line-height: 1.8;
+}
+
+.reference-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 24px 27px;
+    margin-bottom: 38px;
+    background: linear-gradient(115deg, rgba(37, 99, 235, .20), rgba(13, 148, 136, .12));
+    border: 1px solid rgba(96, 165, 250, .26);
+    border-radius: 12px;
+}
+
+.reference-box span {
+    display: block;
+    margin-bottom: 9px;
+    color: #b6c9df;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+}
+
+.reference-box h2 {
+    margin: 0;
+    color: #93c5fd;
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+    font-weight: 750;
+    overflow-wrap: anywhere;
+}
+
+.reference-box > i {
+    color: #5eead4;
+    font-size: 2rem;
+}
+
+.confirmation-section {
+    margin-bottom: 32px;
+}
+
+.confirmation-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, .13);
+}
+
+.confirmation-section-heading > i {
+    color: #5eead4;
+    font-size: 1.2rem;
+}
+
+.confirmation-section-heading h3 {
+    margin: 0;
+    color: #f8fafc;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.confirmation-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.confirmation-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+}
+
+.confirmation-detail-item span,
+.submitted-information-item span {
+    color: #9fb0c4;
+    font-size: .82rem;
+}
+
+.confirmation-detail-item strong {
+    color: #f1f5f9;
+    font-size: .94rem;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.application-status {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 6px 12px;
+    border: 1px solid rgba(251, 191, 36, .20);
+    border-radius: 30px;
+    background: rgba(217, 119, 6, .15);
+    color: #fcd34d !important;
+    font-size: .78rem !important;
+}
+
+.submitted-information {
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .13);
+    border-radius: 10px;
+}
+
+.submitted-information-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 17px;
+    border-bottom: 1px solid rgba(255, 255, 255, .09);
+}
+
+.submitted-information-item:last-child {
+    border-bottom: none;
+}
+
+.submitted-information-item:nth-child(even) {
+    background: rgba(255, 255, 255, .035);
+}
+
+.submitted-information-item strong {
+    max-width: 60%;
+    color: #e2e8f0;
+    font-size: .88rem;
+    font-weight: 600;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.confirmation-next-steps {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    margin: 10px 0 30px;
+    background: rgba(37, 99, 235, .10);
+    border: 1px solid rgba(96, 165, 250, .18);
+    border-radius: 11px;
+}
+
+.next-steps-icon {
+    color: #60a5fa;
+    font-size: 1.3rem;
+}
+
+.confirmation-next-steps h4 {
+    margin: 0 0 7px;
+    color: #f1f5f9;
+    font-size: .95rem;
+    font-weight: 700;
+}
+
+.confirmation-next-steps p {
+    margin: 0;
+    color: #bdcada;
+    font-size: .88rem;
+    line-height: 1.7;
+}
+
+.confirmation-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(255, 255, 255, .13);
+}
+
+.confirmation-primary,
+.confirmation-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 48px;
+    padding: 12px 21px;
+    border-radius: 8px;
+    font-size: .9rem;
+    font-weight: 650;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.confirmation-primary {
+    background: linear-gradient(135deg, #0f766e, #0d9488);
+    color: #fff;
+    border: 1px solid rgba(45, 212, 191, .3);
+}
+
+.confirmation-primary:hover {
+    background: linear-gradient(135deg, #115e59, #0f766e);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.confirmation-secondary {
+    background: rgba(255, 255, 255, .06);
+    color: #dbeafe;
+    border: 1px solid rgba(255, 255, 255, .17);
+}
+
+.confirmation-secondary:hover {
+    background: rgba(255, 255, 255, .12);
+    color: #fff;
+}
+
+.confirmation-footer-note {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 22px auto 0;
+    color: #b8c5d6;
+    font-size: .82rem;
+    text-align: center;
+}
+
+.confirmation-footer-note i {
+    color: #4ade80;
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN
+===================================================== */
+@media (max-width: 991px) {
+    .application-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .application-sidebar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+    }
+}
+
+@media (max-width: 700px) {
+    .application-page-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .application-step-indicator {
+        width: 100%;
+    }
+
+    .application-main {
+        padding: 27px 22px;
+    }
+}
+
+@media (max-width: 575px) {
+    .application-hero {
+        padding: 40px 0 30px;
+    }
+
+    .application-hero-content {
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .application-hero-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.3rem;
+        border-radius: 12px;
+    }
+
+    .application-hero-meta {
+        gap: 12px;
+        flex-direction: column;
+    }
+
+    .application-section,
+    .application-confirmation-section {
+        padding: 40px 0 55px;
+        background-attachment: scroll;
+    }
+
+    .application-sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .application-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .application-field.full-width {
+        grid-column: auto;
+    }
+
+    .applicant-summary {
+        flex-wrap: wrap;
+    }
+
+    .applicant-account-status {
+        margin-left: 0;
+    }
+
+    .application-heading {
+        gap: 12px;
+    }
+
+    .application-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .cancel-application,
+    .submit-application {
+        width: 100%;
+        text-align: center;
+    }
+
+    .confirmation-card {
+        padding: 27px 19px;
+    }
+
+    .confirmation-details {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .reference-box {
+        padding: 19px;
+    }
+
+    .submitted-information-item {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .submitted-information-item strong {
+        max-width: 100%;
+        text-align: left;
+    }
+
+    .confirmation-actions {
+        flex-direction: column;
+    }
+
+    .confirmation-primary,
+    .confirmation-secondary {
+        width: 100%;
+    }
+}

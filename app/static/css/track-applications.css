@@ -1,0 +1,334 @@
+/* =====================================================
+   APPLICATION TRACKING
+===================================================== */
+.tracking-hero {
+    position: relative;
+    min-height: 370px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(7, 18, 36, .94),
+            rgba(10, 29, 54, .78),
+            rgba(7, 18, 36, .55)
+        ),
+        url("../images/tracking-hero.jpg") center 45% / cover no-repeat;
+}
+
+.tracking-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        0deg,
+        rgba(7, 18, 36, .4),
+        transparent 55%
+    );
+    pointer-events: none;
+}
+
+.tracking-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.tracking-hero-content {
+    max-width: 720px;
+    padding: 75px 0;
+}
+
+.tracking-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 20px;
+    color: #93c5fd;
+    font-size: .76rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.tracking-hero h1 {
+    margin: 0 0 18px;
+    color: #fff;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    font-weight: 750;
+    letter-spacing: -1.5px;
+}
+
+.tracking-hero-content > p {
+    max-width: 620px;
+    margin: 0;
+    color: rgba(255, 255, 255, .78);
+    font-size: 1.04rem;
+    line-height: 1.8;
+}
+
+.tracking-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-top: 28px;
+}
+
+.tracking-hero-meta span {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: rgba(255, 255, 255, .85);
+    font-size: .88rem;
+}
+
+.tracking-hero-meta i {
+    color: #60a5fa;
+    font-size: 1rem;
+}
+
+/* =====================================================
+   SEARCH SECTION
+===================================================== */
+.tracking-search-section {
+    position: relative;
+    min-height: 480px;
+    padding: 75px 0 90px;
+    overflow: hidden;
+    background:
+        linear-gradient(
+            rgba(8, 20, 38, .88),
+            rgba(8, 20, 38, .93)
+        ),
+        url("../images/tracking-background.jpg") center / cover fixed no-repeat;
+}
+
+.tracking-search-card {
+    width: min(100%, 760px);
+    margin: 0 auto;
+    padding: 38px;
+    border: 1px solid rgba(255, 255, 255, .15);
+    border-radius: 20px;
+    background: rgba(18, 35, 57, .78);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 25px 65px rgba(0, 0, 0, .3);
+}
+
+.tracking-search-heading {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 32px;
+}
+
+.tracking-search-icon {
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(96, 165, 250, .3);
+    border-radius: 15px;
+    background: rgba(37, 99, 235, .17);
+    color: #93c5fd;
+    font-size: 1.45rem;
+}
+
+.tracking-label {
+    color: #93c5fd;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+}
+
+.tracking-search-heading h2 {
+    margin: 5px 0 5px;
+    color: #fff;
+    font-size: 1.45rem;
+    font-weight: 700;
+}
+
+.tracking-search-heading p {
+    margin: 0;
+    color: rgba(255, 255, 255, .62);
+    font-size: .9rem;
+}
+
+/* =====================================================
+   SEARCH FORM
+===================================================== */
+.tracking-search-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+}
+
+.tracking-input-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.tracking-input-group label {
+    display: block;
+    margin-bottom: 10px;
+    color: rgba(255, 255, 255, .88);
+    font-size: .88rem;
+    font-weight: 600;
+}
+
+.tracking-input-wrapper {
+    position: relative;
+}
+
+.tracking-input-wrapper > i {
+    position: absolute;
+    top: 50%;
+    left: 17px;
+    transform: translateY(-50%);
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.tracking-input-wrapper input {
+    width: 100%;
+    height: 54px;
+    padding: 0 16px 0 45px;
+    border: 1px solid rgba(255, 255, 255, .19);
+    border-radius: 11px;
+    outline: none;
+    background: rgba(5, 17, 33, .58);
+    color: #fff;
+    font-size: .94rem;
+    letter-spacing: .5px;
+    transition: border-color .25s, box-shadow .25s;
+}
+
+.tracking-input-wrapper input::placeholder {
+    color: rgba(255, 255, 255, .4);
+}
+
+.tracking-input-wrapper input:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, .15);
+}
+
+.tracking-submit {
+    height: 54px;
+    padding: 0 23px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: none;
+    border-radius: 11px;
+    background: #2563eb;
+    color: #fff;
+    font-size: .9rem;
+    font-weight: 650;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background .25s, transform .25s;
+}
+
+.tracking-submit:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+.tracking-search-footer {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, .12);
+    color: rgba(255, 255, 255, .6);
+    font-size: .82rem;
+    line-height: 1.6;
+}
+
+.tracking-search-footer i {
+    margin-top: 2px;
+    color: #60a5fa;
+}
+
+/* =====================================================
+   SECURITY NOTE
+===================================================== */
+.tracking-security-note {
+    width: min(100%, 760px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+    margin: 25px auto 0;
+    color: rgba(255, 255, 255, .62);
+    font-size: .83rem;
+    text-align: center;
+}
+
+.tracking-security-note i {
+    color: #60a5fa;
+    font-size: 1rem;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 768px) {
+    .tracking-hero {
+        min-height: 330px;
+    }
+
+    .tracking-hero-content {
+        padding: 60px 0;
+    }
+
+    .tracking-search-section {
+        padding: 55px 0 70px;
+        background-attachment: scroll;
+    }
+
+    .tracking-search-card {
+        padding: 28px 23px;
+    }
+
+    .tracking-search-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tracking-submit {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .tracking-hero-meta {
+        gap: 14px;
+        flex-direction: column;
+    }
+
+    .tracking-search-card {
+        padding: 24px 18px;
+        border-radius: 15px;
+    }
+
+    .tracking-search-heading {
+        align-items: flex-start;
+        gap: 13px;
+    }
+
+    .tracking-search-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        font-size: 1.2rem;
+    }
+
+    .tracking-search-heading h2 {
+        font-size: 1.2rem;
+    }
+}
+
+
