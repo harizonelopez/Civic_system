@@ -21,7 +21,6 @@ class SupportRequestForm(FlaskForm):
             Length(max=150)
         ]
     )
-
     email = StringField(
         "Email Address",
         validators=[
@@ -30,7 +29,6 @@ class SupportRequestForm(FlaskForm):
             Length(max=255)
         ]
     )
-
     category = SelectField(
         "What do you need help with?",
         choices=[
@@ -42,7 +40,6 @@ class SupportRequestForm(FlaskForm):
         ],
         validators=[DataRequired()]
     )
-
     subject = StringField(
         "Subject",
         validators=[
@@ -50,7 +47,6 @@ class SupportRequestForm(FlaskForm):
             Length(min=5, max=180)
         ]
     )
-
     application_reference = StringField(
         "Application Reference (Optional)",
         validators=[
@@ -58,7 +54,6 @@ class SupportRequestForm(FlaskForm):
             Length(max=30)
         ]
     )
-
     message = TextAreaField(
         "Describe Your Problem",
         validators=[
@@ -67,4 +62,4 @@ class SupportRequestForm(FlaskForm):
         ]
     )
 
-    submit = SubmitField("Submit Support Request")
+    submit = SubmitField("Submit Request")

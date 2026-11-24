@@ -51,7 +51,6 @@ class RegistrationForm(FlaskForm):
             Length(max=50),
         ],
     )
-
     last_name = StringField(
         "Last Name",
         validators=[
@@ -59,7 +58,6 @@ class RegistrationForm(FlaskForm):
             Length(max=50),
         ],
     )
-
     email = StringField(
         "Email Address",
         validators=[
@@ -69,7 +67,6 @@ class RegistrationForm(FlaskForm):
             validate_email_domain,
         ],
     )
-
     phone_number = StringField(
         "Phone Number",
         validators=[
@@ -81,7 +78,6 @@ class RegistrationForm(FlaskForm):
             ),
         ],
     )
-
     national_id = StringField(
         "National ID Number",
         validators=[
@@ -100,7 +96,6 @@ class RegistrationForm(FlaskForm):
             "placeholder": "Enter your 8-digit National ID",
         },
     )
-
     gender = SelectField(
         "Gender",
         choices=[
@@ -110,7 +105,6 @@ class RegistrationForm(FlaskForm):
         ],
         validators=[DataRequired(message="Select your gender")],
     )
-
     password = PasswordField(
         "Password",
         validators=[
@@ -122,7 +116,6 @@ class RegistrationForm(FlaskForm):
             ),
         ],
     )
-
     confirm_password = PasswordField(
         "Confirm Password",
         validators=[
@@ -142,12 +135,10 @@ class LoginForm(FlaskForm):
             Email(),
         ],
     )
-
     password = PasswordField(
         "Password",
         validators=[DataRequired()],
     )
-
     remember_me = BooleanField("Remember Me")
 
     submit = SubmitField("Sign In")
@@ -217,7 +208,6 @@ class PasswordResetVerificationForm(FlaskForm):
             Length(max=100),
         ],
     )
-
     national_id = StringField(
         "National ID Number",
         validators=[
@@ -252,7 +242,6 @@ class PasswordResetForm(FlaskForm):
             ),
         ],
     )
-
     confirm_password = PasswordField(
         "Confirm New Password",
         validators=[
@@ -271,7 +260,6 @@ class ChangePasswordForm(FlaskForm):
             DataRequired(message="Enter your current password."),
         ],
     )
-
     new_password = PasswordField(
         "New Password",
         validators=[
@@ -283,7 +271,6 @@ class ChangePasswordForm(FlaskForm):
             ),
         ],
     )
-
     confirm_password = PasswordField(
         "Confirm New Password",
         validators=[
@@ -293,5 +280,3 @@ class ChangePasswordForm(FlaskForm):
     )
 
     change_password = SubmitField("Update Password")
-
-
