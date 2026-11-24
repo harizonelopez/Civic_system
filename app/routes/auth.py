@@ -37,8 +37,7 @@ def register():
                 return redirect(next_page)
         return redirect(url_for("citizen.dashboard"))
 
-    form = RegistrationForm()
-
+    form = RegistrationForm()    
     if form.validate_on_submit():
         email = form.email.data.strip().lower()
         if User.query.filter_by(email=email).first():
@@ -94,7 +93,6 @@ def login():
         return redirect(url_for("citizen.dashboard"))
 
     form = LoginForm()
-
     if form.validate_on_submit():
         email = form.email.data.strip().lower()
         user = User.query.filter_by(email=email).first()
@@ -114,7 +112,6 @@ def login():
             next_page = request.args.get("next")
             if next_page:
                 parsed_url = urlsplit(next_page)
-
                 if (
                     next_page.startswith("/")
                     and not next_page.startswith("//")
@@ -156,13 +153,12 @@ def forgot_password():
     if reset_user_id and reset_expires:
         if datetime.now(timezone.utc).timestamp() < reset_expires:
             form = PasswordResetForm()
-
             if form.validate_on_submit():
                 user = db.session.get(User, reset_user_id)
                 if not user:
                     session.pop("password_reset_user_id", None)
                     session.pop("password_reset_expires", None)
-                    flash("Password reset session has expired. Please try again later.", "warning")
+                    flash("Password reset session expired. Try again later.", "warning")
                     return redirect(url_for("auth.forgot_password"))
 
                 user.set_password(form.password.data)
@@ -171,7 +167,7 @@ def forgot_password():
                 session.pop("password_reset_user_id", None)
                 session.pop("password_reset_expires", None)
 
-                flash("Password has been reset successfully. Please sign in.", "success")
+                flash("Password reset successfull. Please sign in.", "success")
                 return redirect(url_for("auth.login"))
 
             return render_template(
@@ -185,15 +181,13 @@ def forgot_password():
         session.pop("password_reset_user_id", None)
         session.pop("password_reset_expires", None)
 
-        flash("Password reset session has expired. Please verify your identity again.", "warning")
+        flash("Password reset session expired. Verify your identity again.", "warning")
 
     # Stage 1: Verify email and National ID.
     form = PasswordResetVerificationForm()
-
     if form.validate_on_submit():
         email = form.email.data.strip().lower()
         national_id = form.national_id.data.strip()
-
         user = User.query.filter_by(
             email=email,
             national_id=national_id,
@@ -208,7 +202,7 @@ def forgot_password():
             return redirect(url_for("auth.forgot_password"))
 
         # Use the same response regardless of which detail was incorrect.
-        flash("Details couldn't be verified. Please check them and try again.", "danger")
+        flash("Details couldn't be verified. Check them and try again.", "danger")
 
         response = make_response(
             render_template(
