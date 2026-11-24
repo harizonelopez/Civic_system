@@ -587,7 +587,7 @@
 }
 
 /* =========================================================
-   QUICK ACTIONS
+    QUICK ACTIONS
 ========================================================= */
 .quick-action-list {
     display: flex;
@@ -889,7 +889,6 @@
    RESPONSIVE DESIGN
 ========================================================= */
 @media (max-width: 991px) {
-
     .dashboard-welcome {
         align-items: flex-start;
         flex-direction: column;
@@ -912,7 +911,6 @@
 }
 
 @media (max-width: 767px) {
-
     .citizen-dashboard {
         padding: 38px 0 60px;
     }
@@ -1039,7 +1037,6 @@
 }
 
 @media (max-width: 420px) {
-
     .welcome-profile {
         min-width: 0;
         padding: 14px;
@@ -1339,5 +1336,4 @@
         width: 100%;
     }
 }
-
 

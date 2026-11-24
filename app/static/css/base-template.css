@@ -2,34 +2,25 @@
    CIVIC SYSTEM — BASE TEMPLATE
    Shared styles: global layout, navigation, footer and alerts
 ========================================================= */
-/* =========================================================
-   1. DESIGN VARIABLES
-========================================================= */
+/* --- 1. DESIGN VARIABLES --- */
 :root {
     --primary: #2563eb;
     --primary-dark: #1e40af;
     --primary-light: #eff6ff;
-
     --accent: #14b8a6;
     --accent-dark: #0f766e;
-
     --background: #f8fafc;
     --surface: #ffffff;
-
     --text-primary: #0f172a;
     --text-secondary: #64748b;
     --text-light: #94a3b8;
-
     --border: #e2e8f0;
-
     --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
     --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
     --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.12);
-
     --radius-sm: 8px;
     --radius-md: 14px;
     --radius-lg: 22px;
-
     --transition: all 0.25s ease;
 }
 
@@ -157,9 +148,7 @@ img {
     color: #38bdf8;
 }
 
-
 /* Online status */
-
 .status-indicator {
     width: 7px;
     height: 7px;
@@ -366,16 +355,12 @@ img {
     top: 105px;
     left: 50%;
     z-index: 2000;
-
     width: min(90%, 520px);
-
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
-
     transform: translateX(-50%);
-
     pointer-events: none;
 }
 
@@ -701,3 +686,4 @@ img {
         font-size: 12px;
     }
 }
+

@@ -1,12 +1,8 @@
-
 /* =========================================================
-   CIVIC SYSTEM
-   LANDING PAGE / DASHBOARD STYLES
+   CIVIC SYSTEM  LANDING PAGE / DASHBOARD STYLES
 ========================================================= */
 
-/* =========================================================
-   1. SHARED SECTION STYLES
-========================================================= */
+/* --- 1. SHARED SECTION STYLES --- */
 .section-padding {
     padding: 90px 0;
 }
@@ -457,7 +453,6 @@
 ========================================================= */
 .services-section {
     background: rgba(195, 207, 193, 0.733);
-        /* url("../images/dashboard-1.jpg") center / cover no-repeat; */
 }
 
 .view-all-link {

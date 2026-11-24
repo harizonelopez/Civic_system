@@ -1,9 +1,7 @@
 /* =========================================
    CITIZEN APPLICATIONS PAGE
 ========================================= */
-/* =========================================
-   PAGE HEADER
-========================================= */
+/* --- PAGE HEADER --- */
 .applications-page-header {
     margin-bottom: 35px;
 }
@@ -491,9 +489,8 @@
 
 
 /* =========================================
-   DARK PHOTO THEME — MY APPLICATIONS
+   DARK PHOTO THEME-OVERLAY — MY APPLICATIONS
 ========================================= */
-/* Background photo with dark overlay */
 .citizen-applications-section {
     background:
         linear-gradient(
@@ -682,7 +679,7 @@
     color: #60a5fa;
 }
 
-/* Information note */
+/* Info note */
 .applications-page-note {
     background: rgba(15, 35, 60, 0.92);
     border-color: rgba(96, 165, 250, 0.25);
@@ -692,5 +689,4 @@
 .applications-page-note i {
     color: #60a5fa;
 }
-
 
