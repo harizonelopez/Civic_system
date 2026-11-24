@@ -456,7 +456,8 @@
    5. POPULAR SERVICES
 ========================================================= */
 .services-section {
-    background: #ffffff;
+    background: rgba(195, 207, 193, 0.733);
+        /* url("../images/dashboard-1.jpg") center / cover no-repeat; */
 }
 
 .view-all-link {
