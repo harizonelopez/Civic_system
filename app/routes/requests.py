@@ -252,7 +252,7 @@ def apply_featured(slug, option):
         if slug == "business-permits":
             form_data["owner_id_number"] = current_user.national_id
             
-        # Preserve the service and option details at submission time.
+        # Preserve the service & option details at submission time.
         service_snapshot = {
             "service": {
                 "id": database_service.id,
@@ -297,7 +297,7 @@ def apply_featured(slug, option):
             db.session.rollback()
 
             current_app.logger.exception("Application submission failed.")
-            flash("Application submission failed. Please try again.", "danger")
+            flash("Application submission failed. Try again.", "danger")
 
     return render_template(
         "services/applications/apply.html",
@@ -321,8 +321,7 @@ def application_confirmation(reference_number):
         (
             item for item in FEATURED_SERVICES
             if item["slug"] == application.service_slug
-        ),
-        None
+        ), None
     )
 
     if service is None:
@@ -338,16 +337,13 @@ def application_confirmation(reference_number):
 @requests_bp.route("/track", methods=["GET"])
 @login_required
 def track_application():
-    reference_number = request.args.get(
-        "reference_number", ""
-    ).strip().upper()
-
+    reference_number = request.args.get("reference_number", "").strip().upper()
     if not reference_number:
         return render_template("services/applications/track.html")
 
     # Accept only references in the expected format: CSR- + 12 hex characters
     if not re.fullmatch(r"CSR-[A-F0-9]{12}", reference_number):
-        flash("Please enter a valid application reference number.", "warning")
+        flash("Enter a valid application reference number.", "warning")
         return redirect(url_for("requests.track_application"))
 
     application = ServiceRequest.query.filter_by(
@@ -358,13 +354,12 @@ def track_application():
     if application is None:
         flash(
             "We couldn't find an application with that reference number in your account. "
-            "Please check the number and try again.",
+            "Check the number and try again.",
             "warning"
         )
         return redirect(url_for("requests.track_application"))
 
-    return redirect(
-        url_for(
+    return redirect(url_for(
             "requests.application_tracking_details",
             reference_number=application.reference_number
         )
@@ -382,11 +377,11 @@ def application_tracking_details(reference_number):
     if application is None:
         flash(
             "We couldn't find an application with that reference number in your account. "
-            "Please check the number and try again.",
+            "Check the number and try again.",
             "warning"
         )
         return redirect(url_for("requests.track_application"))
-
+    
     return render_template("services/applications/tracking-details.html", application=application,)
 
 
@@ -398,7 +393,8 @@ def detail(service_id):
     ).first_or_404()
 
     service_options = [
-        option for option in service.service_options
+        option 
+        for option in service.service_options
         if option.is_active
     ]
 
@@ -407,5 +403,4 @@ def detail(service_id):
         service=service,
         service_options=service_options
     )
-
 
