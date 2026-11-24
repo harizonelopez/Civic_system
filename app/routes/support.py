@@ -5,9 +5,7 @@ from app.forms.support import SupportRequestForm
 from app.models.support_request import SupportRequest
 from app.models.service_request import ServiceRequest
 
-
 support_bp = Blueprint("support", __name__, url_prefix="/support")
-
 
 @support_bp.route("/contact", methods=["GET", "POST"])
 def contact():
@@ -36,11 +34,7 @@ def contact():
                     "We couldn't find an application with that reference "
                     "in your account."
                 )
-
-                return render_template(
-                    "support/contact.html",
-                    form=form
-                )
+                return render_template("support/contact.html", form=form)
 
         support_request = SupportRequest(
             citizen_id=(
@@ -69,22 +63,14 @@ def contact():
             db.session.commit()
 
             flash(
-                f"Support request was submitted successfully. "
-                f"Your reference number is {support_request.reference_number}.",
+                f"Support request submitted successfully. "
+                f"Reference number is {support_request.reference_number}.",
                 "success"
             )
-
             return redirect(url_for("support.contact"))
 
         except Exception:
             db.session.rollback()
-            flash(
-                "We couldn't submit your request. Please try again.",
-                "danger"
-            )
+            flash("Request submission failed. Try again.", "danger")
 
-    return render_template(
-        "support/contact.html",
-        form=form
-    )
-
+    return render_template("support/contact.html", form=form)
