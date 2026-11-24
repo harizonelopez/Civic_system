@@ -1,14 +1,44 @@
-from flask import (
-    Blueprint, render_template, abort,
-    redirect, url_for, flash, current_app, request
-)
+from flask import Blueprint, render_template, abort, redirect, url_for, flash, current_app, request
 from flask_login import login_required, current_user
 from app.extensions import db
 from app.models import Service, ServiceRequest, ServiceOption
 from app.forms.applications.business import (
     NewBusinessPermitForm,
     RenewBusinessPermitForm,
-    AmendBusinessPermitForm,
+    AmendBusinessPermitForm
+)
+from app.forms.applications.building import (
+    NewBuildingPlanForm,
+    RevisedBuildingPlanForm,
+    BuildingPlanResubmissionForm,
+    BuildingPlanExtensionForm
+)
+from app.forms.applications.public_health import (
+    FoodHygieneInspectionForm,
+    FoodHandlerCertificateForm,
+    PublicHealthPremisesInspectionForm,
+    PublicHealthComplaintForm
+)
+from app.forms.applications.fire_safety import (
+    FireSafetyInspectionForm,
+    FireSafetyCertificateForm,
+    FireSafetyComplaintForm,
+    FireSafetyReinspectionForm
+)
+from app.forms.applications.waste_management import (
+    HouseholdWasteCollectionForm,
+    CommercialWasteCollectionForm,
+    BulkWasteCollectionForm,
+    IllegalDumpingReportForm,
+    EnvironmentalSanitationRequestForm
+)
+from app.forms.applications.market import (
+    MarketComplaintForm,
+    MarketFacilityMaintenanceForm,
+    MarketSanitationForm,
+    MarketStallApplicationForm,
+    MarketStallRenewalForm,
+    MarketStallTransferForm
 )
 from sqlalchemy.exc import SQLAlchemyError
 import re
@@ -31,7 +61,10 @@ FEATURED_SERVICES = [
         "name": "Building Plan Approval",
         "slug": "building-plan-approval",
         "category": "Planning",
-        "description": "Submit building plans and request the necessary development approvals.",
+        "description":  "Have your proposed construction plans assessed for compliance "
+                        "with county development controls, zoning regulations and "
+                        "building requirements. This service covers the submission and "
+                        "technical evaluation of plans before construction commences.",
         "icon": "bi-building",
         "processing": "Application service"
     },
@@ -39,7 +72,10 @@ FEATURED_SERVICES = [
         "name": "Public Health Services",
         "slug": "public-health-services",
         "category": "Public Health",
-        "description": "Request health inspections and access applicable public health services.",
+        "description":  "Request inspections of business premises, food handling facilities "
+                        "and public spaces to assess compliance with health and sanitation "
+                        "requirements. The service also covers public health concerns, "
+                        "inspection findings and guidance on corrective measures where necessary.",
         "icon": "bi-heart-pulse",
         "processing": "Application service"
     },
@@ -47,7 +83,10 @@ FEATURED_SERVICES = [
         "name": "Fire Safety Services",
         "slug": "fire-safety-services",
         "category": "Safety",
-        "description": "Request fire safety inspections and relevant compliance services.",
+        "description":  "Arrange fire safety assessments for commercial premises, public "
+                        "buildings and other facilities. The service covers inspection of "
+                        "fire prevention measures, emergency exits, firefighting equipment "
+                        "and compliance with applicable fire safety regulations.",
         "icon": "bi-fire",
         "processing": "Application service"
     },
@@ -55,7 +94,10 @@ FEATURED_SERVICES = [
         "name": "Waste Management",
         "slug": "waste-management",
         "category": "Environment",
-        "description": "Access waste collection and environmental sanitation services.",
+        "description":  "Request scheduled waste collection, report sanitation concerns "
+                        "and seek assistance with waste disposal in residential and "
+                        "commercial areas. The service addresses garbage collection, "
+                        "environmental cleanliness and proper waste handling practices.",
         "icon": "bi-recycle",
         "processing": "Service request"
     },
@@ -63,7 +105,10 @@ FEATURED_SERVICES = [
         "name": "Market Services",
         "slug": "market-services",
         "category": "Trade",
-        "description": "Submit requests related to market facilities, trading spaces and stall allocation.",
+        "description":  "Apply for market stalls, request allocation of trading spaces "
+                        "and report issues affecting market facilities. The service also "
+                        "covers requests for stall transfers, facility maintenance and "
+                        "other matters relating to the management of county markets.",
         "icon": "bi-shop-window",
         "processing": "Service request"
     }
@@ -96,8 +141,15 @@ def featured_detail(slug):
     database_service = None
     service_options = []
 
-    # Business Permits is currently database-backed.
-    if slug == "business-permits":
+    # Load database-backed featured services.
+    if slug in (
+        "business-permits", 
+        "building-plan-approval", 
+        "public-health-services", 
+        "fire-safety-services", 
+        "waste-management",
+        "market-services"
+    ):
         database_service = Service.query.filter_by(
             code=slug,
             is_active=True
@@ -130,7 +182,40 @@ def apply_featured(slug, option):
         "business-permits": {
             "new-permit": NewBusinessPermitForm,
             "renewal": RenewBusinessPermitForm,
-            "amendment": AmendBusinessPermitForm,
+            "amendment": AmendBusinessPermitForm
+        },
+        "building-plan-approval": {
+            "new-plan": NewBuildingPlanForm,
+            "revised-plan": RevisedBuildingPlanForm,
+            "plan-resubmission": BuildingPlanResubmissionForm,
+            "plan-extension": BuildingPlanExtensionForm
+        },
+        "public-health-services": {
+            "food-hygiene-inspection": FoodHygieneInspectionForm,
+            "food-handler-certificate": FoodHandlerCertificateForm,
+            "premises-inspection": PublicHealthPremisesInspectionForm,
+            "public-health-complaint": PublicHealthComplaintForm
+        },
+        "fire-safety-services": {
+            "fire-safety-inspection": FireSafetyInspectionForm,
+            "fire-safety-certificate": FireSafetyCertificateForm,
+            "fire-safety-reinspection": FireSafetyReinspectionForm,
+            "fire-safety-complaint": FireSafetyComplaintForm
+        },
+        "waste-management": {
+            "household-waste-collection": HouseholdWasteCollectionForm,
+            "commercial-waste-collection": CommercialWasteCollectionForm,
+            "bulk-waste-collection": BulkWasteCollectionForm,
+            "illegal-dumping-report": IllegalDumpingReportForm,
+            "environmental-sanitation-request": EnvironmentalSanitationRequestForm
+        },
+        "market-services": {
+            "stall-application": MarketStallApplicationForm,
+            "stall-renewal": MarketStallRenewalForm,
+            "stall-transfer": MarketStallTransferForm,
+            "facility-maintenance": MarketFacilityMaintenanceForm,
+            "market-sanitation": MarketSanitationForm,
+            "market-complaint": MarketComplaintForm
         }
     }
     form_class = application_forms.get(slug, {}).get(option)
