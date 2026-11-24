@@ -22,7 +22,7 @@ def index():
 @citizen_bp.route("/dashboard")
 @login_required
 def dashboard():
-    # Retrieve this citizen's applications.
+    # Retrieve the citizen's applications.
     applications = (
         ServiceRequest.query
         .filter_by(citizen_id=current_user.id)
@@ -31,17 +31,14 @@ def dashboard():
     )
 
     total_applications = len(applications)
-
     completed_applications = sum(
         1 for application in applications
         if application.status == "completed"
     )
-
     pending_applications = sum(
         1 for application in applications
         if application.status not in ("completed", "rejected", "cancelled")
     )
-
     recent_applications = applications[:5]
 
     # Retrieve the National ID from the most recent application that collected it.    
@@ -88,23 +85,19 @@ def edit_profile():
     # Handle password changes independently.
     if password_form.change_password.data and password_form.validate_on_submit():
         if not current_user.check_password(password_form.current_password.data):
-            password_form.current_password.errors.append(
-                "Incorrect current password."
-            )
+            password_form.current_password.errors.append("Incorrect current password.")
         elif current_user.check_password(password_form.new_password.data):
-            password_form.new_password.errors.append(
-                "New password must be different from the current password."
-            )
+            password_form.new_password.errors.append("New password must be different from the current password.")
         else:
             try:
                 current_user.set_password(password_form.new_password.data)
                 db.session.commit()
-                flash("Password successfully changed.", "success")
+                flash("Password change successfull.", "success")
                 return redirect(url_for("citizen.dashboard"))
             except Exception:
                 db.session.rollback()
                 current_app.logger.exception("Password change failed.")
-                flash("Unable to change password. Please try again.", "danger")
+                flash("Unable to update password. Try again.", "danger")
 
         return render_template(
             "citizen/edit_profile.html",
@@ -128,7 +121,7 @@ def edit_profile():
 
         if existing_id:
             form.national_id.errors.append(
-                "The National ID is already registered to another account."
+                "National ID already registered with another account."
             )
             return render_template(
                 "citizen/edit_profile.html",
@@ -144,7 +137,7 @@ def edit_profile():
 
             if existing_phone:
                 form.phone_number.errors.append(
-                    "The phone number is already registered to another account."
+                    "Phone number already registered with another account."
                 )
                 return render_template(
                     "citizen/edit_profile.html",
@@ -160,7 +153,7 @@ def edit_profile():
 
         try:
             db.session.commit()
-            flash("Profile details successfully updated.", "success")
+            flash("Profile details update successfull.", "success")
 
             if (
                 next_page
@@ -174,7 +167,7 @@ def edit_profile():
         except Exception:
             db.session.rollback()
             current_app.logger.exception("Profile update failed.")
-            flash("Unable to update your profile. Please try again.", "danger")
+            flash("Unable to update your profile. Try again.", "danger")
 
     return render_template(
         "citizen/edit_profile.html",
