@@ -998,7 +998,7 @@ def seed_market_services():
                 "Individuals, traders and business operators "
                 "seeking an available county-managed market stall."
             ),
-            "processing_days": 7,
+            "processing_days": 3,
             "fee": Decimal("1000.00")
         },
         {
@@ -1020,7 +1020,7 @@ def seed_market_services():
                 "Existing market stall tenants and authorized "
                 "traders holding a county market allocation."
             ),
-            "processing_days": 5,
+            "processing_days": 3,
             "fee": Decimal("700.00")
         },
         {
@@ -1043,7 +1043,7 @@ def seed_market_services():
                 "Existing market stall tenants seeking an "
                 "authorized change of stall allocation or tenancy."
             ),
-            "processing_days": 7,
+            "processing_days": 2,
             "fee": Decimal("1500.00")
         },
         {
@@ -1066,7 +1066,7 @@ def seed_market_services():
                 "Market traders, stall tenants, market representatives "
                 "and other members of the public."
             ),
-            "processing_days": 5,
+            "processing_days": 4,
             "fee": Decimal("500.00")
         },
         {
@@ -1088,7 +1088,7 @@ def seed_market_services():
                 "Market traders, stall tenants, market representatives "
                 "and members of the public."
             ),
-            "processing_days": 3,
+            "processing_days": 2,
             "fee": Decimal("300.00")
         },
         {
@@ -1110,7 +1110,7 @@ def seed_market_services():
                 "Market traders, stall tenants, business operators "
                 "and members of the public."
             ),
-            "processing_days": 5,
+            "processing_days": 1,
             "fee": Decimal("200.00")
         }
     ]
