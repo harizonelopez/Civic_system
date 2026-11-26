@@ -70,7 +70,7 @@ class RegistrationForm(FlaskForm):
     phone_number = StringField(
         "Phone Number",
         validators=[
-            Optional(),
+            DataRequired(),
             Length(min=10, max=10),
             Regexp(
                 r"^(07|01)\d{8}$",
