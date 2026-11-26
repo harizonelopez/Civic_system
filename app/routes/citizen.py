@@ -41,24 +41,12 @@ def dashboard():
     )
     recent_applications = applications[:5]
 
-    # Retrieve the National ID from the most recent application that collected it.    
-    national_id_number = next(
-        (
-            application.form_data.get("owner_id_number")
-            for application in applications
-            if application.form_data
-            and application.form_data.get("owner_id_number")
-        ),
-        None
-    )
-
     return render_template(
         "citizen/dashboard.html",
         total_applications=total_applications,
         pending_applications=pending_applications,
         completed_applications=completed_applications,
         recent_applications=recent_applications,
-        national_id_number=national_id_number
     )
 
 

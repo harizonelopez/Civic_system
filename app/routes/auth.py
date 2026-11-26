@@ -90,6 +90,9 @@ def register():
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
+        if current_user.has_role("admin"):
+            return redirect(url_for("admin.dashboard"))
+        
         return redirect(url_for("citizen.dashboard"))
 
     form = LoginForm()
@@ -104,11 +107,17 @@ def login():
 
             login_user(user, remember=form.remember_me.data)
 
+            # Clear password reset session data.
             session.pop("password_reset_user_id", None)
             session.pop("password_reset_expires", None)
 
             flash(f"Welcome back, {user.first_name}!", "success")
 
+            # Redirect admin to their dashboard.
+            if user.has_role("admin"):
+                return redirect(url_for("admin.dashboard"))
+
+            # Handle next page for ordinary users.
             next_page = request.args.get("next")
             if next_page:
                 parsed_url = urlsplit(next_page)
@@ -224,3 +233,4 @@ def forgot_password():
         verification_form=form,
         reset_form=None,
     )
+

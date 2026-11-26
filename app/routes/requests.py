@@ -2,6 +2,9 @@ from flask import Blueprint, render_template, abort, redirect, url_for, flash, c
 from flask_login import login_required, current_user
 from app.extensions import db
 from app.models import Service, ServiceRequest, ServiceOption
+from sqlalchemy.exc import SQLAlchemyError
+import re
+from datetime import date
 from app.forms.applications.business import (
     NewBusinessPermitForm,
     RenewBusinessPermitForm,
@@ -40,8 +43,6 @@ from app.forms.applications.market import (
     MarketStallRenewalForm,
     MarketStallTransferForm
 )
-from sqlalchemy.exc import SQLAlchemyError
-import re
 
 requests_bp = Blueprint("requests", __name__, url_prefix="/requests")
 
@@ -122,7 +123,6 @@ def index():
         .order_by(Service.created_at.desc())
         .all()
     )
-
     return render_template(
         "services/index.html",
         featured_services=FEATURED_SERVICES,
@@ -245,12 +245,19 @@ def apply_featured(slug, option):
     form = form_class()
     if form.validate_on_submit():
         form_data = {
-            name: field.data
+            name: (
+                field.data.isoformat()
+                if isinstance(field.data, date)
+                else field.data
+            )
             for name, field in form._fields.items()
             if name not in ("csrf_token", "submit")
         }
-        if slug == "business-permits":
-            form_data["owner_id_number"] = current_user.national_id
+
+        # Automatically attach the logged-in citizen's profile details
+        form_data["applicant_name"] = current_user.full_name
+        form_data["contact_phone"] = current_user.phone_number
+        form_data["national_id"] = current_user.national_id
             
         # Preserve the service & option details at submission time.
         service_snapshot = {
