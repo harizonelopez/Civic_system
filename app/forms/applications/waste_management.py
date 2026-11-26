@@ -5,14 +5,21 @@ from wtforms import (
     TextAreaField,
     IntegerField,
     SubmitField,
+    ValidationError
 )
 from wtforms.validators import (
     DataRequired,
     Optional,
     Length,
-    Regexp,
     NumberRange,
 )
+from wtforms.fields import DateField
+from datetime import date
+
+# Reject future dates for incidents that have already occurred.
+def validate_not_future_date(form, field):
+    if field.data and field.data > date.today():
+        raise ValidationError("Observed date can't be in the future.")
 
 class HouseholdWasteCollectionForm(FlaskForm):
     property_type = SelectField(
@@ -29,15 +36,15 @@ class HouseholdWasteCollectionForm(FlaskForm):
     )
     property_location = StringField(
         "Physical Location",
-        validators=[DataRequired(), Length(max=200)]
+        validators=[DataRequired(), Length(max=100)]
     )
     ward = StringField(
         "Ward",
-        validators=[DataRequired(), Length(max=100)]
+        validators=[DataRequired(), Length(max=50)]
     )
     number_of_households = IntegerField(
         "Number of Households",
-        validators=[Optional(), NumberRange(min=1, max=10000)]
+        validators=[Optional(), NumberRange(min=1, max=100)]
     )
     collection_frequency = SelectField(
         "Preferred Collection Frequency",
@@ -49,19 +56,9 @@ class HouseholdWasteCollectionForm(FlaskForm):
         ],
         validators=[DataRequired()]
     )
-    contact_phone = StringField(
-        "Contact Phone Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                r"^(?:07|01)\d{8}$",
-                message="Enter a valid Kenyan phone number."
-            )
-        ]
-    )
     additional_information = TextAreaField(
         "Additional Information",
-        validators=[Optional(), Length(max=1000)]
+        validators=[Optional(), Length(max=500)]
     )
 
     submit = SubmitField("Submit Request")
@@ -70,7 +67,7 @@ class HouseholdWasteCollectionForm(FlaskForm):
 class CommercialWasteCollectionForm(FlaskForm):
     business_name = StringField(
         "Business / Organization Name",
-        validators=[DataRequired(), Length(max=150)]
+        validators=[DataRequired(), Length(max=100)]
     )
     business_type = SelectField(
         "Type of Business",
@@ -88,11 +85,11 @@ class CommercialWasteCollectionForm(FlaskForm):
     )
     business_location = StringField(
         "Physical Business Location",
-        validators=[DataRequired(), Length(max=200)]
+        validators=[DataRequired(), Length(max=100)]
     )
     ward = StringField(
         "Ward",
-        validators=[DataRequired(), Length(max=100)]
+        validators=[DataRequired(), Length(max=50)]
     )
     estimated_waste_volume = SelectField(
         "Estimated Waste Volume",
@@ -115,28 +112,18 @@ class CommercialWasteCollectionForm(FlaskForm):
         ],
         validators=[DataRequired()]
     )
-    contact_phone = StringField(
-        "Contact Phone Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                r"^(?:07|01)\d{8}$",
-                message="Enter a valid Kenyan phone number."
-            )
-        ]
-    )
     additional_information = TextAreaField(
         "Additional Information",
-        validators=[Optional(), Length(max=1000)]
+        validators=[Optional(), Length(max=500)]
     )
 
     submit = SubmitField("Submit Request")
 
 
 class BulkWasteCollectionForm(FlaskForm):
-    applicant_name = StringField(
-        "Applicant / Organization Name",
-        validators=[DataRequired(), Length(max=150)]
+    organization_name = StringField(
+        "Organization Name (if applicable)",
+        validators=[Optional(), Length(max=100)]
     )
     waste_type = SelectField(
         "Type of Waste",
@@ -153,29 +140,15 @@ class BulkWasteCollectionForm(FlaskForm):
     )
     estimated_quantity = IntegerField(
         "Estimated Quantity (in bags or items)",
-        validators=[DataRequired(), NumberRange(min=1, max=100000)]
+        validators=[DataRequired(), NumberRange(min=1, max=500)]
     )
     collection_location = StringField(
         "Collection Location",
-        validators=[DataRequired(), Length(max=200)]
-    )
-    ward = StringField(
-        "Ward",
         validators=[DataRequired(), Length(max=100)]
-    )
-    contact_phone = StringField(
-        "Contact Phone Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                r"^(?:07|01)\d{8}$",
-                message="Enter a valid Kenyan phone number."
-            )
-        ]
     )
     additional_information = TextAreaField(
         "Additional Information",
-        validators=[Optional(), Length(max=1000)]
+        validators=[Optional(), Length(max=500)]
     )
 
     submit = SubmitField("Submit Request")
@@ -197,29 +170,26 @@ class IllegalDumpingReportForm(FlaskForm):
     )
     affected_location = StringField(
         "Location of Illegal Dumping",
-        validators=[DataRequired(), Length(max=200)]
+        validators=[DataRequired(), Length(max=100)]
     )
     ward = StringField(
         "Ward",
-        validators=[DataRequired(), Length(max=100)]
+        validators=[DataRequired(), Length(max=50)]
     )
     description = TextAreaField(
         "Describe the Illegal Dumping",
-        validators=[DataRequired(), Length(min=10, max=2000)]
+        validators=[DataRequired(), Length(min=10, max=500)]
     )
-    observed_date = StringField(
-        "Date Observed (e.g. 24/11/2026)",
-        validators=[Optional(), Length(max=20)]
-    )
-    contact_phone = StringField(
-        "Contact Phone Number (optional)",
+    observed_date = DateField(
+        "Date Observed",
+        format="%Y-%m-%d",
         validators=[
             Optional(),
-            Regexp(
-                r"^(?:07|01)\d{8}$",
-                message="Enter a valid Kenyan phone number."
-            )
-        ]
+            validate_not_future_date
+        ],
+        render_kw={
+            "type": "date"
+        }
     )
 
     submit = SubmitField("Submit Report")
@@ -241,29 +211,19 @@ class EnvironmentalSanitationRequestForm(FlaskForm):
     )
     affected_location = StringField(
         "Affected Location",
-        validators=[DataRequired(), Length(max=200)]
+        validators=[DataRequired(), Length(max=100)]
     )
     ward = StringField(
         "Ward",
-        validators=[DataRequired(), Length(max=100)]
+        validators=[DataRequired(), Length(max=50)]
     )
     description = TextAreaField(
         "Describe the Sanitation Issue",
-        validators=[DataRequired(), Length(min=10, max=2000)]
-    )
-    contact_phone = StringField(
-        "Contact Phone Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                r"^(?:07|01)\d{8}$",
-                message="Enter a valid Kenyan phone number."
-            )
-        ]
+        validators=[DataRequired(), Length(min=10, max=500)]
     )
     additional_information = TextAreaField(
         "Additional Information",
-        validators=[Optional(), Length(max=1000)]
+        validators=[Optional(), Length(max=500)]
     )
 
     submit = SubmitField("Submit Request")

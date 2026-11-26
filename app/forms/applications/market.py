@@ -3,29 +3,26 @@ from wtforms import (
     StringField,
     SelectField,
     TextAreaField,
-    IntegerField,
     SubmitField,
+    ValidationError
 )
 from wtforms.validators import (
     DataRequired,
     Optional,
-    Length,
-    Regexp,
-    NumberRange,
+    Length
 )
+from datetime import date
+from wtforms.fields import DateField
+
+# Reject future dates for incidents that have already occurred.
+def validate_not_future_date(form, field):
+    if field.data and field.data > date.today():
+        raise ValidationError("Incident date can't be in the future.")
 
 class MarketStallApplicationForm(FlaskForm):
-    applicant_name = StringField(
-        "Applicant Full Name",
-        validators=[DataRequired(), Length(max=150)]
-    )
-    national_id = StringField(
-        "National ID Number",
-        validators=[DataRequired(), Length(min=6, max=20)]
-    )
     business_name = StringField(
         "Business Name",
-        validators=[DataRequired(), Length(max=150)]
+        validators=[DataRequired(), Length(max=100)]
     )
     business_type = SelectField(
         "Type of Business",
@@ -57,35 +54,17 @@ class MarketStallApplicationForm(FlaskForm):
     )
     ward = StringField(
         "Ward",
-        validators=[DataRequired(), Length(max=100)]
-    )
-    contact_phone = StringField(
-        "Contact Phone Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                r"^(?:07|01)\d{8}$",
-                message="Enter a valid Kenyan phone number."
-            )
-        ]
+        validators=[DataRequired(), Length(max=60)]
     )
     additional_information = TextAreaField(
         "Additional Information",
-        validators=[Optional(), Length(max=1000)]
+        validators=[Optional(), Length(max=500)]
     )
 
     submit = SubmitField("Submit Application")
 
 
 class MarketStallRenewalForm(FlaskForm):
-    applicant_name = StringField(
-        "Applicant Full Name",
-        validators=[DataRequired(), Length(max=150)]
-    )
-    national_id = StringField(
-        "National ID Number",
-        validators=[DataRequired(), Length(min=6, max=20)]
-    )
     business_name = StringField(
         "Business Name",
         validators=[DataRequired(), Length(max=150)]
@@ -102,19 +81,9 @@ class MarketStallRenewalForm(FlaskForm):
         "Stall Allocation Reference",
         validators=[Optional(), Length(max=100)]
     )
-    contact_phone = StringField(
-        "Contact Phone Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                r"^(?:07|01)\d{8}$",
-                message="Enter a valid Kenyan phone number."
-            )
-        ]
-    )
     additional_information = TextAreaField(
         "Additional Information",
-        validators=[Optional(), Length(max=1000)]
+        validators=[Optional(), Length(max=500)]
     )
 
     submit = SubmitField("Submit Request")
@@ -123,54 +92,32 @@ class MarketStallRenewalForm(FlaskForm):
 class MarketStallTransferForm(FlaskForm):
     current_holder_name = StringField(
         "Current Stall Holder's Full Name",
-        validators=[DataRequired(), Length(max=150)]
-    )
-    national_id = StringField(
-        "Current Holder's National ID Number",
-        validators=[DataRequired(), Length(min=6, max=20)]
+        validators=[DataRequired(), Length(max=100)]
     )
     proposed_holder_name = StringField(
         "Proposed New Holder's Full Name",
-        validators=[DataRequired(), Length(max=150)]
-    )
-    proposed_holder_id = StringField(
-        "Proposed Holder's National ID Number",
-        validators=[DataRequired(), Length(min=6, max=20)]
+        validators=[DataRequired(), Length(max=100)]
     )
     market_name = StringField(
         "Market Name",
-        validators=[DataRequired(), Length(max=150)]
+        validators=[DataRequired(), Length(max=100)]
     )
     stall_number = StringField(
         "Stall Number",
-        validators=[DataRequired(), Length(max=50)]
+        validators=[DataRequired(), Length(max=20)]
     )
     transfer_reason = TextAreaField(
         "Reason for Transfer",
-        validators=[DataRequired(), Length(min=10, max=1000)]
-    )
-    contact_phone = StringField(
-        "Contact Phone Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                r"^(?:07|01)\d{8}$",
-                message="Enter a valid Kenyan phone number."
-            )
-        ]
+        validators=[DataRequired(), Length(min=10, max=500)]
     )
 
     submit = SubmitField("Submit Request")
 
 
 class MarketFacilityMaintenanceForm(FlaskForm):
-    applicant_name = StringField(
-        "Applicant Full Name",
-        validators=[DataRequired(), Length(max=150)]
-    )
     market_name = StringField(
         "Market Name",
-        validators=[DataRequired(), Length(max=150)]
+        validators=[DataRequired(), Length(max=100)]
     )
     facility_type = SelectField(
         "Type of Facility",
@@ -189,38 +136,24 @@ class MarketFacilityMaintenanceForm(FlaskForm):
     )
     affected_location = StringField(
         "Specific Location of the Problem",
-        validators=[DataRequired(), Length(max=200)]
+        validators=[DataRequired(), Length(max=50)]
     )
     ward = StringField(
         "Ward",
-        validators=[DataRequired(), Length(max=100)]
+        validators=[DataRequired(), Length(max=50)]
     )
     problem_description = TextAreaField(
         "Describe the Maintenance Problem",
-        validators=[DataRequired(), Length(min=10, max=2000)]
-    )
-    contact_phone = StringField(
-        "Contact Phone Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                r"^(?:07|01)\d{8}$",
-                message="Enter a valid Kenyan phone number."
-            )
-        ]
+        validators=[DataRequired(), Length(min=10, max=500)]
     )
 
     submit = SubmitField("Submit Request")
 
 
 class MarketSanitationForm(FlaskForm):
-    applicant_name = StringField(
-        "Applicant Full Name",
-        validators=[DataRequired(), Length(max=150)]
-    )
     market_name = StringField(
         "Market Name",
-        validators=[DataRequired(), Length(max=150)]
+        validators=[DataRequired(), Length(max=100)]
     )
     sanitation_issue = SelectField(
         "Type of Sanitation Issue",
@@ -237,21 +170,11 @@ class MarketSanitationForm(FlaskForm):
     )
     affected_location = StringField(
         "Affected Location",
-        validators=[DataRequired(), Length(max=200)]
+        validators=[DataRequired(), Length(max=100)]
     )
     description = TextAreaField(
         "Describe the Sanitation Issue",
-        validators=[DataRequired(), Length(min=10, max=2000)]
-    )
-    contact_phone = StringField(
-        "Contact Phone Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                r"^(?:07|01)\d{8}$",
-                message="Enter a valid Kenyan phone number."
-            )
-        ]
+        validators=[DataRequired(), Length(min=10, max=500)]
     )
 
     submit = SubmitField("Submit Request")
@@ -274,29 +197,26 @@ class MarketComplaintForm(FlaskForm):
     )
     market_name = StringField(
         "Market Name",
-        validators=[DataRequired(), Length(max=150)]
+        validators=[DataRequired(), Length(max=100)]
     )
     affected_location = StringField(
         "Location of Concern (if applicable)",
-        validators=[Optional(), Length(max=200)]
+        validators=[Optional(), Length(max=100)]
     )
     description = TextAreaField(
         "Describe the Complaint",
-        validators=[DataRequired(), Length(min=10, max=2000)]
+        validators=[DataRequired(), Length(min=10, max=500)]
     )
-    observed_date = StringField(
-        "Date of Incident (e.g. 24/11/2026)",
-        validators=[Optional(), Length(max=20)]
-    )
-    contact_phone = StringField(
-        "Contact Phone Number (optional)",
+    observed_date = DateField(
+        "Date of Incident",
+        format="%Y-%m-%d",
         validators=[
             Optional(),
-            Regexp(
-                r"^(?:07|01)\d{8}$",
-                message="Enter a valid Kenyan phone number."
-            )
-        ]
+            validate_not_future_date
+        ],
+        render_kw={
+            "type": "date"
+        }
     )
 
     submit = SubmitField("Submit Complaint")

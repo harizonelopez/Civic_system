@@ -10,17 +10,13 @@ from wtforms.validators import (
     DataRequired,
     Length,
     Optional,
-    Regexp,
     NumberRange,
+    Regexp
 )
-
-# Kenyan mobile numbers.
-KENYAN_PHONE = r"^(?:07|01)\d{8}$"
+from wtforms.fields import DateField
 
 # Text fields containing letters, numbers and common punctuation.
-TEXT_WITH_LETTERS = (
-    r"^(?=.*[A-Za-z])[A-Za-zÀ-ÿ0-9\s&'().,/ -]+$"
-)
+TEXT_WITH_LETTERS = r"^(?=.*[A-Za-z])[A-Za-zÀ-ÿ0-9\s&'().,/ -]+$"
 
 # Property and approval reference numbers.
 REFERENCE_NUMBER = r"^[A-Za-z0-9/-]+$"
@@ -31,7 +27,7 @@ class BuildingPlanBaseForm(FlaskForm):
         "Property Location",
         validators=[
             DataRequired(),
-            Length(min=3, max=180),
+            Length(min=3, max=150),
             Regexp(
                 TEXT_WITH_LETTERS,
                 message="Enter a valid property location."
@@ -42,7 +38,7 @@ class BuildingPlanBaseForm(FlaskForm):
         "Ward",
         validators=[
             DataRequired(),
-            Length(min=2, max=100),
+            Length(min=2, max=50),
             Regexp(
                 TEXT_WITH_LETTERS,
                 message="Enter a valid ward name."
@@ -53,40 +49,22 @@ class BuildingPlanBaseForm(FlaskForm):
         "Plot / Land Reference Number",
         validators=[
             DataRequired(),
-            Length(min=2, max=60),
+            Length(min=2, max=20),
             Regexp(
                 REFERENCE_NUMBER,
                 message="Enter a valid plot or land reference number."
             )
         ]
     )
-    contact_phone = StringField(
-        "Contact Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                KENYAN_PHONE,
-                message="Enter a valid Kenyan mobile number."
-            )
-        ],
-        render_kw={
-            "maxlength": "10",
-            "minlength": "10",
-            "inputmode": "tel",
-            "pattern": "(07|01)[0-9]{8}",
-            "placeholder": "e.g. 0712345678"
-        }
-    )
     additional_information = TextAreaField(
         "Additional Information",
         validators=[
             Optional(),
-            Length(max=2000)
+            Length(max=500)
         ]
     )
 
 
-# 1. New Building Plan Approval.
 class NewBuildingPlanForm(BuildingPlanBaseForm):
     project_type = SelectField(
         "Type of Construction",
@@ -105,29 +83,28 @@ class NewBuildingPlanForm(BuildingPlanBaseForm):
         "Description of Proposed Development",
         validators=[
             DataRequired(),
-            Length(min=10, max=2000)
+            Length(min=10, max=500)
         ]
     )
     number_of_floors = IntegerField(
         "Number of Floors",
         validators=[
             DataRequired(),
-            NumberRange(min=1, max=100,
-                        message="Enter a valid number of floors.")
+            NumberRange(min=1, max=100, message="Enter a valid number of floors.")
         ]
     )
     estimated_project_value = IntegerField(
         "Estimated Project Value (KSh)",
         validators=[
             DataRequired(),
-            NumberRange(min=1, max=10000000000)
+            NumberRange(min=1000, max=10000000000)
         ]
     )
     architect_name = StringField(
         "Architect's Name",
         validators=[
             DataRequired(),
-            Length(min=2, max=150),
+            Length(min=2, max=100),
             Regexp(
                 TEXT_WITH_LETTERS,
                 message="Enter a valid architect's name."
@@ -138,7 +115,7 @@ class NewBuildingPlanForm(BuildingPlanBaseForm):
         "Architect Registration Number",
         validators=[
             DataRequired(),
-            Length(min=2, max=60),
+            Length(min=2, max=20),
             Regexp(REFERENCE_NUMBER,
                    message="Enter a valid registration number.")
         ]
@@ -147,7 +124,6 @@ class NewBuildingPlanForm(BuildingPlanBaseForm):
     submit = SubmitField("Submit Plan")
 
 
-# 2. Revised Building Plans.
 class RevisedBuildingPlanForm(BuildingPlanBaseForm):
     previous_approval_reference = StringField(
         "Previous Approval Reference",
@@ -162,20 +138,19 @@ class RevisedBuildingPlanForm(BuildingPlanBaseForm):
         "Details of Proposed Changes",
         validators=[
             DataRequired(),
-            Length(min=10, max=2000)
+            Length(min=10, max=500)
         ]
     )
 
     submit = SubmitField("Submit Changes")
 
 
-# 3. Building Plan Resubmission.
 class BuildingPlanResubmissionForm(BuildingPlanBaseForm):
     previous_application_reference = StringField(
         "Previous Application Reference",
         validators=[
             DataRequired(),
-            Length(min=3, max=50),
+            Length(min=3, max=20),
             Regexp(REFERENCE_NUMBER,
                    message="Enter a valid application reference.")
         ]
@@ -184,36 +159,28 @@ class BuildingPlanResubmissionForm(BuildingPlanBaseForm):
         "Corrections and Changes Made",
         validators=[
             DataRequired(),
-            Length(min=10, max=2000)
+            Length(min=10, max=500)
         ]
     )
 
     submit = SubmitField("Resubmit Plans")
 
 
-# 4. Building Plan Extension.
 class BuildingPlanExtensionForm(BuildingPlanBaseForm):
     previous_approval_reference = StringField(
         "Previous Approval Reference",
         validators=[
             DataRequired(),
-            Length(min=3, max=50),
+            Length(min=3, max=20),
             Regexp(REFERENCE_NUMBER,
                    message="Enter a valid approval reference.")
         ]
     )
-    approval_expiry_date = StringField(
-        "Approval Expiry Date (YYYY-MM-DD)",
-        validators=[
-            DataRequired(),
-            Regexp(
-                r"^\d{4}-\d{2}-\d{2}$",
-                message="Enter the date in YYYY-MM-DD format."
-            )
-        ],
-        render_kw={
-            "placeholder": "e.g. 2026-12-31"
-        }
+    approval_expiry_date = DateField(
+        "Approval Expiry Date",
+        format="%Y-%m-%d",
+        validators=[DataRequired()],
+        render_kw={"type": "date"}
     )
     construction_status = SelectField(
         "Current Construction Status",
@@ -229,7 +196,7 @@ class BuildingPlanExtensionForm(BuildingPlanBaseForm):
         "Reason for Extension Request",
         validators=[
             DataRequired(),
-            Length(min=10, max=2000)
+            Length(min=10, max=500)
         ]
     )
 

@@ -1,9 +1,12 @@
 from flask_wtf import FlaskForm
+from datetime import date
+from wtforms.fields import DateField
 from wtforms import (
     StringField,
     SelectField,
     TextAreaField,
-    SubmitField
+    SubmitField,
+    ValidationError
 )
 from wtforms.validators import (
     DataRequired,
@@ -12,54 +15,31 @@ from wtforms.validators import (
     Regexp
 )
 
-KENYAN_PHONE = r"^(?:07|01)\d{8}$"
 TEXT_WITH_LETTERS = r"^(?=.*[A-Za-z])[A-Za-zÀ-ÿ0-9\s&'().,/ -]+$"
 
+# Reject future dates for incidents that have already occurred.
+def validate_not_future_date(form, field):
+    if field.data and field.data > date.today():
+        raise ValidationError("Observed date can't be in the future.")
+    
+
 class PublicHealthBaseForm(FlaskForm):
-    contact_phone = StringField(
-        "Contact Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                KENYAN_PHONE,
-                message="Enter a valid Kenyan phone number."
-            )
-        ],
-        render_kw={
-            "placeholder": "e.g. 0712345678",
-            "maxlength": "10",
-            "inputmode": "numeric"
-        }
-    )
     premises_location = StringField(
         "Physical Location",
-        validators=[
-            DataRequired(),
-            Length(max=180)
-        ],
-        render_kw={
-            "placeholder": "Enter the physical location"
-        }
+        validators=[DataRequired(), Length(max=100)],
+        render_kw={"placeholder": "Enter the physical location"}
     )
     ward = StringField(
         "Ward",
-        validators=[
-            DataRequired(),
-            Length(max=100)
-        ],
-        render_kw={
-            "placeholder": "Enter ward"
-        }
+        validators=[DataRequired(), Length(max=50)],
+        render_kw={"placeholder": "Enter ward"}
     )
 
 
 class FoodHygieneInspectionForm(PublicHealthBaseForm):
     premises_name = StringField(
         "Food Premises Name",
-        validators=[
-            DataRequired(),
-            Length(max=180)
-        ]
+        validators=[DataRequired(), Length(max=100)]
     )
     premises_type = SelectField(
         "Type of Food Premises",
@@ -77,28 +57,16 @@ class FoodHygieneInspectionForm(PublicHealthBaseForm):
     )
     business_permit = StringField(
         "Business Permit Number",
-        validators=[
-            Optional(),
-            Length(max=50)
-        ]
+        validators=[Optional(), Length(max=20)]
     )
     food_activities = TextAreaField(
         "Food Handling Activities",
-        validators=[
-            DataRequired(),
-            Length(max=2000)
-        ],
-        render_kw={
-            "rows": 4,
-            "placeholder": "Describe the food preparation, handling or selling activities."
-        }
+        validators=[DataRequired(), Length(max=500)],
+        render_kw={"rows": 4, "placeholder": "Describe the food preparation, handling or selling activities."}
     )
     additional_information = TextAreaField(
         "Additional Information",
-        validators=[
-            Optional(),
-            Length(max=2000)
-        ]
+        validators=[Optional(), Length(max=500)]
     )
 
     submit = SubmitField("Submit Request")
@@ -109,54 +77,39 @@ class FoodHandlerCertificateForm(FlaskForm):
         "Applicant Full Name",
         validators=[
             DataRequired(),
-            Length(max=150),
+            Length(max=100),
             Regexp(
                 TEXT_WITH_LETTERS,
                 message="Enter a valid full name."
             )
         ]
     )
-    contact_phone = StringField(
-        "Contact Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                KENYAN_PHONE,
-                message="Enter a valid Kenyan phone number."
-            )
-        ],
-        render_kw={
-            "placeholder": "e.g. 0712345678",
-            "maxlength": "10",
-            "inputmode": "numeric"
-        }
-    )
     employer_name = StringField(
         "Employer or Food Premises Name",
         validators=[
             DataRequired(),
-            Length(max=180)
+            Length(max=100)
         ]
     )
     premises_location = StringField(
         "Workplace Location",
         validators=[
             DataRequired(),
-            Length(max=180)
+            Length(max=150)
         ]
     )
     ward = StringField(
         "Ward",
         validators=[
             DataRequired(),
-            Length(max=100)
+            Length(max=50)
         ]
     )
     additional_information = TextAreaField(
         "Additional Information",
         validators=[
             Optional(),
-            Length(max=2000)
+            Length(max=500)
         ]
     )
 
@@ -164,22 +117,11 @@ class FoodHandlerCertificateForm(FlaskForm):
 
 
 class PublicHealthPremisesInspectionForm(PublicHealthBaseForm):
-    applicant_name = StringField(
-        "Applicant Full Name",
-        validators=[
-            DataRequired(),
-            Length(max=150),
-            Regexp(
-                TEXT_WITH_LETTERS,
-                message="Enter a valid full name."
-            )
-        ]
-    )
     premises_name = StringField(
         "Premises Name",
         validators=[
             DataRequired(),
-            Length(max=180)
+            Length(max=100)
         ]
     )
     premises_type = SelectField(
@@ -199,7 +141,7 @@ class PublicHealthPremisesInspectionForm(PublicHealthBaseForm):
         "Reason for Inspection",
         validators=[
             DataRequired(),
-            Length(max=2000)
+            Length(max=500)
         ],
         render_kw={
             "rows": 4,
@@ -210,7 +152,7 @@ class PublicHealthPremisesInspectionForm(PublicHealthBaseForm):
         "Additional Information",
         validators=[
             Optional(),
-            Length(max=2000)
+            Length(max=500)
         ]
     )
 
@@ -218,21 +160,6 @@ class PublicHealthPremisesInspectionForm(PublicHealthBaseForm):
 
 
 class PublicHealthComplaintForm(FlaskForm):
-    contact_phone = StringField(
-        "Contact Number (Optional)",
-        validators=[
-            Optional(),
-            Regexp(
-                KENYAN_PHONE,
-                message="Enter a valid Kenyan phone number."
-            )
-        ],
-        render_kw={
-            "placeholder": "e.g. 0712345678",
-            "maxlength": "10",
-            "inputmode": "numeric"
-        }
-    )
     complaint_category = SelectField(
         "Complaint Category",
         choices=[
@@ -251,24 +178,22 @@ class PublicHealthComplaintForm(FlaskForm):
         "Location of the Concern",
         validators=[
             DataRequired(),
-            Length(max=180)
+            Length(max=150)
         ]
     )
     ward = StringField(
         "Ward",
         validators=[
             DataRequired(),
-            Length(max=100)
+            Length(max=50)
         ]
     )
-    date_observed = StringField(
+    date_observed = DateField(
         "Date Issue Was Observed",
+        format="%Y-%m-%d",
         validators=[
             Optional(),
-            Regexp(
-                r"^\d{4}-\d{2}-\d{2}$",
-                message="Enter the date in YYYY-MM-DD format."
-            )
+            validate_not_future_date
         ],
         render_kw={
             "type": "date"
@@ -281,7 +206,7 @@ class PublicHealthComplaintForm(FlaskForm):
             Length(max=2000)
         ],
         render_kw={
-            "rows": 5,
+            "rows": 4,
             "placeholder": "Describe the public health concern and its impact."
         }
     )
@@ -289,7 +214,7 @@ class PublicHealthComplaintForm(FlaskForm):
         "Additional Information",
         validators=[
             Optional(),
-            Length(max=2000)
+            Length(max=500)
         ]
     )
 

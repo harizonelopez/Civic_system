@@ -1,4 +1,3 @@
-import re
 from flask_wtf import FlaskForm
 from wtforms import (
     StringField,
@@ -13,17 +12,9 @@ from wtforms.validators import (
     Regexp,
 )
 
-# Kenyan mobile numbers:
-# 07XXXXXXXX, 01XXXXXXXX
-KENYAN_PHONE = (
-    r"^(?:07|01)\d{8}$"
-)
+# Text fields must contain letters, numbers and common punctuation where appropriate.
+TEXT_WITH_LETTERS = r"^(?=.*[A-Za-z])[A-Za-zÀ-ÿ0-9\s&'().,/ -]+$"
 
-# Text fields must contain letters but may also contain
-# numbers and common punctuation where appropriate.
-TEXT_WITH_LETTERS = (
-    r"^(?=.*[A-Za-z])[A-Za-zÀ-ÿ0-9\s&'().,/ -]+$"
-)
 # Permit numbers may contain letters, digits, hyphens and slashes.
 PERMIT_NUMBER = r"^[A-Za-z0-9/-]+$"
 
@@ -32,7 +23,7 @@ class NewBusinessPermitForm(FlaskForm):
         "Business Name",
         validators=[
             DataRequired(),
-            Length(min=2, max=150),
+            Length(min=2, max=100),
             Regexp(
                 TEXT_WITH_LETTERS,
                 message="Enter a valid business name."
@@ -54,7 +45,7 @@ class NewBusinessPermitForm(FlaskForm):
         "Nature of Business",
         validators=[
             DataRequired(),
-            Length(min=3, max=180),
+            Length(min=3, max=150),
             Regexp(
                 TEXT_WITH_LETTERS,
                 message="Enter a valid business activity."
@@ -65,7 +56,7 @@ class NewBusinessPermitForm(FlaskForm):
         "Business Location",
         validators=[
             DataRequired(),
-            Length(min=2, max=150),
+            Length(min=2, max=100),
             Regexp(
                 TEXT_WITH_LETTERS,
                 message="Enter a valid business location."
@@ -76,29 +67,12 @@ class NewBusinessPermitForm(FlaskForm):
         "Ward",
         validators=[
             DataRequired(),
-            Length(min=2, max=100),
+            Length(min=2, max=50),
             Regexp(
                 TEXT_WITH_LETTERS,
                 message="Enter a valid ward name."
             )
         ]
-    )
-    contact_phone = StringField(
-        "Business Contact Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                KENYAN_PHONE,
-                message="Enter a valid Kenyan mobile number."
-            )
-        ],
-        render_kw={
-            "maxlength": "10",
-            "minlength": "10",
-            "inputmode": "tel",
-            "pattern": "(07|01)[0-9]{8}",
-            "placeholder": "e.g. 0712345678"
-        }
     )
     postal_address = StringField(
         "Postal Address",
@@ -115,7 +89,7 @@ class NewBusinessPermitForm(FlaskForm):
         "Additional Information",
         validators=[
             Optional(),
-            Length(max=2000)
+            Length(max=500)
         ]
     )
 
@@ -138,7 +112,7 @@ class RenewBusinessPermitForm(FlaskForm):
         "Business Name",
         validators=[
             DataRequired(),
-            Length(min=2, max=180),
+            Length(min=2, max=100),
             Regexp(TEXT_WITH_LETTERS,
                    message="Enter a valid business name.")
         ]
@@ -147,7 +121,7 @@ class RenewBusinessPermitForm(FlaskForm):
         "Business Location",
         validators=[
             DataRequired(),
-            Length(min=2, max=180),
+            Length(min=2, max=150),
             Regexp(TEXT_WITH_LETTERS,
                    message="Enter a valid business location.")
         ]
@@ -156,33 +130,16 @@ class RenewBusinessPermitForm(FlaskForm):
         "Ward",
         validators=[
             DataRequired(),
-            Length(min=2, max=100),
+            Length(min=2, max=50),
             Regexp(TEXT_WITH_LETTERS,
                    message="Enter a valid ward name.")
         ]
-    )
-    contact_phone = StringField(
-        "Contact Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                KENYAN_PHONE,
-                message="Enter a valid Kenyan mobile number."
-            )
-        ],
-        render_kw={
-            "maxlength": "10",
-            "minlength": "10",
-            "inputmode": "tel",
-            "pattern": "(07|01)[0-9]{8}",
-            "placeholder": "e.g. 0712345678"
-        }
     )
     additional_information = TextAreaField(
         "Additional Information",
         validators=[
             Optional(),
-            Length(max=2000)
+            Length(max=500)
         ]
     )
 
@@ -194,7 +151,7 @@ class AmendBusinessPermitForm(FlaskForm):
         "Existing Permit Number",
         validators=[
             DataRequired(),
-            Length(min=3, max=50),
+            Length(min=3, max=20),
             Regexp(
                 PERMIT_NUMBER,
                 message="Permit number can only contain letters, numbers, hyphens and slashes."
@@ -217,29 +174,12 @@ class AmendBusinessPermitForm(FlaskForm):
         "Amendment Details",
         validators=[
             DataRequired(),
-            Length(min=10, max=2000),
+            Length(min=10, max=500),
             Regexp(
                 TEXT_WITH_LETTERS,
                 message="Please provide meaningful amendment details."
             )
         ]
-    )
-    contact_phone = StringField(
-        "Contact Number",
-        validators=[
-            DataRequired(),
-            Regexp(
-                KENYAN_PHONE,
-                message="Enter a valid Kenyan mobile number."
-            )
-        ],
-        render_kw={
-            "maxlength": "10",
-            "minlength": "10",
-            "inputmode": "tel",
-            "pattern": "(07|01)[0-9]{8}",
-            "placeholder": "e.g. 0712345678"
-        }
     )
 
     submit = SubmitField("Submit Amendment")
