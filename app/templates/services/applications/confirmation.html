@@ -78,9 +78,9 @@
                         <span>Application fee</span>
                         <strong>
                             {% if option_info.get('fee') is not none and option_info.get('fee')|float > 0 %}
-                                KSh {{ "{:,.2f}".format(option_info.get('fee')|float) }}
+                                Ksh {{ "{:,.2f}".format(option_info.get('fee')|float) }}
                             {% else %}
-                                To be confirmed
+                                Free of charge
                             {% endif %}
                         </strong>
                     </div>

@@ -1,0 +1,307 @@
+{% extends "admin/base.html" %}
+{% block title %}Application Details | Civic System Administration{% endblock %}
+{% block page_heading %}Application Details{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="application-details-page">
+    <!-- PAGE HERO -->
+    <section class="application-details-hero">
+        <img src="https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=1600" class="application-details-hero-image">
+        <div class="application-details-hero-content">
+            <div>
+                <span class="intro-label">APPLICATION MANAGEMENT</span>
+                <h2>Application Details</h2>
+                <p>Review and manage the information submitted by the citizen.</p>
+            </div>
+
+            <a href="{{ url_for('admin.applications') }}" class="btn btn-light">
+                <i class="bi bi-arrow-left"></i>
+                Back to Applications
+            </a>
+        </div>
+    </section>
+
+    <!-- APPLICATION OVERVIEW -->
+    <section class="dashboard-panel application-details-panel">
+        <div class="panel-heading">
+            <div>
+                <h5>{{ application.title }}</h5>
+                <span>{{ application.reference_number }}</span>
+            </div>
+
+            <span class="status-badge status-{{ application.status|lower }}">
+                {{ application.status|replace('_', ' ')|title }}
+            </span>
+        </div>
+
+        <div class="application-details-grid">
+            <!-- CITIZEN INFORMATION -->
+            <div class="details-section">
+                <h6><i class="bi bi-person"></i> Citizen Information</h6>
+
+                <div class="detail-item">
+                    <span>Full Name</span>
+                    <strong>
+                        {{ application.citizen.first_name }}
+                        {{ application.citizen.last_name }}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>National ID</span>
+                    <strong>
+                        {{ application.citizen.national_id or 'Not provided' }}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Phone Number</span>
+                    <strong>
+                        {{ application.citizen.phone_number or 'Not provided' }}
+                    </strong>
+                </div>
+            </div>
+
+            <!-- APPLICATION INFORMATION -->
+            <div class="details-section">
+                <h6><i class="bi bi-file-earmark-text"></i> Application Information</h6>
+
+                <div class="detail-item">
+                    <span>Reference Number</span>
+                    <strong>{{ application.reference_number }}</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Submitted On</span>
+                    <strong>
+                        {{ application.submitted_at|kenya_time('%d %B %Y, %I:%M %p') }}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Last Updated</span>
+                    <strong>
+                        {{ application.updated_at|kenya_time('%d %B %Y, %I:%M %p') }}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Priority</span>
+                    <strong>{{ application.priority|title }}</strong>
+                </div>
+            </div>
+
+            <!-- SERVICE INFORMATION -->
+            <div class="details-section">
+                <h6><i class="bi bi-building"></i> Service Information</h6>
+
+                <div class="detail-item">
+                    <span>Service</span>
+                    <strong>
+                        {{ application.service_snapshot.get('service', {}).get('name', 'Not available') }}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Service Option</span>
+                    <strong>
+                        {{ application.service_snapshot.get('option', {}).get('name', 'Not applicable') }}
+                    </strong>
+                </div>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="details-section">
+                <h6><i class="bi bi-card-text"></i> Application Description</h6>
+                <p>{{ application.description }}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- APPLICATION MANAGEMENT -->
+    <div class="application-management-grid">
+        <!-- STATUS MANAGEMENT - LEFT -->
+        <section class="dashboard-panel application-details-panel">
+            <div class="panel-heading">
+                <div>
+                    <h5><i class="bi bi-arrow-repeat"></i> Manage Application Status</h5>
+                    <span>Update the current processing stage of this application.</span>
+                </div>
+            </div>
+
+            <div class="status-management-form">
+                <form method="POST" action="{{ url_for('admin.update_application_status', application_id=application.id) }}">
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}">
+
+                    <div class="status-form-group">
+                        <label for="status">Application Status</label>
+                        <select 
+                            name="status" 
+                            id="status" 
+                            class="form-select" 
+                            required>
+
+                            <option value="submitted"
+                                {% if application.status == 'submitted' %}selected{% endif %}>
+                                Submitted
+                            </option>
+
+                            <option value="processing"
+                                {% if application.status == 'processing' %}selected{% endif %}>
+                                Processing
+                            </option>
+
+                            <option value="approved"
+                                {% if application.status == 'approved' %}selected{% endif %}>
+                                Approved
+                            </option>
+
+                            <option value="completed"
+                                {% if application.status == 'completed' %}selected{% endif %}>
+                                Completed
+                            </option>
+
+                            <option value="rejected"
+                                {% if application.status == 'rejected' %}selected{% endif %}>
+                                Rejected
+                            </option>
+
+                            <option value="cancelled"
+                                {% if application.status == 'cancelled' %}selected{% endif %}>
+                                Cancelled
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-arrow-repeat"></i>
+                        Update Status
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ADD REMARK - RIGHT -->
+        <section class="dashboard-panel application-details-panel">
+            <div class="panel-heading">
+                <div>
+                    <h5><i class="bi bi-chat-left-text"></i> Add Admin Remark</h5>
+                    <span>Send an official comment to the citizen.</span>
+                </div>
+            </div>
+
+            <form method="POST" action="{{ url_for('admin.add_application_remark', application_id=application.id) }}">
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}">
+
+                <div class="remark-form-group">
+                    <label for="remark">Your Remark</label>
+                    <textarea
+                        name="remark"
+                        id="remark"
+                        class="form-control"
+                        rows="4"
+                        maxlength="1000"
+                        placeholder="Write an update, clarification or instruction for the citizen..."
+                        required>
+                    </textarea>
+
+                    <small>Maximum 1,000 characters.</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-send"></i>
+                    Submit Remark
+                </button>
+            </form>
+        </section>
+    </div>
+
+    <!-- REMARK HISTORY -->
+    <section class="dashboard-panel application-details-panel mt-4">
+        <div class="panel-heading">
+            <div>
+                <h5><i class="bi bi-chat-square-text"></i> Remarks History</h5>
+                <span>Previous comments and updates sent to the citizen.</span>
+            </div>
+
+            <span class="remark-count">
+                {{ application.remarks|length }} remark(s)
+            </span>
+        </div>
+
+        {% if application.remarks %}
+            <div class="application-remarks-list">
+                {% for remark in application.remarks %}
+                    <div class="application-remark-item">
+                        <div class="remark-author-avatar">
+                            {{ remark.admin.first_name[0]|upper }}
+                        </div>
+
+                        <div class="remark-content">
+                            <div class="remark-meta">
+                                <strong>{{ remark.admin.full_name }}</strong>
+                                <span>
+                                    {{ remark.created_at|kenya_time('%d %B %Y, %I:%M %p') }}
+                                </span>
+                            </div>
+
+                            <p>{{ remark.remark }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        {% else %}
+            <div class="remarks-empty-state">
+                <i class="bi bi-chat-square-dots"></i>
+                <h6>No Remarks Yet</h6>
+                <p>Administrator comments will appear here after they are submitted.</p>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- SUBMITTED INFORMATION -->
+    <section class="dashboard-panel application-details-panel mt-4">
+        <div class="panel-heading">
+            <div>
+                <h5>Submitted Information</h5>
+                <span>Information provided by the citizen during application.</span>
+            </div>
+        </div>
+
+        <div class="submitted-information">
+            {% if application.form_data %}
+                {% for key, value in application.form_data.items()
+                    if key not in ['applicant_name', 'contact_phone', 'national_id', 'owner_id_number'] %}
+                    <div class="detail-item">
+                        <span>{{ key|replace('_', ' ')|title }}</span>
+                        <strong>
+                            {% if value is mapping %}
+                                {{ value|tojson }}
+                            {% elif value is iterable and value is not string %}
+                                {{ value|join(', ') }}
+                            {% else %}
+                                {{ value if value not in [None, ''] else 'Not provided' }}
+                            {% endif %}
+                        </strong>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No additional information was submitted.</p>
+            {% endif %}
+
+        </div>
+    </section>
+</div>
+{% endblock %}

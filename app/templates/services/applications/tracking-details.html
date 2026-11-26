@@ -176,9 +176,9 @@
                     <strong>
                         {% set fee = option_info.get('fee') %}
                         {% if fee is not none and fee|string|trim != '' %}
-                            KSh {{ "%.2f"|format(fee|float) }}
+                            Ksh {{ "%.2f"|format(fee|float) }}
                         {% else %}
-                            To be confirmed
+                            Free of charge
                         {% endif %}
                     </strong>
                 </div>
@@ -205,7 +205,8 @@
             {% set form_data = application.form_data or {} %}
             {% if form_data %}
                 <div class="tracking-information-grid">
-                    {% for key, value in form_data.items() %}
+                    {% for key, value in form_data.items()
+                        if key not in ['applicant_name', 'contact_phone', 'national_id', 'owner_id_number'] %}
                         {% if value is not none and value|string|trim %}
                             <div class="tracking-information-item">
                                 <span>{{ key.replace('_', ' ')|title }}</span>
@@ -227,14 +228,20 @@
                 <div class="tracking-section-heading">
                     <div>
                         <span class="tracking-eyebrow">SERVICE GUIDANCE</span>
-                        <h2>Requirements and Eligibility</h2>
+                        <h2>Requirements & Eligibility</h2>
                     </div>
                 </div>
 
                 {% if option_info.get('requirements') %}
                     <div class="tracking-description">
                         <span>Requirements</span>
-                        <p>{{ option_info.get('requirements') }}</p>
+                        <ul class="tracking-requirements-list">
+                            {% for requirement in option_info.get('requirements').split('\n') %}
+                                {% if requirement.strip() %}
+                                    <li>{{ requirement.strip() }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>                       
                     </div>
                 {% endif %}
 
@@ -248,11 +255,56 @@
             </section>
         {% endif %}
 
+        <!-- ADMIN REMARKS -->
+        <section class="tracking-information-card tracking-remarks-card">
+            <div class="tracking-section-heading">
+                <div>
+                    <span class="tracking-eyebrow">ADMINISTRATOR UPDATES</span>
+                    <h2>Application Remarks</h2>
+                </div>
+
+                <span class="tracking-remarks-count">
+                    {{ application.remarks|length }} remark(s)
+                </span>
+            </div>
+
+            {% if application.remarks %}
+                <div class="tracking-remarks-list">
+                    {% for remark in application.remarks %}
+                        <article class="tracking-remark-item">
+                            <div class="tracking-remark-avatar">
+                                {{ remark.admin.first_name[0]|upper }}
+                            </div>
+
+                            <div class="tracking-remark-content">
+                                <div class="tracking-remark-meta">
+                                    <strong>Admin</strong>
+
+                                    <span>
+                                        {{ remark.created_at|kenya_time('%d %B %Y, %I:%M %p') }}
+                                    </span>
+                                </div>
+
+                                <p>{{ remark.remark }}</p>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="tracking-remarks-empty">
+                    <i class="bi bi-chat-square-text"></i>
+                    <h3>No Remarks Yet</h3>
+                    <p>There are currently no admin updates for this application.
+                    </p>
+                </div>
+            {% endif %}
+        </section>
+
         <!-- FOOTER ACTION -->
         <div class="tracking-details-actions">
-            <a href="{{ url_for('requests.track_application') }}" class="tracking-back-link">
-                <i class="bi bi-search"></i>
-                Track Another Application
+            <a href="{{ url_for('citizen.applications') }}" class="tracking-back-link">
+                <i class="bi bi-arrow-left"></i>
+                Back to Applications
             </a>
         </div>
     </div>

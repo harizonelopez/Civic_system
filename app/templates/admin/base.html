@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Civic System Administration Panel">
+
+    <title>{% block title %}Admin Panel | Civic System{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+
+    <!-- Admin CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/admin-base-template.css') }}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="admin-body">
+    <div class="admin-layout">
+        <!-- ADMIN SIDEBAR -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-brand">
+                <span class="admin-brand-icon">
+                    <i class="bi bi-buildings"></i>
+                </span>
+
+                <div class="admin-brand-text">
+                    <strong>CIVIC<span>SYSTEM</span></strong>
+                    <small>ADMINISTRATION</small>
+                </div>
+            </div>
+
+            <div class="admin-sidebar-divider"></div>
+            <div class="admin-nav-heading">
+                ADMINISTRATION
+            </div>
+
+            <nav class="admin-navigation">
+                <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
+                    <i class="bi bi-grid-1x2"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('admin.applications') }}" class="admin-nav-link {% if request.endpoint == 'admin.applications' %}active{% endif %}">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span>Applications</span>
+                </a>
+            </nav>
+
+            <div class="admin-sidebar-bottom">
+                <div class="admin-sidebar-divider"></div>
+                <div class="admin-profile">
+                    <div class="admin-avatar">
+                        {{ current_user.first_name[0]|upper }}
+                    </div>
+
+                    <div class="admin-profile-info">
+                        <strong>{{ current_user.first_name }}</strong>
+                        <small>Administrator</small>
+                    </div>
+                </div>
+
+                <form action="{{ url_for('auth.logout') }}" method="POST">
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token() }}">
+
+                    <button type="submit" class="admin-logout-btn">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Sign Out</span>
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- ADMIN MAIN AREA -->
+        <div class="admin-main">
+            <!-- TOP BAR -->
+            <header class="admin-topbar">
+                <div class="admin-topbar-left">
+                    <button type="button"
+                            class="admin-menu-toggle"
+                            id="adminMenuToggle"
+                            aria-label="Toggle sidebar">
+                        <i class="bi bi-list"></i>
+                    </button>
+
+                    <div class="admin-page-context">
+                        <span>ADMINISTRATION</span>
+                        <strong>{% block page_heading %}Dashboard{% endblock %}</strong>
+                    </div>
+                </div>
+
+                <div class="admin-topbar-right">
+                    <span class="admin-status-indicator"></span>
+                    <span class="admin-status-text">Admin Portal</span>
+                </div>
+            </header>
+
+            <!-- PAGE CONTENT -->
+            <main class="admin-content">
+                <!-- Global Flash Messages -->
+                <div class="admin-flash-container">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} flash-message" role="alert">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                    <span>{{ message }}</span>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                {% block content %}{% endblock %}
+            </main>
+
+            <footer class="admin-footer">
+                <span>&copy; 2026 Civic System</span>
+                <span>Administration Panel</span>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Admin JavaScript -->
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+
+

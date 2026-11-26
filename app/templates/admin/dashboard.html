@@ -1,0 +1,399 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard | Civic System Administration{% endblock %}
+{% block page_heading %}Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- =====================================================
+     DASHBOARD HERO
+====================================================== -->
+<section class="dashboard-hero">
+    <div class="dashboard-hero-overlay"></div>
+    <div class="dashboard-hero-content">
+        <div class="dashboard-hero-label">
+            <i class="bi bi-shield-check"></i>
+            CIVIC SYSTEM ADMINISTRATION
+        </div>
+
+        <h1>
+            Welcome back,
+            <span>{{ current_user.first_name }}</span>
+        </h1>
+        <p>
+            Manage public service applications, monitor requests
+            and keep track of service delivery across departments.
+        </p>
+
+        <div class="dashboard-hero-actions">
+            <a href="#recent-applications" class="dashboard-hero-btn">
+                <i class="bi bi-file-earmark-text"></i>
+                View Recent Applications
+            </a>
+
+            <div class="dashboard-hero-note">
+                <i class="bi bi-activity"></i>
+                Administration Overview
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-hero-decoration">
+        <div class="hero-icon-circle">
+            <i class="bi bi-buildings"></i>
+        </div>
+    </div>
+</section>
+
+<!-- =====================================================
+     DASHBOARD INTRODUCTION
+====================================================== -->
+<section class="dashboard-intro">
+    <div>
+        <span class="dashboard-section-label">OVERVIEW</span>
+        <h2>Application Statistics</h2>
+        <p>Monitor the progress of submitted service applications.</p>
+    </div>
+
+    <div class="dashboard-intro-icon">
+        <i class="bi bi-bar-chart-line"></i>
+    </div>
+</section>
+
+<!-- =====================================================
+     STATISTICS CARDS
+====================================================== -->
+<section class="dashboard-stats-grid">
+    <!-- Total Applications -->
+    <div class="dashboard-stat-card stat-total">
+        <div class="stat-card-top">
+            <div class="stat-icon">
+                <i class="bi bi-files"></i>
+            </div>
+
+            <span class="stat-card-label">ALL APPLICATIONS</span>
+        </div>
+
+        <div class="stat-card-value">
+            {{ total_applications }}
+        </div>
+
+        <div class="stat-card-bottom">
+            <span>Total submissions received</span>
+            <i class="bi bi-arrow-up-right"></i>
+        </div>
+    </div>
+
+    <!-- Pending Applications -->
+    <div class="dashboard-stat-card stat-pending">
+        <div class="stat-card-top">
+            <div class="stat-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+
+            <span class="stat-card-label">PENDING</span>
+        </div>
+
+        <div class="stat-card-value">
+            {{ pending_applications }}
+        </div>
+
+        <div class="stat-card-bottom">
+            <span>Awaiting review</span>
+            <i class="bi bi-clock"></i>
+        </div>
+    </div>
+
+    <!-- Processing Applications -->
+    <div class="dashboard-stat-card stat-review">
+        <div class="stat-card-top">
+            <div class="stat-icon">
+                <i class="bi bi-search"></i>
+            </div>
+
+            <span class="stat-card-label">PROCESSING</span>
+        </div>
+
+        <div class="stat-card-value">
+            {{ processing_applications }}
+        </div>
+
+        <div class="stat-card-bottom">
+            <span>Currently being processed</span>
+            <i class="bi bi-arrow-repeat"></i>
+        </div>
+    </div>
+
+    <!-- Approved -->
+    <div class="dashboard-stat-card stat-approved">
+        <div class="stat-card-top">
+            <div class="stat-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+
+            <span class="stat-card-label">APPROVED</span>
+        </div>
+
+        <div class="stat-card-value">
+            {{ approved_applications }}
+        </div>
+
+        <div class="stat-card-bottom">
+            <span>Successfully approved</span>
+            <i class="bi bi-check2"></i>
+        </div>
+    </div>
+
+    <!-- Rejected -->
+    <div class="dashboard-stat-card stat-rejected">
+        <div class="stat-card-top">
+            <div class="stat-icon">
+                <i class="bi bi-x-circle"></i>
+            </div>
+
+            <span class="stat-card-label">REJECTED</span>
+        </div>
+
+        <div class="stat-card-value">
+            {{ rejected_applications }}
+        </div>
+
+        <div class="stat-card-bottom">
+            <span>Applications rejected</span>
+            <i class="bi bi-exclamation-circle"></i>
+        </div>
+    </div>
+</section>
+
+<!-- =====================================================
+     APPLICATION OVERVIEW
+====================================================== -->
+<section class="dashboard-overview-section">
+    <div class="dashboard-panel">
+        <div class="dashboard-panel-header">
+            <div>
+                <span class="dashboard-section-label">APPLICATION STATUS</span>
+                <h3>Request Overview</h3>
+            </div>
+
+            <div class="panel-header-icon">
+                <i class="bi bi-pie-chart"></i>
+            </div>
+        </div>
+
+        {% set total = total_applications %}
+
+        {% if total > 0 %}
+            {% set pending_percent = (pending_applications / total * 100)|round|int %}
+            {% set processing_percent = (processing_applications / total * 100)|round|int %}
+            {% set approved_percent = (approved_applications / total * 100)|round|int %}
+            {% set rejected_percent = (rejected_applications / total * 100)|round|int %}
+        {% else %}
+            {% set pending_percent = 0 %}
+            {% set processing_percent = 0 %}
+            {% set approved_percent = 0 %}
+            {% set rejected_percent = 0 %}
+        {% endif %}
+
+        <div class="overview-total">
+            <span>Total applications</span>
+            <strong>{{ total_applications }}</strong>
+        </div>
+
+        <div class="overview-progress">
+            <div class="progress-pending" style="width: {{ pending_percent }}%"></div>
+            <div class="progress-review" style="width: {{ processing_percent }}%"></div>
+            <div class="progress-approved" style="width: {{ approved_percent }}%"></div>
+            <div class="progress-rejected" style="width: {{ rejected_percent }}%"></div>
+        </div>
+
+        <div class="overview-status-list">
+            <div class="overview-status-item">
+                <span class="overview-status-name">
+                    <span class="status-dot dot-pending"></span>
+                    Pending
+                </span>
+                <strong>{{ pending_applications }}</strong>
+            </div>
+
+            <div class="overview-status-item">
+                <span class="overview-status-name">
+                    <span class="status-dot dot-review"></span>
+                    Processing
+                </span>
+                <strong>{{ processing_applications }}</strong>
+            </div>
+
+            <div class="overview-status-item">
+                <span class="overview-status-name">
+                    <span class="status-dot dot-approved"></span>
+                    Approved
+                </span>
+                <strong>{{ approved_applications }}</strong>
+            </div>
+
+            <div class="overview-status-item">
+                <span class="overview-status-name">
+                    <span class="status-dot dot-rejected"></span>
+                    Rejected
+                </span>
+                <strong>{{ rejected_applications }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN INFORMATION PANEL -->
+    <div class="dashboard-panel dashboard-info-panel">
+        <div class="dashboard-panel-header">
+            <div>
+                <span class="dashboard-section-label">ADMINISTRATION</span>
+                <h3>Management Centre</h3>
+            </div>
+
+            <div class="panel-header-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+        </div>
+
+        <div class="management-info">
+            <div class="management-info-icon">
+                <i class="bi bi-person-workspace"></i>
+            </div>
+
+            <div>
+                <strong>Administrator Access</strong>
+                <p>
+                    You are viewing the Civic System administration
+                    dashboard.
+                </p>
+            </div>
+        </div>
+
+        <div class="management-info">
+            <div class="management-info-icon management-icon-blue">
+                <i class="bi bi-clipboard-check"></i>
+            </div>
+
+            <div>
+                <strong>Application Monitoring</strong>
+                <p>
+                    Monitor application submissions and their
+                    processing progress.
+                </p>
+            </div>
+        </div>
+
+        <div class="management-info">
+            <div class="management-info-icon management-icon-purple">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+
+            <div>
+                <strong>Service Delivery</strong>
+                <p>
+                    Track approval outcomes and overall request activity.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =====================================================
+     RECENT APPLICATIONS
+====================================================== -->
+<section class="dashboard-recent-section" id="recent-applications">
+    <div class="dashboard-panel">
+        <div class="dashboard-panel-header recent-panel-header">
+            <div>
+                <span class="dashboard-section-label">LATEST ACTIVITY</span>
+                <h3>Recent Applications</h3>
+                <p>Latest service requests submitted by citizens.</p>
+            </div>
+
+            <div class="recent-applications-icon">
+                <i class="bi bi-clock-history"></i>
+            </div>
+        </div>
+
+        {% if recent_applications %}
+
+        <div class="admin-table-wrapper">
+            <table class="admin-applications-table">
+                <thead>
+                    <tr>
+                        <th>REFERENCE</th>
+                        <th>APPLICATION</th>
+                        <th>CITIZEN</th>
+                        <th>SUBMITTED</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for application in recent_applications %}
+
+                    <tr>
+                        <td>
+                            <span class="application-reference">
+                                {{ application.reference_number }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="application-title-cell">
+                                <strong>{{ application.title }}</strong>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class="citizen-table-info">
+                                <span class="citizen-table-avatar">
+                                    {{ application.citizen.first_name[0]|upper }}
+                                </span>
+
+                                <span>
+                                    {{ application.citizen.first_name }}
+                                    {{ application.citizen.last_name }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="application-date">
+                                {{ application.submitted_at.strftime('%d %b %Y') }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {% set status = application.status %}
+
+                            <span class="application-status status-{{ status }}">
+                                <span class="status-indicator-small"></span>
+                                {{ status.replace('_', ' ')|title }}
+                            </span>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+
+        <div class="dashboard-empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-inbox"></i>
+            </div>
+
+            <h4>No Applications Yet</h4>
+            <p>Applications submitted by citizens will appear here.</p>
+        </div>
+
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

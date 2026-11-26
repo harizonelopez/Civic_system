@@ -1,0 +1,119 @@
+{% extends "admin/base.html" %}
+{% block title %}Applications | Civic System Administration{% endblock %}
+{% block page_heading %}Applications{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="applications-page">
+    <section class="dashboard-intro">
+        <div class="applications-intro-content">
+            <span class="dashboard-section-label">APPLICATION MANAGEMENT</span>
+            <h2>Service Applications</h2>
+            <p>View and monitor service applications submitted by citizens.</p>
+        </div>
+
+        <div class="dashboard-intro-icon">
+            <i class="bi bi-folder2-open"></i>
+        </div>
+    </section>
+
+    <section class="dashboard-recent-section">
+        <div class="dashboard-panel">
+            <div class="dashboard-panel-header recent-panel-header">
+                <div>
+                    <span class="dashboard-section-label">ALL SUBMISSIONS</span>
+                    <h3>Application Records</h3>
+                    <p>{{ applications|length }} application(s) recorded in the system.</p>
+                </div>
+
+                <div class="recent-applications-icon">
+                    <i class="bi bi-clipboard-data"></i>
+                </div>
+            </div>
+
+            {% if applications %}
+                <div class="admin-table-wrapper">
+                    <table class="admin-applications-table">
+                        <thead>
+                            <tr>
+                                <th>REFERENCE</th>
+                                <th>APPLICATION</th>
+                                <th>CITIZEN</th>
+                                <th>SUBMITTED</th>
+                                <th>STATUS</th>
+                                <th>ACTION</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for application in applications %}
+                            <tr>
+                                <td>
+                                    <span class="application-reference">
+                                        {{ application.reference_number }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="application-title-cell">
+                                        <strong>{{ application.title }}</strong>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="citizen-table-info">
+                                        <span class="citizen-table-avatar">
+                                            {{ application.citizen.first_name[0]|upper }}
+                                        </span>
+
+                                        <span>
+                                            {{ application.citizen.first_name }}
+                                            {{ application.citizen.last_name }}
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="application-date">
+                                        {{ application.submitted_at.strftime('%d %b %Y') }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {% set status = application.status %}
+                                    <span class="application-status status-{{ status }}">
+                                        <span class="status-indicator-small"></span>
+                                        {{ status.replace('_', ' ')|title }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <a href="{{ url_for('admin.application_details', application_id=application.id) }}" class="application-reference">
+                                        View Details
+                                        <i class="bi bi-arrow-up-right"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="dashboard-empty-state">
+                    <div class="empty-state-icon">
+                        <i class="bi bi-inbox"></i>
+                    </div>
+
+                    <h4>No Applications Found</h4>
+                    <p>Citizen applications will appear here when submitted.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+</div>
+{% endblock %}
+
