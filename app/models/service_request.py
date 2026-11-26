@@ -122,5 +122,13 @@ class ServiceRequest(db.Model):
         back_populates="service_requests"
     )
 
+    remarks = db.relationship(
+        "ApplicationRemark",
+        back_populates="application",
+        lazy="selectin",
+        cascade="all, delete-orphan",
+        order_by="ApplicationRemark.created_at.desc()"
+    )
+
     def __repr__(self):
         return f"<ServiceRequest {self.reference_number}>"

@@ -8,6 +8,7 @@ from app.models.service_request import ServiceRequest
 from app.models.associations import user_roles, role_permissions
 from app.models.service_option import ServiceOption
 from app.models.support_request import SupportRequest
+from app.models.application_remark import ApplicationRemark
 
 __all__ = [
     "User", 
@@ -21,4 +22,5 @@ __all__ = [
     "role_permissions",
     "ServiceOption",
     "SupportRequest",
+    "ApplicationRemark",
 ]

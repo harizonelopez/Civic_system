@@ -99,6 +99,12 @@ class User(UserMixin, db.Model):
         lazy="selectin"
     )
 
+    application_remarks = db.relationship(
+        "ApplicationRemark",
+        back_populates="admin",
+        lazy="selectin"
+    )
+
     @login_manager.user_loader
     def load_user(user_id):
         return db.session.get(User, int(user_id))
