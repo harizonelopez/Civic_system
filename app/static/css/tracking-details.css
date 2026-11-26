@@ -445,3 +445,164 @@
     }
 }
 
+/* =====================================================
+   ADMIN REMARKS HISTORY
+===================================================== */
+.tracking-remarks-count {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 13px;
+    border-radius: 20px;
+    background: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(96, 165, 250, 0.25);
+    color: #93c5fd;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.tracking-remarks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.tracking-remark-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 13px;
+    background: rgba(30, 41, 59, 0.55);
+    border: 1px solid rgba(148, 163, 184, 0.13);
+}
+
+.tracking-remark-avatar {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(37, 99, 235, 0.2);
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    color: #93c5fd;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.tracking-remark-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.tracking-remark-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 15px;
+    margin-bottom: 12px;
+}
+
+.tracking-remark-meta strong {
+    color: #f1f5f9;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.tracking-remark-meta span {
+    color: #94a3b8;
+    font-size: 0.75rem;
+}
+
+.tracking-remark-content p {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    margin: 0;
+}
+
+/* Empty remarks history */
+.tracking-remarks-empty {
+    padding: 35px 20px;
+    text-align: center;
+    border: 1px dashed rgba(148, 163, 184, 0.2);
+    border-radius: 13px;
+    background: rgba(30, 41, 59, 0.3);
+}
+
+.tracking-remarks-empty i {
+    display: inline-block;
+    color: #64748b;
+    font-size: 2rem;
+    margin-bottom: 12px;
+}
+
+.tracking-remarks-empty h3 {
+    color: #e2e8f0;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.tracking-remarks-empty p {
+    max-width: 480px;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    margin: 0 auto;
+}
+
+/* Remarks response design */
+@media (max-width: 576px) {
+
+    .tracking-remark-item {
+        gap: 12px;
+        padding: 15px;
+    }
+
+    .tracking-remark-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 0.85rem;
+    }
+
+    .tracking-remark-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .tracking-remark-content p {
+        font-size: 0.85rem;
+    }
+}
+
+/* REQUIREMENTS LIST */
+.tracking-requirements-list {
+    margin: 14px 0 0;
+    padding-left: 25px;
+    color: #cbd5e1;
+}
+
+.tracking-requirements-list li {
+    padding-left: 6px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.tracking-requirements-list li:last-child {
+    margin-bottom: 0;
+}
+
+.tracking-requirements-list li::marker {
+    color: #60a5fa;
+    font-weight: 700;
+}
+
+
