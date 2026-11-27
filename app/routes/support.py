@@ -10,7 +10,7 @@ support_bp = Blueprint("support", __name__, url_prefix="/support")
 @support_bp.route("/contact", methods=["GET", "POST"])
 def contact():
     form = SupportRequestForm()
-    # Prefill & enforce account details for logged-in citizens.
+    # Prefill & enforce account details for signed-in citizens.
     if current_user.is_authenticated:
         form.full_name.data = current_user.full_name
         form.email.data = current_user.email
@@ -22,7 +22,7 @@ def contact():
             else None
         )
 
-        # Ensure a logged-in citizen can only reference their own application.
+        # Ensure a signed-in citizen can only reference their own application.
         if application_reference and current_user.is_authenticated:
             application = ServiceRequest.query.filter_by(
                 reference_number=application_reference,
@@ -63,7 +63,7 @@ def contact():
             db.session.commit()
 
             flash(
-                f"Support request submitted successfully. "
+                f"Support request submitted. "
                 f"Reference number is {support_request.reference_number}.",
                 "success"
             )
