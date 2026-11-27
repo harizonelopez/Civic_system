@@ -177,7 +177,7 @@ def apply_featured(slug, option):
     if featured_service is None:
         abort(404)
 
-    # Map application option codes to their corresponding forms.
+    # Map application option codes to their corresponding forms
     application_forms = {
         "business-permits": {
             "new-permit": NewBusinessPermitForm,
