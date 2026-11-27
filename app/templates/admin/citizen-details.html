@@ -1,0 +1,273 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ citizen.full_name }} | Citizen Profile{% endblock %}
+{% block page_heading %}Citizen Profile{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-citizen-details.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="citizen-profile-page">
+    <!-- PROFILE HERO -->
+    <section class="citizen-profile-hero">
+        <div class="citizen-profile-hero-content">
+            <a href="{{ url_for('admin.citizens') }}" class="citizen-back-link">
+                <i class="bi bi-arrow-left"></i>
+                Back to Citizens
+            </a>
+
+            <span class="citizen-profile-eyebrow">
+                <i class="bi bi-person-badge"></i>
+                CITIZEN ACCOUNT / PROFILE
+            </span>
+
+            <div class="citizen-profile-heading">
+                <div class="citizen-profile-avatar">
+                    {{ citizen.first_name[0]|upper }}{{ citizen.last_name[0]|upper }}
+                </div>
+
+                <div>
+                    <h1>{{ citizen.full_name }}</h1>
+                    <p>Citizen #{{ citizen.id }}</p>
+                </div>
+            </div>
+                        
+            <div class="citizen-profile-meta">
+                {% if citizen.email.endswith('@deleted.invalid') %}
+
+                    <span class="profile-status inactive">
+                        <i class="bi bi-trash3-fill"></i>
+                        Deleted account
+                    </span>
+
+                    <span>
+                        <i class="bi bi-calendar-check"></i>
+                        Registered {{ citizen.created_at.strftime('%d %b %Y') }}
+                    </span>
+
+                    <span class="citizen-deleted-notice">
+                        <i class="bi bi-shield-lock-fill"></i>
+                        Retained for historical records
+                    </span>
+
+                {% else %}
+                    {% if citizen.is_active %}
+                        <span class="profile-status active">
+                            <i class="bi bi-check-circle-fill"></i>
+                            Active account
+                        </span>
+                    {% else %}
+                        <span class="profile-status inactive">
+                            <i class="bi bi-lock-fill"></i>
+                            Deactivated account
+                        </span>
+                    {% endif %}
+
+                    <span>
+                        <i class="bi bi-calendar-check"></i>
+                        Registered {{ citizen.created_at.strftime('%d %b %Y') }}
+                    </span>
+
+                    <a href="{{ url_for('admin.edit_citizen', citizen_id=citizen.id) }}"
+                    class="citizen-edit-link">
+                        <i class="bi bi-pencil-square"></i>
+                        Edit details
+                    </a>
+
+                    <form method="POST" action="{{ url_for('admin.toggle_citizen_status', citizen_id=citizen.id) }}" class="citizen-status-form">
+                        <input type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}">
+
+                        {% if citizen.is_active %}
+                            <button type="submit" class="citizen-status-btn deactivate">
+                                <i class="bi bi-person-lock"></i>
+                                Deactivate account
+                            </button>
+                        {% else %}
+                            <button type="submit" class="citizen-status-btn activate">
+                                <i class="bi bi-person-check"></i>
+                                Activate account
+                            </button>
+                        {% endif %}
+                    </form>
+
+                    <a href="{{ url_for('admin.delete_citizen', citizen_id=citizen.id) }}" class="citizen-delete-link">
+                        <i class="bi bi-trash3"></i>
+                        Delete citizen
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="citizen-profile-decoration">
+            <i class="bi bi-buildings"></i>
+        </div>
+
+    </section>
+
+    <!-- PROFILE CONTENT -->
+    <div class="citizen-profile-layout">
+        <!-- PERSONAL INFORMATION -->
+        <section class="citizen-profile-card">
+            <div class="citizen-profile-section-heading">
+                <div class="profile-section-icon">
+                    <i class="bi bi-person-vcard"></i>
+                </div>
+
+                <div>
+                    <h2>Personal Information</h2>
+                    <p>Citizen registration details</p>
+                </div>
+            </div>
+
+            <div class="citizen-information-grid">
+                <div class="citizen-information-item">
+                    <span>First Name</span>
+                    <strong>{{ citizen.first_name }}</strong>
+                </div>
+
+                <div class="citizen-information-item">
+                    <span>Last Name</span>
+                    <strong>{{ citizen.last_name }}</strong>
+                </div>
+
+                <div class="citizen-information-item">
+                    <span>Email Address</span>
+                    <strong>{{ citizen.email }}</strong>
+                </div>
+
+                <div class="citizen-information-item">
+                    <span>Phone Number</span>
+                    <strong>{{ citizen.phone_number or 'Not provided' }}</strong>
+                </div>
+
+                <div class="citizen-information-item">
+                    <span>National ID</span>
+                    <strong>{{ citizen.national_id or 'Not provided' }}</strong>
+                </div>
+
+                <div class="citizen-information-item">
+                    <span>Gender</span>
+                    <strong>{{ citizen.gender or 'Not provided' }}</strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACCOUNT INFORMATION -->
+        <section class="citizen-profile-card">
+            <div class="citizen-profile-section-heading">
+                <div class="profile-section-icon account-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+
+                <div>
+                    <h2>Account Information</h2>
+                    <p>Account registration and access</p>
+                </div>
+            </div>
+
+            <div class="citizen-account-information">
+                <div class="account-information-row">
+                    <span>Account ID</span>
+                    <strong>#{{ citizen.id }}</strong>
+                </div>
+
+                <div class="account-information-row">
+                    <span>Account Status</span>
+
+                    {% if citizen.is_active %}
+                        <strong class="account-text-active">Active</strong>
+                    {% else %}
+                        <strong class="account-text-inactive">Inactive</strong>
+                    {% endif %}
+                </div>
+
+                <div class="account-information-row">
+                    <span>Account Security</span>
+                    <strong class="account-text-active">
+                        Standard Authentication
+                    </strong>
+                </div>
+
+                <div class="account-information-row">
+                    <span>Registered On</span>
+                    <strong>{{ citizen.created_at.strftime('%d %b %Y, %I:%M %p') }}</strong>
+                </div>
+
+                <div class="account-information-row">
+                    <span>Last Login</span>
+                    <strong>
+                        {% if citizen.last_login_at %}
+                            {{ citizen.last_login_at.strftime('%d %b %Y, %I:%M %p') }}
+                        {% else %}
+                            Never logged in
+                        {% endif %}
+                    </strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICE APPLICATIONS -->
+        <section class="citizen-profile-card citizen-applications-card">
+            <div class="citizen-profile-section-heading">
+                <div class="profile-section-icon applications-icon">
+                    <i class="bi bi-file-earmark-text"></i>
+                </div>
+
+                <div>
+                    <h2>Service Applications</h2>
+                    <p>Applications submitted by this citizen</p>
+                </div>
+
+                <span class="application-count">
+                    {{ applications|length }} applications
+                </span>
+            </div>
+
+            {% if applications %}
+                <div class="citizen-applications-list">
+                    {% for application in applications %}
+
+                        <div class="citizen-application-item">
+                            <div class="application-item-icon">
+                                <i class="bi bi-file-earmark-check"></i>
+                            </div>
+
+                            <div class="application-item-info">
+                                <h3>Application #{{ application.id }}</h3>
+
+                                <span>
+                                    Submitted
+                                    {{ application.submitted_at.strftime('%d %b %Y') }}
+                                </span>
+                            </div>
+
+                            <div class="application-item-status">
+                                <span class="application-status-badge">
+                                    {{ application.status|replace('_', ' ')|title }}
+                                </span>
+                            </div>
+
+                            <a href="{{ url_for('admin.application_details', application_id=application.id) }}" class="application-view-link" aria-label="View application {{ application.id }}">
+                                <i class="bi bi-arrow-up-right"></i>
+                            </a>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            {% else %}
+
+                <div class="citizen-no-applications">
+                    <i class="bi bi-folder2-open"></i>
+                    <h3>No Applications Yet</h3>
+                    <p>This citizen has not submitted any service applications.</p>
+                </div>
+            {% endif %}
+
+        </section>
+    </div>
+</div>
+
+{% endblock %}

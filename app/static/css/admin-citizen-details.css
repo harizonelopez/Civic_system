@@ -1,0 +1,608 @@
+/* =====================================================
+   CITIZEN PROFILE DETAILS
+   Civic System Admin
+===================================================== */
+:root {
+    --profile-primary: #2878a8;
+    --profile-secondary: #25a69a;
+    --profile-heading: #203b50;
+    --profile-text: #667b8c;
+    --profile-muted: #91a3b1;
+    --profile-border: #e2edf3;
+    --profile-background: #f3f8fb;
+    --profile-white: #ffffff;
+}
+
+/* =====================================================
+   PAGE
+===================================================== */
+.citizen-profile-page {
+    min-height: 100vh;
+    padding-bottom: 30px;
+    background: var(--profile-background);
+}
+
+/* =====================================================
+   PROFILE HERO
+===================================================== */
+.citizen-profile-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 270px;
+    overflow: hidden;
+    padding: 32px 40px;
+    margin-bottom: 26px;
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            105deg,
+            rgba(17, 70, 101, 0.93),
+            rgba(30, 132, 146, 0.76)
+        ),
+        url("../images/citizen-background.jpg") center/cover no-repeat;
+
+    color: #ffffff;
+}
+
+.citizen-profile-hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+}
+
+.citizen-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 25px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.citizen-back-link:hover {
+    color: #ffffff;
+}
+
+.citizen-profile-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    color: #d3f4ef;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 1.5px;
+}
+
+.citizen-profile-heading {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+}
+
+.citizen-profile-avatar {
+    display: grid;
+    place-items: center;
+    width: 67px;
+    height: 67px;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 19px;
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 750;
+    backdrop-filter: blur(5px);
+}
+
+.citizen-profile-heading h1 {
+    margin: 0 0 6px;
+    color: #ffffff;
+    font-size: clamp(25px, 3vw, 35px);
+    font-weight: 750;
+    letter-spacing: -0.6px;
+}
+
+.citizen-profile-heading p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.citizen-profile-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 19px;
+    margin-top: 22px;
+}
+
+.citizen-profile-meta > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 12px;
+}
+
+.citizen-profile-meta i {
+    font-size: 14px;
+}
+
+.profile-status {
+    padding: 7px 12px;
+    border-radius: 30px;
+    font-weight: 700;
+}
+
+.profile-status.active {
+    background: rgba(213, 255, 231, 0.18);
+    color: #d8ffea;
+}
+
+.profile-status.inactive {
+    background: rgba(255, 226, 208, 0.2);
+    color: #ffe3d2;
+}
+
+.citizen-profile-decoration {
+    position: absolute;
+    top: 50%;
+    right: 55px;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.13);
+    font-size: 165px;
+    pointer-events: none;
+}
+
+/* =====================================================
+   PROFILE LAYOUT
+===================================================== */
+.citizen-profile-layout {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.citizen-profile-card {
+    min-width: 0;
+    padding: 25px;
+    border: 1px solid var(--profile-border);
+    border-radius: 17px;
+    background: var(--profile-white);
+    box-shadow: 0 5px 20px rgba(44, 91, 119, 0.04);
+}
+
+/* =====================================================
+   SECTION HEADINGS
+===================================================== */
+.citizen-profile-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 24px;
+}
+
+.profile-section-icon {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border-radius: 13px;
+    background: #e8f3fb;
+    color: var(--profile-primary);
+    font-size: 20px;
+}
+
+.profile-section-icon.account-icon {
+    background: #e6f7f1;
+    color: #239b76;
+}
+
+.profile-section-icon.applications-icon {
+    background: #fff3e5;
+    color: #d68b32;
+}
+
+.citizen-profile-section-heading h2 {
+    margin: 0 0 5px;
+    color: var(--profile-heading);
+    font-size: 17px;
+    font-weight: 750;
+}
+
+.citizen-profile-section-heading p {
+    margin: 0;
+    color: var(--profile-muted);
+    font-size: 12px;
+}
+
+/* =====================================================
+   PERSONAL INFORMATION
+===================================================== */
+.citizen-information-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 21px 18px;
+}
+
+.citizen-information-item {
+    min-width: 0;
+    padding-bottom: 13px;
+    border-bottom: 1px solid #edf2f5;
+}
+
+.citizen-information-item span {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--profile-muted);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.citizen-information-item strong {
+    display: block;
+    overflow-wrap: anywhere;
+    color: var(--profile-heading);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* =====================================================
+   ACCOUNT INFORMATION
+===================================================== */
+.citizen-account-information {
+    display: grid;
+    gap: 0;
+}
+
+.account-information-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 14px 0;
+    border-bottom: 1px solid #edf2f5;
+}
+
+.account-information-row:first-child {
+    padding-top: 0;
+}
+
+.account-information-row:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.account-information-row span {
+    color: var(--profile-muted);
+    font-size: 12px;
+}
+
+.account-information-row strong {
+    color: var(--profile-heading);
+    font-size: 12px;
+    font-weight: 700;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.account-information-row .account-text-active {
+    color: #239b76;
+}
+
+.account-information-row .account-text-inactive {
+    color: #d07848;
+}
+
+.account-information-row .account-text-pending {
+    color: #d18a35;
+}
+
+/* =====================================================
+   APPLICATIONS
+===================================================== */
+.citizen-applications-card {
+    grid-column: 1 / -1;
+}
+
+.application-count {
+    margin-left: auto;
+    padding: 7px 11px;
+    border-radius: 25px;
+    background: #f1f8fb;
+    color: var(--profile-primary);
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.citizen-applications-list {
+    display: grid;
+    gap: 12px;
+}
+
+.citizen-application-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid var(--profile-border);
+    border-radius: 12px;
+    background: #fbfdff;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.citizen-application-item:hover {
+    border-color: #cbdfe9;
+    background: #f6fbfd;
+}
+
+.application-item-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: #e8f3fb;
+    color: var(--profile-primary);
+    font-size: 18px;
+}
+
+.application-item-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.application-item-info h3 {
+    margin: 0 0 5px;
+    color: var(--profile-heading);
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.application-item-info span {
+    color: var(--profile-muted);
+    font-size: 11px;
+}
+
+.application-status-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 25px;
+    background: #edf4f8;
+    color: #52788e;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.application-view-link {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border: 1px solid #dcecf3;
+    border-radius: 9px;
+    background: #ffffff;
+    color: var(--profile-primary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.application-view-link:hover {
+    border-color: var(--profile-primary);
+    background: var(--profile-primary);
+    color: #ffffff;
+}
+
+/* =====================================================
+   NO APPLICATIONS
+===================================================== */
+.citizen-no-applications {
+    padding: 35px 15px;
+    border: 1px dashed #d9e7ee;
+    border-radius: 13px;
+    background: #fbfdff;
+    text-align: center;
+}
+
+.citizen-no-applications > i {
+    display: block;
+    margin-bottom: 12px;
+    color: #8eb9ce;
+    font-size: 34px;
+}
+
+.citizen-no-applications h3 {
+    margin: 0 0 7px;
+    color: var(--profile-heading);
+    font-size: 15px;
+    font-weight: 750;
+}
+
+.citizen-no-applications p {
+    margin: 0;
+    color: var(--profile-text);
+    font-size: 12px;
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN
+===================================================== */
+@media (max-width: 900px) {
+    .citizen-profile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .citizen-applications-card {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .citizen-profile-hero {
+        min-height: 255px;
+        padding: 25px 20px;
+    }
+
+    .citizen-profile-decoration {
+        right: 10px;
+        font-size: 95px;
+    }
+
+    .citizen-profile-heading {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .citizen-profile-avatar {
+        width: 53px;
+        height: 53px;
+        border-radius: 15px;
+        font-size: 18px;
+    }
+
+    .citizen-profile-heading h1 {
+        font-size: 24px;
+    }
+
+    .citizen-profile-meta {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 11px;
+    }
+
+    .citizen-profile-card {
+        padding: 19px;
+    }
+
+    .citizen-information-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .citizen-application-item {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .application-item-info {
+        flex-basis: calc(100% - 60px);
+    }
+
+    .application-item-status {
+        margin-left: 52px;
+    }
+
+    .application-view-link {
+        margin-left: auto;
+    }
+}
+
+.citizen-edit-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 15px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 7px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.citizen-edit-link:hover {
+    color: #fff;
+    background: rgba(25, 168, 44, 0.24);
+    border-color: #fff;
+}
+
+.citizen-delete-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 15px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 7px;
+    color: #fff;
+    background: rgba(190, 65, 55, 0.75);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.citizen-delete-link:hover {
+    color: #fff;
+    background: #a5a72e;
+}
+
+/* CITIZEN ACCOUNT STATUS ACTIONS */
+.citizen-status-form {
+    display: inline-flex;
+    align-items: center;
+}
+
+.citizen-status-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.citizen-status-btn.deactivate {
+    background: #fff0e8;
+    color: #bd5428;
+}
+
+.citizen-status-btn.deactivate:hover {
+    background: #bd5428;
+    color: #fff;
+}
+
+.citizen-status-btn.activate {
+    background: #e4f7ed;
+    color: #16834c;
+}
+
+.citizen-status-btn.activate:hover {
+    background: #16834c;
+    color: #fff;
+}
+
+.citizen-status-btn.deleted {
+    background: #f3e8e8;
+    color: #9b3434;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .citizen-status-form {
+        width: 100%;
+    }
+
+    .citizen-status-btn {
+        width: 100%;
+    }
+}
