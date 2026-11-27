@@ -57,6 +57,11 @@
                     <i class="bi bi-people"></i>
                     <span>Citizens</span>
                 </a>
+
+                <a href="{{ url_for('admin.support_requests') }}" class="admin-nav-link {% if request.endpoint in ['admin.support_requests', 'admin.support_request_details'] %}active{% endif %}">
+                    <i class="bi bi-headset"></i>
+                    <span>Support Requests</span>
+                </a>
             </nav>
 
             <div class="admin-sidebar-bottom">
