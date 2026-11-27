@@ -2,8 +2,10 @@ from app.extensions import db
 
 class Role(db.Model):
     __tablename__ = "roles"
-
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(
+        db.Integer, 
+        primary_key=True
+    )
 
     name = db.Column(
         db.String(80),
@@ -11,7 +13,9 @@ class Role(db.Model):
         nullable=False
     )
 
-    description = db.Column(db.Text)
+    description = db.Column(
+        db.Text
+    )
 
     users = db.relationship(
         "User",

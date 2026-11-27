@@ -7,8 +7,15 @@ from app.forms.auth import ProfileForm, ChangePasswordForm
 
 citizen_bp = Blueprint("citizen", __name__)
 
+
 @citizen_bp.route("/")
 def index():
+    if current_user.is_authenticated:
+        if current_user.has_role("admin"):
+            return redirect(url_for("admin.dashboard"))        
+        if current_user.has_role("citizen"):
+            return redirect(url_for("citizen.dashboard"))
+
     services = (
         Service.query
         .filter_by(is_active=True)
@@ -16,6 +23,7 @@ def index():
         .limit(6)
         .all()
     )
+
     return render_template("index.html", services=services)
 
 

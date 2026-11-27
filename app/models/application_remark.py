@@ -3,8 +3,14 @@ from app.extensions import db
 
 class ApplicationRemark(db.Model):
     __tablename__ = "application_remarks"
-    id = db.Column(db.Integer, primary_key=True)
-    remark = db.Column(db.Text, nullable=False)
+    id = db.Column(
+        db.Integer, 
+        primary_key=True
+    )
+    remark = db.Column(
+        db.Text, 
+        nullable=False
+    )
     application_id = db.Column(
         db.Integer,
         db.ForeignKey("service_requests.id"),
@@ -30,6 +36,7 @@ class ApplicationRemark(db.Model):
         "User",
         back_populates="application_remarks"
     )
+
 
     def __repr__(self):
         return f"<ApplicationRemark {self.id}>"

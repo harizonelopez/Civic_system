@@ -10,7 +10,7 @@ from flask import (
 )
 from flask_login import login_user, logout_user, current_user
 from app.extensions import db, limiter
-from app.models import User
+from app.models import User, Role
 from app.forms.auth import (
     RegistrationForm,
     LoginForm,
@@ -67,8 +67,18 @@ def register():
 
         user.set_password(form.password.data)
 
+        # Assign the citizen role to newly registered accounts.
+        citizen_role = Role.query.filter_by(name="citizen").first()
+
+        if not citizen_role:
+            flash("Citizen registration currently unavailable. Contact the administrator.", "danger")
+            return render_template("auth/register.html", form=form)
+
+        user.roles.append(citizen_role)
+
         db.session.add(user)
         db.session.commit()
+
         login_user(user)
         flash(f"Welcome to Civic System, {user.first_name}!", "success")
 
@@ -104,6 +114,10 @@ def login():
             if not user.is_active:
                 flash("Your account is currently inactive.", "danger")
                 return render_template("auth/login.html", form=form)
+
+            # Record the citizen's most recent successful login
+            user.last_login_at = datetime.now(timezone.utc) + timedelta(hours=3)
+            db.session.commit()
 
             login_user(user, remember=form.remember_me.data)
 
@@ -147,13 +161,8 @@ def logout():
 
 
 @auth_bp.route("/forgot-password", methods=["GET", "POST"])
-@limiter.limit(
-    "5 per 15 minutes",
-    methods=["POST"],
-    deduct_when=lambda response: (
-        response.headers.get("X-Password-Reset-Failed") == "1"
-    ),
-)
+@limiter.limit("5 per 15 minutes", methods=["POST"], 
+               deduct_when=lambda response: (response.headers.get("X-Password-Reset-Failed") == "1"))
 def forgot_password():
     reset_user_id = session.get("password_reset_user_id")
     reset_expires = session.get("password_reset_expires")

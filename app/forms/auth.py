@@ -199,6 +199,18 @@ class ProfileForm(FlaskForm):
 
     submit = SubmitField("Save Changes")
 
+
+class AdminCitizenForm(ProfileForm):
+    email = StringField(
+        "Email Address",
+        validators=[
+            DataRequired(),
+            Email(),
+            Length(max=100)
+        ]
+    )
+
+
 class PasswordResetVerificationForm(FlaskForm):
     email = StringField(
         "Registered Email Address",
