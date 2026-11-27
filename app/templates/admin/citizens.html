@@ -1,0 +1,274 @@
+{% extends "admin/base.html" %}
+{% block title %}Citizens | Civic System{% endblock %}
+{% block page_heading %}Citizen Management{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-citizens.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section class="citizens-hero">
+    <div class="citizens-hero-content">
+        <span class="citizens-eyebrow">
+            <i class="bi bi-buildings"></i>
+            CIVIC SYSTEM / COMMUNITY
+        </span>
+        <h1>Citizen Management</h1>
+        <p>
+            Manage citizen accounts, review registration information & oversee access to public services.
+        </p>
+
+        <div class="citizens-hero-meta">
+            <span>
+                <i class="bi bi-people-fill"></i>
+                {{ citizens|length }} registered citizens
+            </span>
+            <span>
+                <i class="bi bi-shield-check"></i>
+                Administration portal
+            </span>
+        </div>
+    </div>
+
+    <div class="citizens-hero-decoration">
+        <i class="bi bi-buildings"></i>
+    </div>
+</section>
+
+<!-- SUMMARY CARDS -->
+<section class="citizen-stats">
+    <div class="citizen-stat-card">
+        <div class="citizen-stat-icon blue">
+            <i class="bi bi-people"></i>
+        </div>
+        <div>
+            <span>Total Citizens</span>
+            <h3>{{ citizens|length }}</h3>
+        </div>
+    </div>
+
+    <div class="citizen-stat-card">
+        <div class="citizen-stat-icon green">
+            <i class="bi bi-person-check"></i>
+        </div>
+        <div>
+            <span>Active Accounts</span>
+            <h3>{{ citizens|selectattr('is_active')|list|length }}</h3>
+        </div>
+    </div>
+
+    <div class="citizen-stat-card">
+        <div class="citizen-stat-icon orange">
+            <i class="bi bi-person-lock"></i>
+        </div>
+        <div>
+            <span>Inactive Accounts</span>
+            <h3>{{ citizens|rejectattr('is_active')|list|length }}</h3>
+        </div>
+    </div>
+</section>
+
+<!-- CITIZEN DIRECTORY -->
+{% set ns = namespace(active=[], inactive=[], deleted=[]) %}
+{% for citizen in citizens %}
+    {% if citizen.email.endswith('@deleted.invalid') %}
+        {% set ns.deleted = ns.deleted + [citizen] %}
+    {% elif citizen.is_active %}
+        {% set ns.active = ns.active + [citizen] %}
+    {% else %}
+        {% set ns.inactive = ns.inactive + [citizen] %}
+    {% endif %}
+{% endfor %}
+
+{% macro render_citizen_cards(group) %}
+    {% for citizen in group %}
+        <article class="citizen-card"
+                 data-citizen-card
+                 data-status="{{ 'deleted' if citizen.email.endswith('@deleted.invalid') else ('active' if citizen.is_active else 'inactive') }}"
+                 data-search="{{ (citizen.full_name ~ ' ' ~ citizen.email ~ ' ' ~ (citizen.phone_number or '') ~ ' ' ~ (citizen.national_id or ''))|lower }}">
+
+            <div class="citizen-card-top">
+                <div class="citizen-avatar">
+                    {{ citizen.first_name[0]|upper }}{{ citizen.last_name[0]|upper }}
+                </div>
+
+                {% if citizen.email.endswith('@deleted.invalid') %}
+                    <span class="citizen-status deleted">
+                        <span></span> Deleted
+                    </span>
+                {% elif citizen.is_active %}
+                    <span class="citizen-status active">
+                        <span></span> Active
+                    </span>
+                {% else %}
+                    <span class="citizen-status inactive">
+                        <span></span> Deactivated
+                    </span>
+                {% endif %}
+            </div>
+
+            <div class="citizen-card-info">
+                <h3>{{ citizen.full_name }}</h3>
+                <span class="citizen-account-id">
+                    CITIZEN #{{ citizen.id }}
+                </span>
+            </div>
+
+            <div class="citizen-contact-details">
+                <div>
+                    <i class="bi bi-envelope"></i>
+                    <span>{{ citizen.email }}</span>
+                </div>
+
+                <div>
+                    <i class="bi bi-telephone"></i>
+                    <span>{{ citizen.phone_number or 'Not provided' }}</span>
+                </div>
+
+                <div>
+                    <i class="bi bi-calendar3"></i>
+                    <span>
+                        Registered
+                        {{ citizen.created_at.strftime('%d %b %Y') }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="citizen-card-footer">
+                <span>
+                    <i class="bi bi-person-badge"></i>
+                    Citizen account
+                </span>
+
+                <a href="{{ url_for('admin.citizen_details', citizen_id=citizen.id) }}" class="citizen-view-btn">
+                    View profile
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+            </div>
+        </article>
+    {% endfor %}
+{% endmacro %}
+
+<section class="citizens-directory">
+    <div class="citizens-directory-heading">
+        <div>
+            <span class="citizens-section-label">ACCOUNT DIRECTORY</span>
+            <h2>Citizen Management</h2>
+            <p>Manage active, deactivated and deleted citizen accounts separately.</p>
+        </div>
+
+        <span class="citizens-record-count">
+            <i class="bi bi-person-lines-fill"></i>
+            {{ citizens|length }} records
+        </span>
+    </div>
+
+    <!-- SEARCH AND FILTER -->
+    <div class="citizens-toolbar">
+        <div class="citizens-search">
+            <i class="bi bi-search"></i>
+            <input type="search"
+                   id="citizenSearch"
+                   placeholder="Search name, email, phone or ID..."
+                   autocomplete="off">
+        </div>
+
+        <div class="citizens-filter">
+            <i class="bi bi-funnel"></i>
+            <select id="citizenStatusFilter">
+                <option value="all">All accounts</option>
+                <option value="active">Active</option>
+                <option value="inactive">Deactivated</option>
+                <option value="deleted">Deleted</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- ACTIVE CITIZENS -->
+    <div class="citizen-group" data-citizen-group="active">
+        <div class="citizen-group-heading">
+            <div>
+                <span class="citizens-section-label">ACCOUNT STATUS</span>
+                <h3>
+                    <i class="bi bi-person-check-fill"></i>
+                    Active Citizens
+                </h3>
+                <p>Citizens who can currently access the system.</p>
+            </div>
+
+            <span class="citizen-group-count">
+                {{ ns.active|length }} Active
+            </span>
+        </div>
+
+        <div class="citizens-grid">
+            {{ render_citizen_cards(ns.active) }}
+        </div>
+
+        {% if not ns.active %}
+            <p class="citizen-group-empty">No active citizens found.</p>
+        {% endif %}
+    </div>
+
+    <!-- DEACTIVATED CITIZENS -->
+    <div class="citizen-group" data-citizen-group="inactive">
+        <div class="citizen-group-heading">
+            <div>
+                <span class="citizens-section-label">ACCOUNT STATUS</span>
+                <h3>
+                    <i class="bi bi-person-lock"></i>
+                    Deactivated Citizens
+                </h3>
+                <p>Accounts temporarily disabled by an administrator.</p>
+            </div>
+
+            <span class="citizen-group-count">
+                {{ ns.inactive|length }} Deactivated
+            </span>
+        </div>
+
+        <div class="citizens-grid">
+            {{ render_citizen_cards(ns.inactive) }}
+        </div>
+
+        {% if not ns.inactive %}
+            <p class="citizen-group-empty">No deactivated citizens found.</p>
+        {% endif %}
+    </div>
+
+    <!-- DELETED CITIZENS -->
+    <div class="citizen-group" data-citizen-group="deleted">
+        <div class="citizen-group-heading">
+            <div>
+                <span class="citizens-section-label">RETAINED RECORDS</span>
+                <h3>
+                    <i class="bi bi-person-x-fill"></i>
+                    Deleted Citizens
+                </h3>
+                <p>Anonymised accounts retained for application and administrative history.</p>
+            </div>
+
+            <span class="citizen-group-count">
+                {{ ns.deleted|length }} Deleted
+            </span>
+        </div>
+
+        <div class="citizens-grid">
+            {{ render_citizen_cards(ns.deleted) }}
+        </div>
+
+        {% if not ns.deleted %}
+            <p class="citizen-group-empty">No deleted citizen records found.</p>
+        {% endif %}
+    </div>
+
+    <div class="citizens-no-results" id="citizenNoResults" hidden>
+        <i class="bi bi-search"></i>
+        <h3>No matching citizens</h3>
+        <p>Try another search term or change the account filter.</p>
+    </div>
+</section>
+
+{% endblock %}
+
