@@ -1,0 +1,201 @@
+{% extends "admin/base.html" %}
+{% block title %}Support Requests | Civic System{% endblock %}
+{% block page_heading %}Support Requests{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-support-requests.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="support-inbox">
+    <!-- PAGE INTRO -->
+    <div class="support-hero">
+        <div class="support-hero-content">
+            <div class="support-eyebrow">
+                <i class="bi bi-headset"></i>
+                CITIZEN SUPPORT CENTER
+            </div>
+
+            <h2>Support <span>Requests</span></h2>
+
+            <p>
+                Monitor citizen enquiries, manage incoming requests
+                and provide timely assistance.
+            </p>
+        </div>
+
+        <div class="support-hero-icon">
+            <i class="bi bi-chat-square-heart"></i>
+        </div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="support-summary">
+        <div class="support-stat">
+            <div class="support-stat-icon total-icon">
+                <i class="bi bi-inbox"></i>
+            </div>
+            <div>
+                <small>TOTAL REQUESTS</small>
+                <h3>{{ support_requests|length }}</h3>
+            </div>
+        </div>
+
+        <div class="support-stat">
+            <div class="support-stat-icon submitted-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div>
+                <small>SUBMITTED</small>
+                <h3>
+                    {{ support_requests|selectattr('status', 'equalto', 'submitted')|list|length }}
+                </h3>
+            </div>
+        </div>
+
+        <div class="support-stat">
+            <div class="support-stat-icon progress-icon">
+                <i class="bi bi-arrow-repeat"></i>
+            </div>
+            <div>
+                <small>IN PROGRESS</small>
+                <h3>
+                    {{ support_requests|selectattr('status', 'equalto', 'in_progress')|list|length }}
+                </h3>
+            </div>
+        </div>
+
+        <div class="support-stat">
+            <div class="support-stat-icon resolved-icon">
+                <i class="bi bi-check2-circle"></i>
+            </div>
+            <div>
+                <small>RESOLVED</small>
+                <h3>
+                    {{ support_requests|selectattr('status', 'equalto', 'resolved')|list|length }}
+                </h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- REQUEST INBOX -->
+    <div class="support-panel">
+        <div class="support-panel-header">
+            <div>
+                <h5>
+                    <i class="bi bi-grid-3x3-gap"></i>
+                    Request Inbox
+                </h5>
+                <p>All support requests submitted by users</p>
+            </div>
+
+            <span class="support-live-indicator">
+                <span></span> LIVE INBOX
+            </span>
+        </div>
+
+        {% if support_requests %}
+        <div class="support-table-wrapper">
+            <table class="support-table">
+                <thead>
+                    <tr>
+                        <th>REFERENCE</th>
+                        <th>CITIZEN</th>
+                        <th>SUBJECT</th>
+                        <th>CATEGORY</th>
+                        <th>DATE SUBMITTED</th>
+                        <th>STATUS</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in support_requests %}
+                    <tr>
+                        <td>
+                            <span class="support-reference">
+                                <i class="bi bi-hash"></i>
+                                {{ item.reference_number }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="support-citizen">
+                                <div class="support-citizen-avatar">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+
+                                <div>
+                                    <strong>{{ item.full_name }}</strong>
+                                    <small>{{ item.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="support-subject">
+                                {{ item.subject }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="support-category">
+                                {{ item.category|replace('_', ' ')|title }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="support-date">
+                                <i class="bi bi-calendar3"></i>
+                                {{ item.submitted_at|kenya_time if item.submitted_at else 'Not available' }}
+                                hrs
+                            </span>
+                        </td>
+
+                        <td>
+                            {% if item.status == 'resolved' %}
+                                <span class="support-status resolved">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Resolved
+                                </span>
+                            {% elif item.status == 'in_progress' %}
+                                <span class="support-status in-progress">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                    In Progress
+                                </span>
+                            {% else %}
+                                <span class="support-status submitted">
+                                    <i class="bi bi-clock-fill"></i>
+                                    Submitted
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{{ url_for('admin.support_request_details', request_id=item.id) }}" class="support-view-btn">
+                                <i class="bi bi-eye"></i>
+                                View
+                                <i class="bi bi-arrow-up-right"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+        <div class="support-empty">
+            <div class="support-empty-icon">
+                <i class="bi bi-inbox"></i>
+            </div>
+
+            <h4>No Support Requests Yet</h4>
+            <p>New requests submitted through the citizen support form will appear here.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}
