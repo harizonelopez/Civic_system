@@ -7,14 +7,11 @@ from app.forms.auth import ProfileForm, ChangePasswordForm
 
 citizen_bp = Blueprint("citizen", __name__)
 
-
 @citizen_bp.route("/")
 def index():
     if current_user.is_authenticated:
         if current_user.has_role("admin"):
             return redirect(url_for("admin.dashboard"))        
-        if current_user.has_role("citizen"):
-            return redirect(url_for("citizen.dashboard"))
 
     services = (
         Service.query
@@ -30,8 +27,7 @@ def index():
 @citizen_bp.route("/dashboard")
 @login_required
 def dashboard():
-    # Retrieve the citizen's applications.
-    applications = (
+    applications = (  # Retrieve the citizen's applications
         ServiceRequest.query
         .filter_by(citizen_id=current_user.id)
         .order_by(ServiceRequest.submitted_at.desc())
@@ -78,7 +74,7 @@ def edit_profile():
     password_form = ChangePasswordForm()
     next_page = request.args.get("next")
 
-    # Handle password changes independently.
+    # Handle password changes independently
     if password_form.change_password.data and password_form.validate_on_submit():
         if not current_user.check_password(password_form.current_password.data):
             password_form.current_password.errors.append("Incorrect current password.")
