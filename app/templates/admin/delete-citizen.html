@@ -1,0 +1,76 @@
+{% extends "admin/base.html" %}
+{% block title %}Delete Citizen | Civic System{% endblock %}
+{% block page_heading %}Delete Citizen{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/del-citizen.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="delete-citizen-page">
+    <div class="delete-citizen-header">
+        <a href="{{ url_for('admin.citizen_details', citizen_id=citizen.id) }}">
+            <i class="bi bi-arrow-left"></i>
+            Back to profile
+        </a>
+
+        <h2>Delete Account</h2>
+        <p>Review the account details before confirming this action.</p>
+    </div>
+
+    <div class="delete-citizen-card">
+        <div class="delete-warning-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+
+        <h3>Are you sure you want to delete the citizen's account?</h3>
+        <p class="delete-description">
+            You are about to delete the account belonging to the citizen below.
+            This action will disable their account and anonymise their personal
+            information while preserving their application records and audit history.
+        </p>
+
+        <div class="delete-citizen-information">
+            <div class="delete-citizen-avatar">
+                {{ citizen.first_name[0]|upper }}{{ citizen.last_name[0]|upper }}
+            </div>
+
+            <div class="delete-citizen-details">
+                <h4>{{ citizen.full_name }}</h4>
+                <span>Citizen #{{ citizen.id }}</span>
+                <p>{{ citizen.email }}</p>
+            </div>
+        </div>
+
+        <div class="delete-consequences">
+            <h4>
+                <i class="bi bi-info-circle"></i>
+                What will happen?
+            </h4>
+
+            <ul>
+                <li>The citizen will no longer be able to log in.</li>
+                <li>Their personal information will be anonymised.</li>
+                <li>Their submitted applications will remain in the system.</li>
+                <li>Existing administrative audit records will be preserved.</li>
+            </ul>
+        </div>
+
+        <form method="POST" class="delete-citizen-actions">
+            <input 
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}">
+                
+            <a href="{{ url_for('admin.citizen_details', citizen_id=citizen.id) }}" class="delete-cancel-btn">
+                Cancel
+            </a>
+            <button type="submit" class="delete-confirm-btn">
+                <i class="bi bi-trash3"></i>
+                Confirm account deletion
+            </button>
+        </form>
+
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,239 @@
+/* CITIZEN DELETION PAGE */
+.delete-citizen-page {
+    padding: 10px 0 40px;
+    color: #263b50;
+}
+
+/* PHOTO HEADER */
+.delete-citizen-header {
+    position: relative;
+    overflow: hidden;
+    padding: 38px 35px;
+    margin-bottom: 28px;
+    border-radius: 16px;
+    background:
+        linear-gradient(
+            105deg,
+            rgba(13, 57, 78, 0.93),
+            rgba(20, 111, 119, 0.76)
+        ),
+        url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=85")
+        center 48% / cover no-repeat;
+    box-shadow: 0 10px 28px rgba(25, 65, 85, 0.14);
+}
+
+.delete-citizen-header > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 25px;
+    color: #e3f5f7;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.delete-citizen-header > a:hover {
+    color: #ffffff;
+    transform: translateX(-3px);
+}
+
+.delete-citizen-header h2 {
+    color: #ffffff;
+    font-size: 27px;
+    font-weight: 700;
+    margin: 0 0 9px;
+}
+
+.delete-citizen-header p {
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 14px;
+    margin: 0;
+}
+
+/* CONFIRMATION CARD */
+.delete-citizen-card {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 35px;
+    background: linear-gradient(145deg, #f1f8f8, #e3f0f2);
+    border: 1px solid #d4e5e8;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(35, 65, 85, 0.08);
+}
+
+.delete-warning-icon {
+    width: 62px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 22px;
+    border-radius: 15px;
+    background: #fce8dc;
+    color: #c45b32;
+    font-size: 27px;
+}
+
+.delete-citizen-card > h3 {
+    color: #25465a;
+    font-size: 21px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.delete-description {
+    color: #62798a;
+    font-size: 13px;
+    line-height: 1.8;
+    margin-bottom: 25px;
+}
+
+/* CITIZEN INFORMATION */
+.delete-citizen-information {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px solid #d5e6e9;
+    border-radius: 12px;
+    background: linear-gradient(110deg, #dceef0, #eaf4f3);
+}
+
+.delete-citizen-avatar {
+    width: 55px;
+    height: 55px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #287c91, #18556d);
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.delete-citizen-details h4 {
+    color: #25465a;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 4px;
+}
+
+.delete-citizen-details span,
+.delete-citizen-details p {
+    color: #718797;
+    font-size: 12px;
+    margin: 0;
+}
+
+.delete-citizen-details p {
+    margin-top: 4px;
+}
+
+/* CONSEQUENCES */
+.delete-consequences {
+    padding: 20px;
+    margin-bottom: 28px;
+    border-left: 4px solid #d58a46;
+    border-radius: 9px;
+    background: linear-gradient(110deg, #f8eddf, #f4e7d8);
+}
+
+.delete-consequences h4 {
+    color: #78502e;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 13px;
+}
+
+.delete-consequences h4 i {
+    margin-right: 6px;
+}
+
+.delete-consequences ul {
+    padding-left: 20px;
+    margin: 0;
+}
+
+.delete-consequences li {
+    color: #79654f;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+/* ACTION BUTTONS */
+.delete-citizen-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding-top: 22px;
+    border-top: 1px solid #d5e5e8;
+}
+
+.delete-cancel-btn,
+.delete-confirm-btn {
+    min-height: 43px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.delete-cancel-btn {
+    color: #476579;
+    background: #dcebed;
+    border: 1px solid #c7dfe2;
+}
+
+.delete-cancel-btn:hover {
+    color: #25465a;
+    background: #cbdfe2;
+}
+
+.delete-confirm-btn {
+    color: #ffffff;
+    background: linear-gradient(110deg, #bd543d, #963b35);
+    border: 1px solid #963b35;
+}
+
+.delete-confirm-btn:hover {
+    background: linear-gradient(110deg, #a94332, #7e302c);
+}
+
+/* RESPONSIVENESS */
+@media (max-width: 650px) {
+    .delete-citizen-header {
+        padding: 28px 22px;
+    }
+
+    .delete-citizen-header h2 {
+        font-size: 22px;
+    }
+
+    .delete-citizen-card {
+        padding: 22px 18px;
+    }
+
+    .delete-citizen-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .delete-cancel-btn,
+    .delete-confirm-btn {
+        width: 100%;
+    }
+}
+
