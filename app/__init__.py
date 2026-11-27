@@ -18,17 +18,16 @@ def create_app(config_class=Config):
     csrf.init_app(app)
     limiter.init_app(app)
 
-    # Timezone conversion to EAT(Kenyan time)
+    # Timezone conversion to EAT (Kenyan time)
     nairobi_tz = ZoneInfo("Africa/Nairobi")
 
     @app.template_filter("kenya_time")
-    def kenya_time(value, format="%d %b %Y, %I:%M %p"):
+    def kenya_time(value, format="%d %b %Y, %H:%M"):
         if value is None:
             return ""
 
         if value.tzinfo is None:
             value = value.replace(tzinfo=timezone.utc)
-
         return value.astimezone(nairobi_tz).strftime(format)
 
     from app import models
