@@ -35,7 +35,7 @@ def register():
                 and not parsed_url.scheme
             ):
                 return redirect(next_page)
-        return redirect(url_for("citizen.dashboard"))
+        return redirect(url_for("citizen.index"))
 
     form = RegistrationForm()    
     if form.validate_on_submit():
@@ -71,7 +71,7 @@ def register():
         citizen_role = Role.query.filter_by(name="citizen").first()
 
         if not citizen_role:
-            flash("Citizen registration currently unavailable. Contact the administrator.", "danger")
+            flash("Registration currently unavailable. Contact admin.", "danger")
             return render_template("auth/register.html", form=form)
 
         user.roles.append(citizen_role)
@@ -103,7 +103,7 @@ def login():
         if current_user.has_role("admin"):
             return redirect(url_for("admin.dashboard"))
         
-        return redirect(url_for("citizen.dashboard"))
+        return redirect(url_for("citizen.index"))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -112,7 +112,7 @@ def login():
 
         if user and user.check_password(form.password.data):
             if not user.is_active:
-                flash("Your account is currently inactive.", "danger")
+                flash("Account currently inactive. Contact admin", "danger")
                 return render_template("auth/login.html", form=form)
 
             # Record the citizen's most recent successful login
@@ -145,7 +145,7 @@ def login():
 
             return redirect(url_for("citizen.index"))
 
-        flash("Invalid email address or password.", "danger")
+        flash("Invalid details entered.", "danger")
     return render_template("auth/login.html", form=form)
 
 
@@ -161,7 +161,7 @@ def logout():
 
 
 @auth_bp.route("/forgot-password", methods=["GET", "POST"])
-@limiter.limit("5 per 15 minutes", methods=["POST"], 
+@limiter.limit("5 per 15 minutes", methods=["POST"],
                deduct_when=lambda response: (response.headers.get("X-Password-Reset-Failed") == "1"))
 def forgot_password():
     reset_user_id = session.get("password_reset_user_id")
@@ -231,9 +231,7 @@ def forgot_password():
             )
         )
 
-        # Flask-Limiter counts this as a failed verification attempt.
-        response.headers["X-Password-Reset-Failed"] = "1"
-
+        response.headers["X-Password-Reset-Failed"] = "1"  # Flask-Limiter counts this as a failed verification attempt
         return response
 
     return render_template(
