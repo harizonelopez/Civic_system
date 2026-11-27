@@ -1,0 +1,310 @@
+{% extends "admin/base.html" %}
+{% block title %}Support Request Details | Civic System{% endblock %}
+{% block page_heading %}Support Request Details{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-support-request-details.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="support-details-page">
+    <!-- PAGE HEADER -->
+    <div class="support-details-hero">
+        <div>
+            <div class="support-details-eyebrow">
+                <i class="bi bi-headset"></i>
+                CITIZEN SUPPORT CENTER
+            </div>
+
+            <h2>Request <span>Details</span></h2>
+            <p>Review the submitted enquiry and manage its resolution.</p>
+        </div>
+
+        <div class="support-details-hero-icon">
+            <i class="bi bi-chat-square-text"></i>
+        </div>
+    </div>
+
+    <!-- BACK NAVIGATION -->
+    <a href="{{ url_for('admin.support_requests') }}" class="support-back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back
+    </a>
+
+    <!-- REQUEST REFERENCE -->
+    <div class="support-reference-panel">
+        <div>
+            <small>REQUEST REFERENCE NUMBER</small>
+            <h3>{{ support_request.reference_number }}</h3>
+        </div>
+
+        <div>
+            <small>CURRENT STATUS</small>
+
+            {% if support_request.status == 'resolved' %}
+                <span class="support-detail-status resolved">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Resolved
+                </span>
+            {% elif support_request.status == 'in_progress' %}
+                <span class="support-detail-status in-progress">
+                    <i class="bi bi-arrow-repeat"></i>
+                    In Progress
+                </span>
+            {% else %}
+                <span class="support-detail-status submitted">
+                    <i class="bi bi-clock-fill"></i>
+                    Submitted
+                </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="support-details-grid">
+        <!-- LEFT: REQUEST INFORMATION -->
+        <div class="support-details-main">
+            <!-- CITIZEN INFORMATION -->
+            <div class="support-details-card">
+                <div class="support-details-card-heading">
+                    <span class="support-heading-icon">
+                        <i class="bi bi-person-vcard"></i>
+                    </span>
+
+                    <div>
+                        <h5>Citizen Information</h5>
+                        <p>Contact information provided with this request</p>
+                    </div>
+                </div>
+
+                <div class="support-information-grid">
+                    <div class="support-information-item">
+                        <small>FULL NAME</small>
+                        <strong>{{ support_request.full_name }}</strong>
+                    </div>
+
+                    <div class="support-information-item">
+                        <small>EMAIL ADDRESS</small>
+                        <strong>{{ support_request.email }}</strong>
+                    </div>
+
+                    <div class="support-information-item">
+                        <small>ACCOUNT</small>
+                        {% if support_request.citizen %}
+                            <strong>
+                                <i class="bi bi-person-check"></i>
+                                Registered Citizen
+                            </strong>
+                        {% else %}
+                            <strong>
+                                <i class="bi bi-person-plus"></i>
+                                Guest Submission
+                            </strong>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- REQUEST MESSAGE -->
+            <div class="support-details-card">
+                <div class="support-details-card-heading">
+                    <span class="support-heading-icon">
+                        <i class="bi bi-envelope-paper"></i>
+                    </span>
+
+                    <div>
+                        <h5>Request Message</h5>
+                        <p>Details of the citizen's enquiry</p>
+                    </div>
+                </div>
+
+                <div class="support-message-information">
+                    <div class="support-information-item">
+                        <small>SUBJECT</small>
+                        <strong>{{ support_request.subject }}</strong>
+                    </div>
+
+                    <div class="support-information-item">
+                        <small>CATEGORY</small>
+                        <strong>
+                            {{ support_request.category|replace('_', ' ')|title }}
+                        </strong>
+                    </div>
+
+                    <div class="support-information-item">
+                        <small>RELATED APPLICATION</small>
+                        <strong>
+                            {{ support_request.application_reference or 'Not provided' }}
+                        </strong>
+                    </div>
+
+                    <div class="support-information-item">
+                        <small>DATE SUBMITTED</small>
+                        <strong>
+                            {{ support_request.submitted_at|kenya_time if support_request.submitted_at else 'Not available' }}
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div class="support-message-box">
+                    <div class="support-message-label">
+                        <i class="bi bi-chat-left-text"></i>
+                        CITIZEN MESSAGE
+                    </div>
+
+                    <p>{{ support_request.message }}</p>
+                </div>
+            </div>
+
+            <!-- PREVIOUS ADMIN RESPONSE -->
+            <div class="support-details-card">
+                <div class="support-details-card-heading">
+                    <span class="support-heading-icon response-icon">
+                        <i class="bi bi-reply-all"></i>
+                    </span>
+
+                    <div>
+                        <h5>Previous Admin Response</h5>
+                        <p>Response currently saved for this request</p>
+                    </div>
+                </div>
+
+                {% if support_request.admin_response %}
+                    <div class="support-existing-response">
+                        {{ support_request.admin_response }}
+                    </div>
+                {% else %}
+                    <div class="support-no-response">
+                        <i class="bi bi-info-circle"></i>
+                        No administrative response has been added yet.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- RIGHT: MANAGEMENT PANEL -->
+        <aside class="support-details-sidebar">
+            <div class="support-details-card support-management-card">
+                <div class="support-details-card-heading">
+                    <span class="support-heading-icon management-icon">
+                        <i class="bi bi-sliders"></i>
+                    </span>
+
+                    <div>
+                        <h5>Manage Request</h5>
+                        <p>Update status and respond to the citizen</p>
+                    </div>
+                </div>
+
+                <form method="POST" action="{{ url_for('admin.support_request_details', request_id=support_request.id) }}">
+                    <input type="hidden"
+                           name="csrf_token"
+                           value="{{ csrf_token() }}">
+
+                    <div class="support-form-group">
+                        <label for="status">
+                            <i class="bi bi-activity"></i>
+                            Request Status
+                        </label>
+
+                        <select name="status"
+                                id="status"
+                                class="support-form-control"
+                                required>
+
+                            <option value="submitted"
+                                {% if support_request.status == 'submitted' %}selected{% endif %}>
+                                Submitted
+                            </option>
+
+                            <option value="in_progress"
+                                {% if support_request.status == 'in_progress' %}selected{% endif %}>
+                                In Progress
+                            </option>
+
+                            <option value="resolved"
+                                {% if support_request.status == 'resolved' %}selected{% endif %}>
+                                Resolved
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div class="support-form-group">
+                        <label for="admin_response">
+                            <i class="bi bi-chat-dots"></i>
+                            Administrative response
+                        </label>
+
+                        <textarea name="admin_response"
+                                  id="admin_response"
+                                  class="support-form-control support-response-input"
+                                  rows="5"
+                                  placeholder="Write your response to the citizen..."></textarea>
+
+                        <small>
+                            Your response will be saved with this support request.
+                        </small>
+                    </div>
+
+                    <button type="submit" class="support-save-btn">
+                        <i class="bi bi-cloud-check"></i>
+                        Save changes
+                    </button>
+                </form>
+            </div>
+
+            <!-- REQUEST TIMELINE -->
+            <div class="support-details-card support-timeline-card">
+                <div class="support-details-card-heading">
+                    <span class="support-heading-icon timeline-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </span>
+
+                    <div>
+                        <h5>Request Timeline</h5>
+                        <p>Request activity information</p>
+                    </div>
+                </div>
+
+                <div class="support-timeline">
+                    <div class="support-timeline-item">
+                        <span class="support-timeline-dot submitted-dot"></span>
+                        <div>
+                            <strong>Request Submitted</strong>
+                            <small>
+                                {{ support_request.submitted_at|kenya_time if support_request.submitted_at else 'Not available' }}
+                                hrs
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="support-timeline-item">
+                        <span class="support-timeline-dot updated-dot"></span>
+                        <div>
+                            <strong>Last Updated</strong>
+                            <small>
+                                {{ support_request.updated_at|kenya_time if support_request.updated_at else 'Not available' }}
+                                hrs
+                            </small>
+                        </div>
+                    </div>
+
+                    {% if support_request.resolved_at %}
+                    <div class="support-timeline-item">
+                        <span class="support-timeline-dot resolved-dot"></span>
+                        <div>
+                            <strong>Request Resolved</strong>
+                            <small>
+                                {{ support_request.resolved_at|kenya_time }}
+                            </small>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </aside>
+    </div>
+</section>
+
+{% endblock %}
