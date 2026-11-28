@@ -33,21 +33,22 @@
                 <div class="hero-actions">
                     {% if current_user.is_authenticated %}
                         <a href="{{ url_for('citizen.applications') }}" class="btn btn-primary btn-lg">
-                            View My Applications
+                            View applications
                             <i class="bi bi-arrow-right ms-2"></i>
                         </a>
-
+                        <!--
                         <a href="{{ url_for('citizen.dashboard') }}" class="btn btn-outline-primary btn-lg">
                             Access Dashboard
-                        </a>
+                        </a> -->
                     {% else %}
+                        <!--
                         <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">
                             Create an Account
                             <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
+                        </a>-->
 
                         <a href="{{ url_for('requests.track_application') }}" class="btn btn-outline-primary btn-lg">
-                            Track an Application
+                            Track an application
                         </a>
                     {% endif %}
                 </div>
