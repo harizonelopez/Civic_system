@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block title %}My Support Requests | Civic System{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/my-support-requests.css') }}">
+
+<section class="my-support-page">
+    <div class="my-support-overlay"></div>
+    <div class="container my-support-container">
+        <div class="support-back-navigation">
+            <a href="{{ url_for('citizen.dashboard') }}" class="support-back-btn">
+                <i class="bi bi-arrow-left"></i>
+                Back to dashboard
+            </a>
+        </div>
+        <!-- Page heading -->
+        <div class="my-support-header">
+            <div>
+                <span class="my-support-eyebrow">
+                    <i class="bi bi-headset"></i>
+                    CITIZEN SUPPORT CENTRE
+                </span>
+
+                <h1>My Support <span>Requests</span></h1>
+                <p>Follow your submitted enquiries, monitor their progress and review responses from our support team.
+                </p>
+            </div>
+
+            <a href="{{ url_for('support.contact', **{'from': 'support_requests'}) }}" class="new-support-btn">
+                <i class="bi bi-plus-circle"></i>
+                Submit new request
+            </a>
+        </div>
+
+        <!-- Statistics -->
+        <div class="support-stat-grid">
+            <div class="support-stat-card">
+                <div class="support-stat-icon total-icon">
+                    <i class="bi bi-collection"></i>
+                </div>
+                <div>
+                    <span>Total Requests</span>
+                    <h3>{{ support_requests|length }}</h3>
+                </div>
+            </div>
+
+            <div class="support-stat-card">
+                <div class="support-stat-icon submitted-icon">
+                    <i class="bi bi-send"></i>
+                </div>
+                <div>
+                    <span>Submitted</span>
+                    <h3>{{ support_requests|selectattr('status', 'equalto', 'submitted')|list|length }}</h3>
+                </div>
+            </div>
+
+            <div class="support-stat-card">
+                <div class="support-stat-icon progress-icon">
+                    <i class="bi bi-arrow-repeat"></i>
+                </div>
+                <div>
+                    <span>In Progress</span>
+                    <h3>{{ support_requests|selectattr('status', 'equalto', 'in_progress')|list|length }}</h3>
+                </div>
+            </div>
+
+            <div class="support-stat-card">
+                <div class="support-stat-icon resolved-icon">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <div>
+                    <span>Resolved</span>
+                    <h3>{{ support_requests|selectattr('status', 'equalto', 'resolved')|list|length }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Requests section -->
+        <div class="support-requests-section">
+            <div class="support-requests-heading">
+                <div>
+                    <span class="section-eyebrow">YOUR ENQUIRIES</span>
+                    <h2>Request History</h2>
+                    <p>All support requests submitted through your account.</p>
+                </div>
+
+                <span class="request-count">
+                    {{ support_requests|length }} Requests
+                </span>
+            </div>
+
+            {% if support_requests %}
+                <div class="support-request-list">
+                    {% for support_request in support_requests %}
+                        <article class="support-request-card">
+                            <div class="request-card-top">
+                                <div class="request-category">
+                                    <span class="request-category-icon">
+                                        <i class="bi bi-chat-square-text"></i>
+                                    </span>
+
+                                    <div>
+                                        <span class="request-reference">
+                                            {{ support_request.reference_number }}
+                                        </span>
+                                        <span class="request-category-name">
+                                            {{ support_request.category|replace('_', ' ')|title }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <span class="request-status status-{{ support_request.status|lower|replace('_', '-') }}">
+                                    <span class="status-indicator"></span>
+                                    {{ support_request.status|replace('_', ' ')|title }}
+                                </span>
+                            </div>
+
+                            <div class="request-card-content">
+                                <h3>{{ support_request.subject }}</h3>
+
+                                {% if support_request.application_reference %}
+                                    <p class="linked-application">
+                                        <i class="bi bi-link-45deg"></i>
+                                        Related application:
+                                        <strong>{{ support_request.application_reference }}</strong>
+                                    </p>
+                                {% endif %}
+                            </div>
+
+                            <div class="request-card-footer">
+                                <div class="request-date">
+                                    <i class="bi bi-calendar3"></i>
+                                    <span>Submitted:
+                                        {{ support_request.submitted_at|kenya_time }}
+                                    </span>
+                                </div>
+
+                                <a href="{{ url_for('support.my_request_details', request_id=support_request.id, **{'from': 'support_requests'}) }}" class="view-request-btn">
+                                    View details
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        </article>
+
+                    {% endfor %}
+                </div>
+
+            {% else %}
+                <div class="support-empty-state">
+                    <div class="empty-state-icon">
+                        <i class="bi bi-chat-square-dots"></i>
+                    </div>
+
+                    <h3>No Support Requests Yet</h3>
+
+                    <p>You haven't submitted any support enquiries. When you contact our support team, your requests will appear here for tracking.</p>
+
+                    <a href="{{ url_for('support.contact') }}" class="new-support-btn">
+                        <i class="bi bi-plus-circle"></i>
+                        Contact Support
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Info footer -->
+        <div class="support-tracking-note">
+            <i class="bi bi-shield-check"></i>
+            <div>
+                <strong>Your support history is private.</strong>
+                <p>Only you can access the support requests submitted through your account.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+

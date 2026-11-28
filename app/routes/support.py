@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
-from flask_login import current_user
+from flask_login import current_user, login_required
 from app.extensions import db
 from app.forms.support import SupportRequestForm
 from app.models.support_request import SupportRequest
@@ -74,3 +74,28 @@ def contact():
             flash("Request submission failed. Try again.", "danger")
 
     return render_template("support/contact.html", form=form)
+
+
+@support_bp.route("/my-requests")
+@login_required
+def my_requests():
+    support_requests = (
+        SupportRequest.query
+        .filter_by(citizen_id=current_user.id)
+        .order_by(SupportRequest.submitted_at.desc())
+        .all()
+    )
+
+    return render_template("support/my-requests.html", support_requests=support_requests)
+
+
+@support_bp.route("/my-requests/<int:request_id>")
+@login_required
+def my_request_details(request_id):
+    support_request = SupportRequest.query.filter_by(
+        id=request_id,
+        citizen_id=current_user.id
+    ).first_or_404()
+
+    return render_template("support/request-details.html", support_request=support_request)
+

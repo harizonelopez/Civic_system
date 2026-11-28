@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block title %}Support Request Details | Civic System{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/support-request-details.css') }}">
+
+<section class="support-details-page">
+    <div class="support-details-overlay"></div>
+    <div class="container support-details-container">
+
+        <!-- Navigation -->
+        <div class="support-details-navigation">
+            <a href="{{ url_for('support.my_requests') }}">
+                <i class="bi bi-reply-all"></i>
+                Back
+            </a>
+        </div>
+
+        <!-- Heading -->
+        <div class="support-details-heading">
+            <span class="support-details-eyebrow">
+                <i class="bi bi-headset"></i>
+                SUPPORT REQUEST TRACKING
+            </span>
+
+            <h1>Request <span>Details</span></h1>
+            <p>Review your enquiry and follow the response from our support administration team.</p>
+        </div>
+
+        <!-- Request overview -->
+        <div class="support-details-overview">
+            <div class="support-details-reference">
+                <span>REFERENCE NUMBER</span>
+                <h2>{{ support_request.reference_number }}</h2>
+            </div>
+
+            <div class="support-details-status">
+                <span>CURRENT STATUS</span>
+
+                <strong class="detail-status status-{{ support_request.status|lower|replace('_', '-') }}">
+                    <span></span>
+                    {{ support_request.status|replace('_', ' ')|title }}
+                </strong>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Main request information -->
+            <div class="col-lg-8">
+                <div class="support-detail-panel">
+                    <div class="support-detail-panel-heading">
+                        <div>
+                            <span>YOUR ENQUIRY</span>
+                            <h3>{{ support_request.subject }}</h3>
+                        </div>
+
+                        <i class="bi bi-chat-square-text"></i>
+                    </div>
+
+                    <div class="support-detail-information">
+                        <div class="detail-information-item">
+                            <span>Category</span>
+                            <strong>
+                                {{ support_request.category|replace('_', ' ')|title }}
+                            </strong>
+                        </div>
+
+                        <div class="detail-information-item">
+                            <span>Submitted On</span>
+                            <strong>
+                                {{ support_request.submitted_at|kenya_time }} hrs
+                            </strong>
+                        </div>
+
+                        {% if support_request.application_reference %}
+                        <div class="detail-information-item">
+                            <span>Related Application</span>
+                            <strong>
+                                {{ support_request.application_reference }}
+                            </strong>
+                        </div>
+                        {% endif %}
+
+                        <div class="detail-information-item">
+                            <span>Last Updated</span>
+                            <strong>
+                                {{ support_request.updated_at|kenya_time }} hrs
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <div class="support-original-message">
+                        <h4>
+                            <i class="bi bi-envelope-paper"></i>
+                            Your Message
+                        </h4>
+
+                        <div class="support-message-content">{{ support_request.message }}</div>
+                    </div>
+                </div>
+
+                <!-- Administrator response -->
+                <div class="support-response-panel">
+                    <div class="support-response-heading">
+                        <div class="response-heading-icon">
+                            <i class="bi bi-reply-all"></i>
+                        </div>
+
+                        <div>
+                            <span>ADMINISTRATION FEEDBACK</span>
+                            <h3>Support Team Response</h3>
+                        </div>
+                    </div>
+
+                    {% if support_request.admin_response %}
+                        <div class="support-admin-response">
+                            {{ support_request.admin_response }}
+                        </div>
+
+                        {% if support_request.resolved_at %}
+                            <div class="response-date">
+                                <i class="bi bi-check-circle"></i>
+                                Resolved on:
+                                {{ support_request.resolved_at|kenya_time }} hrs
+                            </div>
+                        {% endif %}
+
+                    {% else %}
+                        <div class="response-pending">
+                            <i class="bi bi-hourglass-split"></i>
+
+                            <div>
+                                <strong>No Response Yet</strong>
+                                <p>Your enquiry has been received. Our support team will update this section when a response is available.</p>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <aside class="support-details-sidebar">
+                    <div class="details-sidebar-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <h3>Request Information</h3>
+                    <p>Keep your reference number for future enquiries about this support request.</p>
+
+                    <div class="sidebar-reference">
+                        <span>Your Reference</span>
+                        <strong>{{ support_request.reference_number }}</strong>
+                    </div>
+
+                    <div class="sidebar-divider"></div>
+                    <div class="sidebar-help">
+                        <i class="bi bi-info-circle"></i>
+                        <div>
+                            <strong>Need further assistance?</strong>
+                            <p>You can submit another enquiry if you need additional assistance.</p>
+                        </div>
+                    </div>
+
+                    <a href="{{ url_for('support.contact', from='support_details') }}" class="details-contact-btn">
+                        <i class="bi bi-headset"></i>
+                        Contact Support
+                    </a>
+
+                    <a href="{{ url_for('support.my_requests') }}" class="details-back-btn">
+                        <i class="bi bi-list-ul"></i>
+                        View all requests
+                    </a>
+                </aside>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+

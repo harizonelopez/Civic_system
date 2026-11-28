@@ -7,6 +7,22 @@
 <section class="support-page">
     <div class="support-overlay"></div>
     <div class="container support-container">
+        {% if request.args.get('from') == 'support_details' %}
+            <div class="support-details-navigation">
+                <a href="{{ url_for('support.my_requests') }}">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to requests
+                </a>
+            </div>
+        {% elif request.args.get('from') == 'support_requests' %}
+            <div class="support-details-navigation">
+                <a href="{{ url_for('support.my_requests') }}">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to requests
+                </a>
+            </div>
+        {% endif %}
+
         <!-- Page heading -->
         <div class="support-heading">
             <span class="support-eyebrow">
@@ -257,10 +273,7 @@
                                         <i class="bi bi-lock"></i>
                                         Your information is submitted securely.
                                     </span>
-
-                                    {{ form.submit(
-                                        class="btn support-submit-btn"
-                                    ) }}
+                                        {{ form.submit(class="btn support-submit-btn") }}
                                 </div>
                             </div>
                         </div>
