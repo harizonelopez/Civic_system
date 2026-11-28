@@ -18,7 +18,7 @@ from app.forms.auth import (
     PasswordResetForm,
 )
 from urllib.parse import urlsplit
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -116,7 +116,7 @@ def login():
                 return render_template("auth/login.html", form=form)
 
             # Record the citizen's most recent successful login
-            user.last_login_at = datetime.now(timezone.utc) + timedelta(hours=3)
+            user.last_login_at = datetime.now(timezone.utc)
             db.session.commit()
 
             login_user(user, remember=form.remember_me.data)
