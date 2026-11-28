@@ -6,6 +6,7 @@ from app.extensions import db
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from app.forms.auth import AdminCitizenForm
+from app.services.notifications import create_notification
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -279,6 +280,12 @@ def update_application_status(application_id):
         return redirect(url_for("admin.applications"))
 
     application = ServiceRequest.query.get_or_404(application_id)
+    return_from = request.form.get("return_from", "applications")
+    if return_from not in ("applications", "citizen"):
+        return_from = "applications"
+
+    redirect_url = url_for("admin.application_details", application_id=application.id, **{"from": return_from})
+
     allowed_statuses = [
         "submitted",
         "processing",
@@ -291,32 +298,50 @@ def update_application_status(application_id):
     new_status = request.form.get("status", "").strip().lower()
     if new_status not in allowed_statuses:
         flash("Select a valid status.", "danger")
-        return redirect(url_for("admin.application_details", application_id=application.id))
-      
+        return redirect(redirect_url)
+
     if application.status == new_status:
         flash("Application already has that status.", "info")
-        return redirect(url_for("admin.application_details", application_id=application.id))
+        return redirect(redirect_url)
 
     application.status = new_status
-    db.session.commit()
+    if application.citizen_id:
+        create_notification(
+            user_id=application.citizen_id,
+            notification_type="application",
+            title="Application Status Updated",
+            message=(
+                f"Your application {application.reference_number} "
+                f"has been updated to "
+                f"{new_status.replace('_', ' ').title()}."
+            ),
+            link=url_for("requests.application_tracking_details", reference_number=application.reference_number)
+        )
 
+    db.session.commit()
     flash("Application status updated.", "success")
-    return redirect(url_for("admin.application_details", application_id=application.id))
+
+    return redirect(redirect_url)
 
 
 @admin_bp.route("/applications/<int:application_id>/remarks", methods=["POST"])
 @login_required
 def add_application_remark(application_id):
     application = ServiceRequest.query.get_or_404(application_id)
+    return_from = request.form.get("return_from", "applications")
+    if return_from not in ("applications", "citizen"):
+        return_from = "applications"
+
+    redirect_url = url_for("admin.application_details", application_id=application.id, **{"from": return_from})
     remark_text = request.form.get("remark", "").strip()
 
     if not remark_text:
         flash("Enter remark before submission.", "warning")
-        return redirect(url_for("admin.application_details", application_id=application.id))
+        return redirect(redirect_url)
 
     if len(remark_text) > 500:
         flash("Remark can't exceed 500 characters.", "danger")
-        return redirect(url_for("admin.application_details", application_id=application.id))
+        return redirect(redirect_url)
 
     remark = ApplicationRemark(
         remark=remark_text,
@@ -325,10 +350,22 @@ def add_application_remark(application_id):
     )
 
     db.session.add(remark)
-    db.session.commit()
+    if application.citizen_id:
+        create_notification(
+            user_id=application.citizen_id,
+            notification_type="application",
+            title="New Application Remark",
+            message=(
+                f"An admin has added a remark "
+                f"to your application {application.reference_number}."
+            ),
+            link=url_for("requests.application_tracking_details", reference_number=application.reference_number)
+        )
 
+    db.session.commit()
     flash("Remark added.", "success")
-    return redirect(url_for("admin.application_details", application_id=application.id))
+
+    return redirect(redirect_url)
 
 
 @admin_bp.route("/support-requests")
@@ -347,7 +384,6 @@ def support_requests():
 @login_required
 def support_request_details(request_id):
     support_request = SupportRequest.query.get_or_404(request_id)
-
     if request.method == "POST":
         response = request.form.get("admin_response", "").strip()
         status = request.form.get("status", "").strip().lower()
@@ -357,12 +393,14 @@ def support_request_details(request_id):
             "in_progress",
             "resolved"
         ]
-
         if status not in allowed_statuses:
             flash("Select a valid status.", "danger")
             return redirect(url_for("admin.support_request_details", request_id=support_request.id))
-      
+
         now = datetime.now(timezone.utc)
+
+        response_changed = response != (support_request.admin_response or "")
+        status_changed = status != support_request.status
 
         support_request.admin_response = response or None
         support_request.status = status
@@ -374,9 +412,31 @@ def support_request_details(request_id):
             support_request.resolved_at = None
 
         support_request.updated_at = now
+        if support_request.citizen_id and (response_changed or status_changed):
+            message_parts = [
+                f"Your support request {support_request.reference_number} "
+                f"has been updated."
+            ]
+
+            if status_changed:
+                message_parts.append(
+                    f"New status: {status.replace('_', ' ').title()}."
+                )
+
+            if response_changed and response:
+                message_parts.append(
+                    f"Admin response: {response}"
+                )
+
+            create_notification(
+                user_id=support_request.citizen_id,
+                notification_type="support",
+                title="Support Request Updated",
+                message=" ".join(message_parts)
+            )
 
         db.session.commit()
         flash("Request updated.", "success")
-        return redirect(url_for("admin.support_request_details", request_id=support_request.id))
 
+        return redirect(url_for("admin.support_request_details", request_id=support_request.id))
     return render_template("admin/support-request-details.html", support_request=support_request)

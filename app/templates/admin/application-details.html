@@ -18,10 +18,17 @@
                 <p>Review and manage the information submitted by the citizen.</p>
             </div>
 
-            <a href="{{ url_for('admin.applications') }}" class="btn btn-light">
-                <i class="bi bi-arrow-left"></i>
-                Back to Applications
-            </a>
+            {% if request.args.get('from') == 'citizen' %}
+                <a href="{{ url_for('admin.citizen_details', citizen_id=application.citizen_id) }}" class="btn btn-black">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to citizen profile
+                </a>
+            {% else %}
+                <a href="{{ url_for('admin.applications') }}" class="btn btn-light">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to applications
+                </a>
+            {% endif %}
         </div>
     </section>
 
@@ -78,14 +85,14 @@
                 <div class="detail-item">
                     <span>Submitted On</span>
                     <strong>
-                        {{ application.submitted_at|kenya_time('%d %B %Y, %I:%M %p') }}
+                        {{ application.submitted_at|kenya_time('%d %B %Y, %H:%M') }}
                     </strong>
                 </div>
 
                 <div class="detail-item">
                     <span>Last Updated</span>
                     <strong>
-                        {{ application.updated_at|kenya_time('%d %B %Y, %I:%M %p') }}
+                        {{ application.updated_at|kenya_time('%d %B %Y, %H:%M') }}
                     </strong>
                 </div>
 
@@ -139,6 +146,10 @@
                         type="hidden"
                         name="csrf_token"
                         value="{{ csrf_token() }}">
+                    <input
+                        type="hidden",
+                        name="return_from",
+                        value="{{ request.args.get('from', 'applications') }}">
 
                     <div class="status-form-group">
                         <label for="status">Application Status</label>
@@ -203,6 +214,10 @@
                     type="hidden"
                     name="csrf_token"
                     value="{{ csrf_token() }}">
+                <input 
+                    type="hidden",
+                    name="return_from",
+                    value="{{ request.args.get('from', 'applications') }}">
 
                 <div class="remark-form-group">
                     <label for="remark">Your Remark</label>
@@ -252,7 +267,7 @@
                             <div class="remark-meta">
                                 <strong>{{ remark.admin.full_name }}</strong>
                                 <span>
-                                    {{ remark.created_at|kenya_time('%d %B %Y, %I:%M %p') }}
+                                    {{ remark.created_at|kenya_time('%d %B %Y, %H:%M') }}
                                 </span>
                             </div>
 

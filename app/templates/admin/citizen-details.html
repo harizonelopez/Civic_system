@@ -250,7 +250,7 @@
                                 </span>
                             </div>
 
-                            <a href="{{ url_for('admin.application_details', application_id=application.id) }}" class="application-view-link" aria-label="View application {{ application.id }}">
+                            <a href="{{ url_for('admin.application_details', application_id=application.id, from='citizen') }}" class="application-view-link" aria-label="View application {{ application.id }}">
                                 <i class="bi bi-arrow-up-right"></i>
                             </a>
                         </div>
