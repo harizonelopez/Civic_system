@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}My Notifications | Civic System{% endblock %}
+
+{% block meta_description %}
+View application updates, support responses and other Civic System notifications.
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/notifications.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="notifications-page">
+    <div class="container notifications-container">
+
+        <!-- PAGE HEADER -->
+        <div class="notifications-header">
+            <div class="notifications-heading">
+                <span class="notifications-eyebrow">
+                    <i class="bi bi-bell-fill"></i>
+                    CITIZEN PORTAL
+                </span>
+                <h1>My Notifications</h1>
+                <p>Stay informed about your applications and support requests.</p>
+            </div>
+
+            <a href="{{ url_for('citizen.dashboard') }}" class="notifications-back-link">
+                <i class="bi bi-arrow-left"></i>
+                Back
+            </a>
+        </div>
+
+        <!-- NOTIFICATION PANEL -->
+        <div class="notifications-panel">
+            <div class="notifications-toolbar">
+                <div class="notifications-summary">
+                    <h2>All Notifications</h2>
+                    <p>{{ notifications|length }} total <span class="summary-divider">·</span> {{ unread_count }} unread</p>
+                </div>
+
+                {% if unread_count > 0 %}
+                    <form method="POST" action="{{ url_for('notifications.mark_all_as_read') }}">
+                        <input type="hidden"
+                               name="csrf_token"
+                               value="{{ csrf_token() }}">
+
+                        <button type="submit" class="mark-all-button">
+                            <i class="bi bi-check2-all"></i>
+                            Mark all as read
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+
+            <!-- NOTIFICATION LIST -->
+            {% if notifications %}
+                <div class="notification-list">
+                    {% for notification in notifications %}
+                        <article class="notification-item
+                            {% if not notification.is_read %}is-unread{% endif %}">
+                            <div class="notification-icon">
+                                {% if notification.notification_type == 'application' %}
+                                    <i class="bi bi-file-earmark-text"></i>
+                                {% elif notification.notification_type == 'support' %}
+                                    <i class="bi bi-headset"></i>
+                                {% else %}
+                                    <i class="bi bi-bell"></i>
+                                {% endif %}
+                            </div>
+
+                            <div class="notification-content">
+                                <div class="notification-title-row">
+                                    <h3>{{ notification.title }}</h3>
+
+                                    {% if not notification.is_read %}
+                                        <span class="unread-indicator">
+                                            New
+                                        </span>
+                                    {% endif %}
+                                </div>
+
+                                <p>{{ notification.message }}</p>
+                                <span class="notification-date">
+                                    <i class="bi bi-clock"></i>
+                                    {{ notification.created_at|kenya_time }} hrs
+                                </span>
+                            </div>
+
+                            <div class="notification-actions">
+                                {% if not notification.is_read %}
+                                    <form method="POST" action="{{ url_for('notifications.mark_as_read', notification_id=notification.id) }}">
+                                        <input type="hidden"
+                                               name="csrf_token"
+                                               value="{{ csrf_token() }}">
+
+                                        <button type="submit" class="mark-read-button">
+                                            Mark read
+                                        </button>
+                                    </form>
+                                {% endif %}
+
+                                {% if notification.link %}
+                                    <a href="{{ notification.link }}{% if '?' in notification.link %}&{% else %}?{% endif %}from=notifications" class="notification-view-link">
+                                        View details
+                                        <i class="bi bi-arrow-up-right"></i>
+                                    </a>
+                                {% endif %}
+
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+
+            {% else %}
+                <!-- EMPTY STATE -->
+                <div class="notifications-empty">
+                    <div class="empty-notification-icon">
+                        <i class="bi bi-bell-slash"></i>
+                    </div>
+
+                    <h3>You're all caught up!</h3>
+                    <p>You don't have any notifications yet. <br>Important updates will appear here.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

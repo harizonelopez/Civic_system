@@ -9,6 +9,7 @@ from app.models.associations import user_roles, role_permissions
 from app.models.service_option import ServiceOption
 from app.models.support_request import SupportRequest
 from app.models.application_remark import ApplicationRemark
+from app.models.notification import Notification
 
 __all__ = [
     "User", 
@@ -23,4 +24,5 @@ __all__ = [
     "ServiceOption",
     "SupportRequest",
     "ApplicationRemark",
+    "Notification",
 ]
