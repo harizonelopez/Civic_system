@@ -198,6 +198,32 @@ Manage your Civic System account, view applications and update your personal inf
                 </div>
 
                 <div class="quick-action-list">
+                    <!-- NOTIFICATIONS -->
+                    <a href="{{ url_for('notifications.index') }}" class="quick-action-item notification-action">
+                        <span class="quick-action-icon">
+                            <i class="bi bi-bell"></i>
+                        </span>
+
+                        <span class="quick-action-text">
+                            <strong>My Notifications</strong>
+                            <small>
+                                {% if unread_notifications > 0 %}
+                                    You have {{ unread_notifications }} unread notification{{ 's' if unread_notifications != 1 else '' }}
+                                {% else %}
+                                    View your application and support updates
+                                {% endif %}
+                            </small>
+                        </span>
+
+                        {% if unread_notifications > 0 %}
+                            <span class="notification-count">
+                                {{ unread_notifications if unread_notifications < 100 else '99+' }}
+                            </span>
+                        {% endif %}
+
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
                     <a href="{{ url_for('requests.index') }}" class="quick-action-item">
                         <span class="quick-action-icon">
                             <i class="bi bi-grid"></i>
@@ -222,7 +248,19 @@ Manage your Civic System account, view applications and update your personal inf
                         <i class="bi bi-chevron-right"></i>
                     </a>
 
-                    <a href="#profile" class="quick-action-item">
+                    <a href="{{ url_for('support.my_requests') }}" class="quick-action-item">
+                        <span class="quick-action-icon">
+                            <i class="bi bi-headset"></i>
+                        </span>
+
+                        <span class="quick-action-text">
+                            <strong>My Support Requests</strong>
+                            <small>Track enquiries & view support responses</small>
+                        </span>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                    <a href="{{ url_for('citizen.edit_profile') }}" class="quick-action-item">
                         <span class="quick-action-icon">
                             <i class="bi bi-person-gear"></i>
                         </span>
@@ -230,18 +268,6 @@ Manage your Civic System account, view applications and update your personal inf
                         <span class="quick-action-text">
                             <strong>Manage My Profile</strong>
                             <small>Review your personal information</small>
-                        </span>
-                        <i class="bi bi-chevron-right"></i>
-                    </a>
-
-                    <a href="#security" class="quick-action-item">
-                        <span class="quick-action-icon">
-                            <i class="bi bi-shield-lock"></i>
-                        </span>
-
-                        <span class="quick-action-text">
-                            <strong>Account Security</strong>
-                            <small>Manage your account security</small>
                         </span>
                         <i class="bi bi-chevron-right"></i>
                     </a>

@@ -148,7 +148,7 @@ View all your submitted service applications and monitor their progress.
 
                                     <td>
                                         <a
-                                            href="{{ url_for('requests.application_tracking_details', reference_number=application.reference_number) }}"
+                                            href="{{ url_for('requests.application_tracking_details', reference_number=application.reference_number, from='applications') }}"
                                             class="application-details-link"
                                             aria-label="View details for {{ application.reference_number }}">
                                             View Details

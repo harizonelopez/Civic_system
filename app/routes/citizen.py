@@ -4,6 +4,7 @@ from app.extensions import db
 from app.models import Service, ServiceRequest
 from app.models.user import User
 from app.forms.auth import ProfileForm, ChangePasswordForm
+from app.models.notification import Notification
 
 citizen_bp = Blueprint("citizen", __name__)
 
@@ -45,12 +46,18 @@ def dashboard():
     )
     recent_applications = applications[:5]
 
+    unread_notifications = Notification.query.filter_by(  # Retrieve the citizen's nitifications
+        user_id=current_user.id,
+        is_read=False
+    ).count()
+
     return render_template(
         "citizen/dashboard.html",
         total_applications=total_applications,
         pending_applications=pending_applications,
         completed_applications=completed_applications,
         recent_applications=recent_applications,
+        unread_notifications=unread_notifications
     )
 
 

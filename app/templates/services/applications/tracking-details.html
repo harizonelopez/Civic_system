@@ -302,10 +302,17 @@
 
         <!-- FOOTER ACTION -->
         <div class="tracking-details-actions">
-            <a href="{{ url_for('citizen.applications') }}" class="tracking-back-link">
-                <i class="bi bi-arrow-left"></i>
-                Back to Applications
-            </a>
+            {% if request.args.get('from') == 'notifications' %}
+                <a href="{{ url_for('notifications.index') }}" class="tracking-back-link">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to notifications
+                </a>
+            {% else %}
+                <a href="{{ url_for('citizen.applications') }}" class="tracking-back-link">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to applications
+                </a>
+            {% endif %}
         </div>
     </div>
 </section>
